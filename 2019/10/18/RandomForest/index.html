@@ -82,15 +82,15 @@
 <meta name="description" content="随机森林面试题总结">
 <meta name="keywords" content="MachineLearning,Classification,RandomForest,Ensemble">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RandomForest">
+<meta property="og:title" content="Random Forest 随机森林">
 <meta property="og:url" content="http://yoursite.com/2019/10/18/RandomForest/index.html">
 <meta property="og:site_name" content="JWKeepsLearning">
 <meta property="og:description" content="随机森林面试题总结">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.png">
-<meta property="og:updated_time" content="2019-10-18T13:12:15.566Z">
+<meta property="og:updated_time" content="2019-10-18T13:17:10.431Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RandomForest">
+<meta name="twitter:title" content="Random Forest 随机森林">
 <meta name="twitter:description" content="随机森林面试题总结">
 <meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.png">
 
@@ -128,7 +128,7 @@
 
 
 
-  <title>RandomForest | JWKeepsLearning</title>
+  <title>Random Forest 随机森林 | JWKeepsLearning</title>
   
 
 
@@ -272,7 +272,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">RandomForest</h1>
+          <h1 class="post-title" itemprop="name headline">Random Forest 随机森林</h1>
         
 
         <div class="post-meta">
@@ -369,7 +369,7 @@
 <p>而在随机森林中，对子决策树的每个结点，先从该结点的属性集合中随机选择一个子集，然后再从这个子集中选择一个最优属性用于划分。 </p>
 </li>
 </ol>
-<p>*<em>=&gt; 两个随机性的引入，使得随机森林不容易陷入过拟合 *</em></p>
+<p>=&gt; 两个随机性的引入，使得随机森林不容易陷入过拟合 </p>
 <h2 id="RF和Bagging对比"><a href="#RF和Bagging对比" class="headerlink" title="RF和Bagging对比"></a>RF和Bagging对比</h2><p>与 Bagging 中基学习器的多样性仅通过样本扰动(通过对初始训练集采样)而来不同</p>
 <p>随机森林中基学习器的多样性不仅来自<strong>样本扰动</strong>，还来自<strong>属性扰动</strong></p>
 <p>好处：</p>
@@ -395,13 +395,13 @@
 <li>节点$m$的Gini指数计算公式：</li>
 </ul>
 <p>$$<br>Gini_m=1-\sum_{k=1}^{|K|}p_{mk}^2<br>$$</p>
-<p>其中，$K$表示类别的总个数，$p_{mk}$表示节点m中类别$k$所占的比例</p>
-<p>直观来说，是<strong>任意从节点$m$中随机抽取两个样本，其类别不一致的概率</strong></p>
+<p>​        其中，$K$表示类别的总个数，$p_{mk}$表示节点m中类别$k$所占的比例</p>
+<p>​        直观来说，是<strong>任意从节点$m$中随机抽取两个样本，其类别不一致的概率</strong></p>
 <ul>
 <li>特征$X_j$在节点$m$的重要性，即节点$m$分枝前后的Gini指数变化量为</li>
 </ul>
 <p>$$<br>VIM_{jm}=Gini_m-Gini_l-Gini_r<br>$$</p>
-<p>其中，$Gini_l$和$Gini_r$分别表示分枝后两个新节点的Gini指数。</p>
+<p>​        其中，$Gini_l$和$Gini_r$分别表示分枝后两个新节点的Gini指数。</p>
 <ul>
 <li>特征$X_j$在第$i$颗树的重要性为</li>
 </ul>
@@ -414,7 +414,7 @@
 <li>最后将所有特征求得的重要性评分进行归一化，得到特征$X_j$的重要性</li>
 </ul>
 <p>$$<br>VIM_{j}=\frac{VIM_{j}}{\sum_{i=1}^{n}VIM_{i}}<br>$$</p>
-<h2 id="LR，SVM，RF算法的区别"><a href="#LR，SVM，RF算法的区别" class="headerlink" title="LR，SVM，RF算法的区别"></a>LR，SVM，RF算法的区别</h2><p>都是监督学习算法，都是判别模型。</p>
+<h2 id="LR-SVM-RF算法的区别"><a href="#LR-SVM-RF算法的区别" class="headerlink" title="LR/SVM/RF算法的区别"></a>LR/SVM/RF算法的区别</h2><p>都是监督学习算法，都是判别模型。</p>
 <p>如果不考虑核函数，LR和SVM都是线性分类算法，也就是说他们的分类决策面都是线性的。</p>
 <p>LR优点：</p>
 <p>1.适合需要得到一个分类概率的场景</p>
@@ -492,6 +492,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/10/18/XGBoost/" rel="prev" title="XGBoost">
+                XGBoost <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -567,7 +571,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -589,7 +593,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -632,7 +636,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本原理"><span class="nav-number">1.</span> <span class="nav-text">基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RF的节点划分"><span class="nav-number">2.</span> <span class="nav-text">RF的节点划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RF的随机性体现"><span class="nav-number">3.</span> <span class="nav-text">RF的随机性体现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RF和Bagging对比"><span class="nav-number">4.</span> <span class="nav-text">RF和Bagging对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">5.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征重要程度Feature-Importance"><span class="nav-number">6.</span> <span class="nav-text">特征重要程度Feature Importance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR，SVM，RF算法的区别"><span class="nav-number">7.</span> <span class="nav-text">LR，SVM，RF算法的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python调参"><span class="nav-number">8.</span> <span class="nav-text">python调参</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PySpark参数"><span class="nav-number">9.</span> <span class="nav-text">PySpark参数</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本原理"><span class="nav-number">1.</span> <span class="nav-text">基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RF的节点划分"><span class="nav-number">2.</span> <span class="nav-text">RF的节点划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RF的随机性体现"><span class="nav-number">3.</span> <span class="nav-text">RF的随机性体现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RF和Bagging对比"><span class="nav-number">4.</span> <span class="nav-text">RF和Bagging对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">5.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征重要程度Feature-Importance"><span class="nav-number">6.</span> <span class="nav-text">特征重要程度Feature Importance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR-SVM-RF算法的区别"><span class="nav-number">7.</span> <span class="nav-text">LR/SVM/RF算法的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python调参"><span class="nav-number">8.</span> <span class="nav-text">python调参</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PySpark参数"><span class="nav-number">9.</span> <span class="nav-text">PySpark参数</span></a></li></ol></div>
             
 
           </div>
