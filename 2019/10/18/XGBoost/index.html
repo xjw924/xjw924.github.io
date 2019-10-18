@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="MachineLearning,Classification,Ensemble,XGBoost,">
+  <meta name="keywords" content="MachineLearning,Ensemble,Classification,XGBoost,">
 
 
 
@@ -80,14 +80,14 @@
 
 
 <meta name="description" content="XGBoost面试题总结">
-<meta name="keywords" content="MachineLearning,Classification,Ensemble,XGBoost">
+<meta name="keywords" content="MachineLearning,Ensemble,Classification,XGBoost">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XGBoost">
 <meta property="og:url" content="http://yoursite.com/2019/10/18/XGBoost/index.html">
 <meta property="og:site_name" content="JWKeepsLearning">
 <meta property="og:description" content="XGBoost面试题总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-18T13:19:05.705Z">
+<meta property="og:updated_time" content="2019-10-18T13:37:20.224Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="XGBoost">
 <meta name="twitter:description" content="XGBoost面试题总结">
@@ -346,29 +346,59 @@
       
 
       
-        <h2 id="xgboost的原理"><a href="#xgboost的原理" class="headerlink" title="xgboost的原理"></a>xgboost的原理</h2><h2 id="²-xgboost有什么优势"><a href="#²-xgboost有什么优势" class="headerlink" title="² xgboost有什么优势"></a>² xgboost有什么优势</h2><p>正则化：</p>
+        <h2 id="xgboost的原理"><a href="#xgboost的原理" class="headerlink" title="xgboost的原理"></a>xgboost的原理</h2><h2 id="XGBoost与GBDT的区别"><a href="#XGBoost与GBDT的区别" class="headerlink" title="XGBoost与GBDT的区别"></a>XGBoost与GBDT的区别</h2><p><strong>损失函数的改变：（导数和正则项的认识）</strong></p>
+<ol>
+<li><p><strong>正则项</strong>：XGBoost显式地<strong>加入了正则项</strong>来控制模型的复杂度，有利于防止过拟合，从而提高模型的泛化能力。正则项里包含树的叶子节点个数、每个叶子节点上输出的score的平方和。</p>
+</li>
+<li><p><strong>几阶导数</strong>：传统的GBDT在优化的时候只用到一阶导数信息，XGBoost则对损失函数<strong>进行了二阶泰勒展开</strong>，得到一阶和二阶导数</p>
+</li>
+<li><p><strong>列采样</strong>：传统的GBDT在每轮迭代的时候使用全部的数据，XGBoost则采用与RF相类似的策略，支持对数据进行采样，同时还支持列抽样，不仅能降低过拟合，还能减少计算。</p>
+</li>
+<li><p><strong>缺失值</strong>：传统的GBDT没有设计对缺失值进行处理，XGBoost能够自动学习出缺失值的处理策略</p>
+</li>
+<li><p><strong>基学习器</strong>：传统的GBDT以CART树作为基学习器，XGBoost支持多种类型的基分类器，比如线性分类器</p>
+</li>
+<li><p>xgboost工具支持自定义损失函数，只要函数可一阶和二阶求导。</p>
+</li>
+<li><p><strong>并行（计算特征的增益）</strong>：xgboost工具支持并行。注意xgboost的并行不是tree粒度的并行，xgboost也是一次迭代完才能进行下一次迭代的（第t次迭代的代价函数里包含了前面t-1次迭代的预测值）。<strong>xgboost的并行是在特征粒度上的</strong>。因为决策树的学习最耗时的一个步骤就是对特征的值进行排序（因为要确定最佳分割点），xgboost在训练之前，<strong>预先对数据进行了排序，然后保存为block结构，后面的迭代中重复地使用这个结构，大大减小计算量。</strong>这个block结构也使得并行成为了可能，在进行节点的分裂时，需要计算每个特征的增益，最终选增益最大的那个特征去做分裂，那么各个特征的增益计算就可以开多线程进行。</p>
+</li>
+<li><p>Shrinkage（缩减），相当于学习速率（xgboost中的eta）。xgboost在进行完一次迭代后，会将叶子节点的权重乘上该系数，主要是为了削弱每棵树的影响，让后面有更大的学习空间。实际应用中，一般把eta设置得小一点，然后迭代次数设置得大一点。（补充：传统GBDT的实现也有学习速率）</p>
+</li>
+<li><p>树节点在进行分裂时，需要计算每个特征的每个分割点对应的增益，即用贪心法枚举所有可能的分割点。当数据无法一次载入内存或者在分布式情况下，贪心算法效率就会变得很低，所以xgboost还提出了一种可并行的近似直方图算法，用于高效地生成候选的分割点。</p>
+</li>
+</ol>
+<h2 id="xgboost有什么优势"><a href="#xgboost有什么优势" class="headerlink" title="xgboost有什么优势"></a>xgboost有什么优势</h2><ol>
+<li><p>正则化</p>
 <p>使用许多策略防止过拟合，如：正则化项、支持列抽样和Shrinkage等</p>
-<p>并行处理：</p>
+</li>
+<li><p>并行处理</p>
 <p>支持并行化，虽然树与树之间是串行关系，但是同层级节点可并行。具体地，在进行节点的分裂时，需要计算每个特征的增益，最终选增益最大的那个特征去做分裂，那么<strong>各个特征的增益计算就可以开多线程进行</strong></p>
-<p>高度的灵活性：</p>
+</li>
+<li><p>高度的灵活性</p>
 <p>XGBoost 允许用户定义自定义优化目标和评价标准</p>
-<p>缺失值处理：</p>
+</li>
+<li><p>缺失值处理</p>
 <p>XGBoost内置处理缺失值的规则，XGBoost在不同节点遇到缺失值时采用不同的处理方法，并且会学习未来遇到缺失值时的处理方法</p>
-<p>剪枝：</p>
+</li>
+<li><p>剪枝</p>
 <p>当分裂时遇到一个负损失时，GBM会停止分裂。因此GBM实际上是一个贪心算法。</p>
 <p>XGBoost会一直分裂到指定的最大深度，然后回过头来剪枝。</p>
-<p>内置交叉验证：</p>
+</li>
+<li><p>内置交叉验证</p>
 <p>XGBoost允许在每一轮boosting迭代中使用交叉验证。因此，可以方便地获得最优boosting迭代次数</p>
-<p>在已有的模型基础上继续：</p>
+</li>
+<li><p>在已有的模型基础上继续</p>
 <p>XGBoost可以在上一轮的结果上继续训练。这个特性在某些特定的应用上是一个巨大的优势</p>
-<h2 id="²-怎么缓解过拟合的"><a href="#²-怎么缓解过拟合的" class="headerlink" title="² 怎么缓解过拟合的"></a>² 怎么缓解过拟合的</h2><p>​    正则化项</p>
+</li>
+</ol>
+<h2 id="怎么缓解过拟合的"><a href="#怎么缓解过拟合的" class="headerlink" title="怎么缓解过拟合的"></a>怎么缓解过拟合的</h2><p>​    正则化项</p>
 <p>​    通过early_stopping提前停止训练</p>
 <p>​    通过控制树的深度（max_depth）、树的个数、叶子结点数等参数</p>
-<h2 id="²-xgboost-gbdt在调参时为什么树的深度很少就能达到很高的精度？"><a href="#²-xgboost-gbdt在调参时为什么树的深度很少就能达到很高的精度？" class="headerlink" title="² xgboost/gbdt在调参时为什么树的深度很少就能达到很高的精度？"></a>² xgboost/gbdt在调参时为什么树的深度很少就能达到很高的精度？</h2><p>一句话的解释：Boosting主要关注降低偏差，因此Boosting能基于泛化性能相当弱的学习器构建出很强的集成；Bagging主要关注降低方差，因此它在不剪枝的决策树、神经网络等学习器上效用更为明显。</p>
+<h2 id="xgboost-gbdt在调参时为什么树的深度很少就能达到很高的精度？"><a href="#xgboost-gbdt在调参时为什么树的深度很少就能达到很高的精度？" class="headerlink" title="xgboost/gbdt在调参时为什么树的深度很少就能达到很高的精度？"></a>xgboost/gbdt在调参时为什么树的深度很少就能达到很高的精度？</h2><p>一句话的解释：Boosting主要关注降低偏差，因此Boosting能基于泛化性能相当弱的学习器构建出很强的集成；Bagging主要关注降低方差，因此它在不剪枝的决策树、神经网络等学习器上效用更为明显。</p>
 <p>随机森林和GBDT都是属于集成学习的范畴。</p>
 <p>对于Bagging算法来说，由于我们会并行地训练很多不同的分类器的目的就是降低这个方差, 因为采用了相互独立的基分类器多了以后，h的值自然就会靠近.所以对于每个基分类器来说，目标就是如何降低这个偏差,所以我们会采用深度很深甚至不剪枝的决策树。</p>
 <p>对于Boosting来说，每一步我们都会在上一轮的基础上更加拟合原数据，所以可以保证偏差,所以对于每个基分类器来说，问题就在于如何选择方差更小的分类器，即更简单的分类器，所以选择了深度很浅的决策树。</p>
-<h2 id="²-为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？"><a href="#²-为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？" class="headerlink" title="² 为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？"></a>² 为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？</h2><p>主要从三个方面来回答这个问题。</p>
+<h2 id="为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？"><a href="#为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？" class="headerlink" title="为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？"></a>为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？</h2><p>主要从三个方面来回答这个问题。</p>
 <p>​    理论模型 （站在 vc-dimension 的角度）</p>
 <p>​    实际数据</p>
 <p>​    系统的实现 （主要基于xgboost）</p>
@@ -394,29 +424,19 @@
 <p>到目前为止，xgboost 是我发现的唯一一个能够很好的满足上述所有要求的 machine learning package.</p>
 <p>在灵活性方面，xgboost 可以深度定制每一个子分类器，并且可以灵活的选择 loss function（logistic，linear，softmax等等）。除此之外，xgboost还提供了一系列在机器学习比赛中十分有用的功能，例如 early-stop，cv等等在易用性方面，xgboost 提供了各种语言的封装，使得不同语言的用户都可以使用这个优秀的系统。</p>
 <p>最后，在可扩展性方面，xgboost提供了分布式训练（底层采用rabit接口），并且其分布式版本可以跑在各种平台之上，例如mpi, yarn, spark等等。</p>
-<h2 id="²-XGBoost如何输出概率？算法上怎么输出概率的？"><a href="#²-XGBoost如何输出概率？算法上怎么输出概率的？" class="headerlink" title="² XGBoost如何输出概率？算法上怎么输出概率的？"></a>² XGBoost如何输出概率？算法上怎么输出概率的？</h2><p>sklearn接口的xgboost 分类器：</p>
+<h2 id="XGBoost如何输出概率？算法上怎么输出概率的？"><a href="#XGBoost如何输出概率？算法上怎么输出概率的？" class="headerlink" title="XGBoost如何输出概率？算法上怎么输出概率的？"></a>XGBoost如何输出概率？算法上怎么输出概率的？</h2><p>sklearn接口的xgboost 分类器：</p>
 <p>xgboost.predict() ：输出预测的类别，默认采用0.5做阈值</p>
 <p>xgboost.predict_proba()：输出概率</p>
 <p>XGBoost库的分类器：</p>
 <p>predict() 只会输出概率</p>
-<h2 id="²-XGBoost怎么处理缺失值？"><a href="#²-XGBoost怎么处理缺失值？" class="headerlink" title="² XGBoost怎么处理缺失值？"></a>² XGBoost怎么处理缺失值？</h2><p>缺失数据会被分到左子树和右子树分别计算损失，选择较优的那一个。</p>
+<h2 id="XGBoost怎么处理缺失值？"><a href="#XGBoost怎么处理缺失值？" class="headerlink" title="XGBoost怎么处理缺失值？"></a>XGBoost怎么处理缺失值？</h2><p>缺失数据会被分到左子树和右子树分别计算损失，选择较优的那一个。</p>
 <p>如果训练中没有数据缺失，预测时出现了数据缺失，那么默认被分到右子树。</p>
-<h2 id="²-XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？"><a href="#²-XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？" class="headerlink" title="² XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？"></a>² XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？</h2><p>gbtree使用基于树的模型进行提升计算，gblinear使用线性模型进行提升计算</p>
-<h2 id="²-XGBoost如何寻找最优特征？是有放回还是无放回的呢？"><a href="#²-XGBoost如何寻找最优特征？是有放回还是无放回的呢？" class="headerlink" title="² XGBoost如何寻找最优特征？是有放回还是无放回的呢？"></a>² XGBoost如何寻找最优特征？是有放回还是无放回的呢？</h2><p>XGBoost在训练的过程中给出各个特征的评分，从而表明每个特征对模型训练的重要性。XGB属于boosting集成学习方法，样本是不放回的，每轮计算样本不重复。</p>
-<h2 id="²-XGBoost-v-s-Boosting"><a href="#²-XGBoost-v-s-Boosting" class="headerlink" title="² XGBoost v.s. Boosting"></a>² XGBoost v.s. Boosting</h2><p>是在GBDT的基础上对boosting算法进行的改进：</p>
+<h2 id="XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？"><a href="#XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？" class="headerlink" title="XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？"></a>XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？</h2><p>gbtree使用基于树的模型进行提升计算，gblinear使用线性模型进行提升计算</p>
+<h2 id="XGBoost如何寻找最优特征？是有放回还是无放回的呢？"><a href="#XGBoost如何寻找最优特征？是有放回还是无放回的呢？" class="headerlink" title="XGBoost如何寻找最优特征？是有放回还是无放回的呢？"></a>XGBoost如何寻找最优特征？是有放回还是无放回的呢？</h2><p>XGBoost在训练的过程中给出各个特征的评分，从而表明每个特征对模型训练的重要性。XGB属于boosting集成学习方法，样本是不放回的，每轮计算样本不重复。</p>
+<h2 id="XGBoost-v-s-Boosting"><a href="#XGBoost-v-s-Boosting" class="headerlink" title="XGBoost v.s. Boosting"></a>XGBoost v.s. Boosting</h2><p>是在GBDT的基础上对boosting算法进行的改进：</p>
 <p>GBDT是用模型在数据上的负梯度作为残差的近似值，从而拟合残差；XGBoost也是拟合的在数据上的残差，但是它是用泰勒展式对模型损失残差的近似</p>
 <p>同时XGBoost对模型的损失函数进行的改进，并加入了模型复杂度的正则项。</p>
-<h2 id="²-XGBoost与GBDT的区别"><a href="#²-XGBoost与GBDT的区别" class="headerlink" title="² XGBoost与GBDT的区别"></a>² XGBoost与GBDT的区别</h2><p><strong>损失函数的改变：（导数和正则项的认识）</strong></p>
-<p>\1.    <strong>正则项</strong>：XGBoost显式地<strong>加入了正则项</strong>来控制模型的复杂度，有利于防止过拟合，从而提高模型的泛化能力。正则项里包含树的叶子节点个数、每个叶子节点上输出的score的平方和。</p>
-<p>\2.    <strong>几阶导数</strong>：传统的GBDT在优化的时候只用到一阶导数信息，XGBoost则对损失函数<strong>进行了二阶泰勒展开</strong>，得到一阶和二阶导数</p>
-<p>\3.    <strong>列采样</strong>：传统的GBDT在每轮迭代的时候使用全部的数据，XGBoost则采用与RF相类似的策略，支持对数据进行采样，同时还支持列抽样，不仅能降低过拟合，还能减少计算。</p>
-<p>\4.    <strong>缺失值</strong>：传统的GBDT没有设计对缺失值进行处理，XGBoost能够自动学习出缺失值的处理策略</p>
-<p>\5.    <strong>基学习器</strong>：传统的GBDT以CART树作为基学习器，XGBoost支持多种类型的基分类器，比如线性分类器</p>
-<p>\6.    xgboost工具支持自定义损失函数，只要函数可一阶和二阶求导。</p>
-<p>\7.    <strong>并行（计算特征的增益）</strong>：xgboost工具支持并行。注意xgboost的并行不是tree粒度的并行，xgboost也是一次迭代完才能进行下一次迭代的（第t次迭代的代价函数里包含了前面t-1次迭代的预测值）。<strong>xgboost的并行是在特征粒度上的</strong>。因为决策树的学习最耗时的一个步骤就是对特征的值进行排序（因为要确定最佳分割点），xgboost在训练之前，<strong>预先对数据进行了排序，然后保存为block结构，后面的迭代中重复地使用这个结构，大大减小计算量。</strong>这个block结构也使得并行成为了可能，在进行节点的分裂时，需要计算每个特征的增益，最终选增益最大的那个特征去做分裂，那么各个特征的增益计算就可以开多线程进行。</p>
-<p>\8.    Shrinkage（缩减），相当于学习速率（xgboost中的eta）。xgboost在进行完一次迭代后，会将叶子节点的权重乘上该系数，主要是为了削弱每棵树的影响，让后面有更大的学习空间。实际应用中，一般把eta设置得小一点，然后迭代次数设置得大一点。（补充：传统GBDT的实现也有学习速率）</p>
-<p>\9.    树节点在进行分裂时，需要计算每个特征的每个分割点对应的增益，即用贪心法枚举所有可能的分割点。当数据无法一次载入内存或者在分布式情况下，贪心算法效率就会变得很低，所以xgboost还提出了一种可并行的近似直方图算法，用于高效地生成候选的分割点。</p>
-<h2 id="²-调参"><a href="#²-调参" class="headerlink" title="² 调参"></a>² 调参</h2><p>可按照max_depth，min_child_weight，colsamplt_bytree，eta的顺序一个一个调，每次调的时候其他参数保持不变</p>
+<h2 id="调参"><a href="#调参" class="headerlink" title="调参"></a>调参</h2><p>可按照max_depth，min_child_weight，colsamplt_bytree，eta的顺序一个一个调，每次调的时候其他参数保持不变</p>
 <p>（参考<a href="https://blog.csdn.net/han_xiaoyang/article/details/52665396#commentBox）" target="_blank" rel="noopener">https://blog.csdn.net/han_xiaoyang/article/details/52665396#commentBox）</a></p>
 <p><strong>XGBoost的作者把所有的参数分成了三类：</strong></p>
 <p>​    通用参数：宏观函数控制。</p>
@@ -460,7 +480,7 @@
 <p>​    auc 曲线下面积</p>
 <p>​    seed(默认0)</p>
 <p>设置它可以复现随机数据的结果，也可以用于调整参数</p>
-<h2 id="²-XGB为什么要用二阶信息不用一阶-：更快更准确"><a href="#²-XGB为什么要用二阶信息不用一阶-：更快更准确" class="headerlink" title="² XGB为什么要用二阶信息不用一阶 ：更快更准确"></a>² XGB为什么要用二阶信息不用一阶 ：更快更准确</h2><p>​    由于之前求最优解的过程只是对平方损失函数进行的，一阶导数是残差，二阶是常数，当损失函数是其它函数时，展开就没有这种形式了，为了能够有个统一的形式，使用泰勒二阶展开。为了统一损失函数求导的形式以支持自定义损失函数。</p>
+<h2 id="XGB为什么要用二阶信息不用一阶-：更快更准确"><a href="#XGB为什么要用二阶信息不用一阶-：更快更准确" class="headerlink" title="XGB为什么要用二阶信息不用一阶 ：更快更准确"></a>XGB为什么要用二阶信息不用一阶 ：更快更准确</h2><p>​    由于之前求最优解的过程只是对平方损失函数进行的，一阶导数是残差，二阶是常数，当损失函数是其它函数时，展开就没有这种形式了，为了能够有个统一的形式，使用泰勒二阶展开。为了统一损失函数求导的形式以支持自定义损失函数。</p>
 <p>​    <strong>二阶信息本身能够让梯度收敛的更快更准确，可以简单认为一阶导数引导梯度方向，二阶导数引导梯度方向如何变化。</strong></p>
 
       
@@ -481,9 +501,9 @@
           
             <a href="/tags/MachineLearning/" rel="tag"><i class="fa fa-tag"></i> MachineLearning</a>
           
-            <a href="/tags/Classification/" rel="tag"><i class="fa fa-tag"></i> Classification</a>
-          
             <a href="/tags/Ensemble/" rel="tag"><i class="fa fa-tag"></i> Ensemble</a>
+          
+            <a href="/tags/Classification/" rel="tag"><i class="fa fa-tag"></i> Classification</a>
           
             <a href="/tags/XGBoost/" rel="tag"><i class="fa fa-tag"></i> XGBoost</a>
           
@@ -507,6 +527,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/18/Ensemble/" rel="prev" title="Ensemble">
+                Ensemble <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -583,7 +607,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -648,7 +672,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#xgboost的原理"><span class="nav-number">1.</span> <span class="nav-text">xgboost的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-xgboost有什么优势"><span class="nav-number">2.</span> <span class="nav-text">² xgboost有什么优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-怎么缓解过拟合的"><span class="nav-number">3.</span> <span class="nav-text">² 怎么缓解过拟合的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-xgboost-gbdt在调参时为什么树的深度很少就能达到很高的精度？"><span class="nav-number">4.</span> <span class="nav-text">² xgboost/gbdt在调参时为什么树的深度很少就能达到很高的精度？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？"><span class="nav-number">5.</span> <span class="nav-text">² 为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-XGBoost如何输出概率？算法上怎么输出概率的？"><span class="nav-number">6.</span> <span class="nav-text">² XGBoost如何输出概率？算法上怎么输出概率的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-XGBoost怎么处理缺失值？"><span class="nav-number">7.</span> <span class="nav-text">² XGBoost怎么处理缺失值？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？"><span class="nav-number">8.</span> <span class="nav-text">² XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-XGBoost如何寻找最优特征？是有放回还是无放回的呢？"><span class="nav-number">9.</span> <span class="nav-text">² XGBoost如何寻找最优特征？是有放回还是无放回的呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-XGBoost-v-s-Boosting"><span class="nav-number">10.</span> <span class="nav-text">² XGBoost v.s. Boosting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-XGBoost与GBDT的区别"><span class="nav-number">11.</span> <span class="nav-text">² XGBoost与GBDT的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-调参"><span class="nav-number">12.</span> <span class="nav-text">² 调参</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-XGB为什么要用二阶信息不用一阶-：更快更准确"><span class="nav-number">13.</span> <span class="nav-text">² XGB为什么要用二阶信息不用一阶 ：更快更准确</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#xgboost的原理"><span class="nav-number">1.</span> <span class="nav-text">xgboost的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost与GBDT的区别"><span class="nav-number">2.</span> <span class="nav-text">XGBoost与GBDT的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xgboost有什么优势"><span class="nav-number">3.</span> <span class="nav-text">xgboost有什么优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么缓解过拟合的"><span class="nav-number">4.</span> <span class="nav-text">怎么缓解过拟合的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xgboost-gbdt在调参时为什么树的深度很少就能达到很高的精度？"><span class="nav-number">5.</span> <span class="nav-text">xgboost/gbdt在调参时为什么树的深度很少就能达到很高的精度？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？"><span class="nav-number">6.</span> <span class="nav-text">为什么基于tree-ensemble的机器学习方法，在kaggle比赛中效果非常好？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost如何输出概率？算法上怎么输出概率的？"><span class="nav-number">7.</span> <span class="nav-text">XGBoost如何输出概率？算法上怎么输出概率的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost怎么处理缺失值？"><span class="nav-number">8.</span> <span class="nav-text">XGBoost怎么处理缺失值？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？"><span class="nav-number">9.</span> <span class="nav-text">XGBoost中gbtree（基于树的模型）和gblinear（线性模型）的区别？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost如何寻找最优特征？是有放回还是无放回的呢？"><span class="nav-number">10.</span> <span class="nav-text">XGBoost如何寻找最优特征？是有放回还是无放回的呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost-v-s-Boosting"><span class="nav-number">11.</span> <span class="nav-text">XGBoost v.s. Boosting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调参"><span class="nav-number">12.</span> <span class="nav-text">调参</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGB为什么要用二阶信息不用一阶-：更快更准确"><span class="nav-number">13.</span> <span class="nav-text">XGB为什么要用二阶信息不用一阶 ：更快更准确</span></a></li></ol></div>
             
 
           </div>
