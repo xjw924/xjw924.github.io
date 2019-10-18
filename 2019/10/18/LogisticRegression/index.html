@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="machineLearning,classification,logisticRegression,">
+  <meta name="keywords" content="MachineLearning,Classification,LogisticRegression,">
 
 
 
@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="分类算法面试题总结">
-<meta name="keywords" content="machineLearning,classification,logisticRegression">
+<meta name="description" content="逻辑回归面试题总结">
+<meta name="keywords" content="MachineLearning,Classification,LogisticRegression">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LogisticRegression逻辑回归">
-<meta property="og:url" content="http://yoursite.com/2019/10/18/机器学习-分类算法/index.html">
+<meta property="og:title" content="Logistic Regression 逻辑回归">
+<meta property="og:url" content="http://yoursite.com/2019/10/18/LogisticRegression/index.html">
 <meta property="og:site_name" content="JWKeepsLearning">
-<meta property="og:description" content="分类算法面试题总结">
+<meta property="og:description" content="逻辑回归面试题总结">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.jpg">
@@ -99,10 +99,10 @@
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image018.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image020.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image022.jpg">
-<meta property="og:updated_time" content="2019-10-18T05:46:22.348Z">
+<meta property="og:updated_time" content="2019-10-18T06:02:59.169Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LogisticRegression逻辑回归">
-<meta name="twitter:description" content="分类算法面试题总结">
+<meta name="twitter:title" content="Logistic Regression 逻辑回归">
+<meta name="twitter:description" content="逻辑回归面试题总结">
 <meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/10/18/机器学习-分类算法/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/18/LogisticRegression/">
 
 
 
 
 
-  <title>LogisticRegression逻辑回归 | JWKeepsLearning</title>
+  <title>Logistic Regression 逻辑回归 | JWKeepsLearning</title>
   
 
 
@@ -266,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/18/机器学习-分类算法/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/18/LogisticRegression/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xjw924">
@@ -283,7 +283,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">LogisticRegression逻辑回归</h1>
+          <h1 class="post-title" itemprop="name headline">Logistic Regression 逻辑回归</h1>
         
 
         <div class="post-meta">
@@ -318,8 +318,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/machineLearning/" itemprop="url" rel="index">
-                    <span itemprop="name">machineLearning</span>
+                  <a href="/categories/MachineLearning/" itemprop="url" rel="index">
+                    <span itemprop="name">MachineLearning</span>
                   </a>
                 </span>
 
@@ -342,7 +342,7 @@
 
           
               <div class="post-description">
-                  分类算法面试题总结
+                  逻辑回归面试题总结
               </div>
           
 
@@ -359,10 +359,8 @@
       
 
       
-        <h1 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>==假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。==</p>
-<ul>
-<li><p><strong>基本假设</strong></p>
-<ul>
+        <h1 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h1><p><strong>假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。</strong></p>
+<h2 id="基本假设"><a href="#基本假设" class="headerlink" title="基本假设"></a>基本假设</h2><ul>
 <li><p>第一个假设：<strong>假设数据服从伯努利分布</strong>。</p>
 <p>伯努利分布有一个简单的例子是抛硬币，抛中为正面的概率是$p$，抛中为负面的概率是$1-p$。</p>
 <p>在逻辑回归里假设$h_\theta(x)$ 为样本为正的概率，$1-h_\theta(x)$为样本为负的概率。</p>
@@ -373,15 +371,14 @@
 <li><p>所以逻辑回归的最终形式<br>$$<br>h_\theta(x;\theta)=\frac{1}{1+e^{−θ^Tx}}<br>$$</p>
 </li>
 </ul>
-</li>
-<li><p><strong>损失函数</strong></p>
-<ul>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><ul>
 <li>损失函数是它的极大似然函数</li>
 </ul>
 <p>$$<br>L_\theta(x)=\prod_{i=1}^{m}h_\theta(x^i;\theta)^{y^i}*(1-h_\theta(x^i;\theta))^{1-y^i}<br>$$</p>
-</li>
-<li><p><strong>求解方法</strong></p>
-<ul>
+<blockquote>
+<p>Q：为什么要用极大似然函数作为损失函数？</p>
+</blockquote>
+<h2 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h2><ul>
 <li><p>由于该极大似然函数无法直接求解，我们一般通过对该函数进行<strong>梯度下降</strong>来不断逼近最优解。</p>
 <blockquote>
 <p>拓展：梯度下降：随机梯度下降，批梯度下降，small-batch梯度下降</p>
@@ -396,14 +393,12 @@
 </ol>
 </blockquote>
 </li>
-</ul>
-</li>
 <li><p><strong>逻辑回归的目的</strong></p>
 <p>该函数的目的便是将数据二分类，提高准确率。</p>
 </li>
 <li><p><strong>逻辑回归如何分类</strong></p>
 <ul>
-<li>逻辑回归作为一个回归(也就是y值是连续的)，如何应用到分类上去呢。y值确实是一个连续的变量。逻辑回归的做法是划定一个阈值，y值大于这个阈值的是一类，y值小于这个阈值的是另外一类。阈值具体如何调整根据实际情况选择。一般会选择0.5做为阈值来划分。</li>
+<li>划定一个阈值，y值大于阈值的是一类，y值小于阈值的是另外一类。阈值具体如何调整根据实际情况选择。一般会选择0.5做为阈值来划分。</li>
 </ul>
 </li>
 </ul>
@@ -488,11 +483,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/machineLearning/" rel="tag"><i class="fa fa-tag"></i> machineLearning</a>
+            <a href="/tags/MachineLearning/" rel="tag"><i class="fa fa-tag"></i> MachineLearning</a>
           
-            <a href="/tags/classification/" rel="tag"><i class="fa fa-tag"></i> classification</a>
+            <a href="/tags/Classification/" rel="tag"><i class="fa fa-tag"></i> Classification</a>
           
-            <a href="/tags/logisticRegression/" rel="tag"><i class="fa fa-tag"></i> logisticRegression</a>
+            <a href="/tags/LogisticRegression/" rel="tag"><i class="fa fa-tag"></i> LogisticRegression</a>
           
         </div>
       
@@ -655,7 +650,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Logistic-Regression"><span class="nav-number">1.</span> <span class="nav-text">Logistic Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR推导"><span class="nav-number">1.2.</span> <span class="nav-text">LR推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么使用Sigmoid"><span class="nav-number">1.3.</span> <span class="nav-text">LR为什么使用Sigmoid</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数，损失函数中为什么要加-1-m"><span class="nav-number">1.4.</span> <span class="nav-text">损失函数，损失函数中为什么要加-1*m</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">1.5.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么是线性模型？"><span class="nav-number">1.6.</span> <span class="nav-text">LR为什么是线性模型？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">1.7.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR与最大熵模型"><span class="nav-number">1.8.</span> <span class="nav-text">LR与最大熵模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么用的是似然函数不用最小二乘？"><span class="nav-number">1.9.</span> <span class="nav-text">LR为什么用的是似然函数不用最小二乘？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法与梯度下降法求解参数的区别"><span class="nav-number">1.10.</span> <span class="nav-text">牛顿法与梯度下降法求解参数的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？"><span class="nav-number">1.11.</span> <span class="nav-text">线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">1.12.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">1.13.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">1.14.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR中阈值的设置对模型的影响"><span class="nav-number">1.15.</span> <span class="nav-text">LR中阈值的设置对模型的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">1.16.</span> <span class="nav-text">LR多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR调参"><span class="nav-number">1.17.</span> <span class="nav-text">LR调参</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Logistic-Regression"><span class="nav-number">1.</span> <span class="nav-text">Logistic Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本假设"><span class="nav-number">1.1.</span> <span class="nav-text">基本假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-number">1.2.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解方法"><span class="nav-number">1.3.</span> <span class="nav-text">求解方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR推导"><span class="nav-number">1.4.</span> <span class="nav-text">LR推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么使用Sigmoid"><span class="nav-number">1.5.</span> <span class="nav-text">LR为什么使用Sigmoid</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数，损失函数中为什么要加-1-m"><span class="nav-number">1.6.</span> <span class="nav-text">损失函数，损失函数中为什么要加-1*m</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">1.7.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么是线性模型？"><span class="nav-number">1.8.</span> <span class="nav-text">LR为什么是线性模型？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">1.9.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR与最大熵模型"><span class="nav-number">1.10.</span> <span class="nav-text">LR与最大熵模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么用的是似然函数不用最小二乘？"><span class="nav-number">1.11.</span> <span class="nav-text">LR为什么用的是似然函数不用最小二乘？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法与梯度下降法求解参数的区别"><span class="nav-number">1.12.</span> <span class="nav-text">牛顿法与梯度下降法求解参数的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？"><span class="nav-number">1.13.</span> <span class="nav-text">线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">1.14.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">1.15.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">1.16.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR中阈值的设置对模型的影响"><span class="nav-number">1.17.</span> <span class="nav-text">LR中阈值的设置对模型的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">1.18.</span> <span class="nav-text">LR多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR调参"><span class="nav-number">1.19.</span> <span class="nav-text">LR调参</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -862,6 +857,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
