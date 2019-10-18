@@ -90,16 +90,13 @@
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image006.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image008.png">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image011.png">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image012.png">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image014.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image016.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image018.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image020.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image022.jpg">
-<meta property="og:updated_time" content="2019-10-18T06:02:59.169Z">
+<meta property="og:updated_time" content="2019-10-18T06:59:38.525Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logistic Regression 逻辑回归">
 <meta name="twitter:description" content="逻辑回归面试题总结">
@@ -368,48 +365,9 @@
 </li>
 <li><p>第二个假设：*<em>假设样本为正的概率是 $p=\frac{1}{1+e^{−θ^Tx}} $ *</em></p>
 </li>
-<li><p>所以逻辑回归的最终形式<br>$$<br>h_\theta(x;\theta)=\frac{1}{1+e^{−θ^Tx}}<br>$$</p>
+<li><p>逻辑回归的最终形式<br>$$<br>h_\theta(x;\theta)=\frac{1}{1+e^{−θ^Tx}}<br>$$</p>
 </li>
 </ul>
-<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><ul>
-<li>损失函数是它的极大似然函数</li>
-</ul>
-<p>$$<br>L_\theta(x)=\prod_{i=1}^{m}h_\theta(x^i;\theta)^{y^i}*(1-h_\theta(x^i;\theta))^{1-y^i}<br>$$</p>
-<blockquote>
-<p>Q：为什么要用极大似然函数作为损失函数？</p>
-</blockquote>
-<h2 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h2><ul>
-<li><p>由于该极大似然函数无法直接求解，我们一般通过对该函数进行<strong>梯度下降</strong>来不断逼近最优解。</p>
-<blockquote>
-<p>拓展：梯度下降：随机梯度下降，批梯度下降，small-batch梯度下降</p>
-<p>Q：三种方式的优劣以及如何选择最合适的梯度下降方式</p>
-<ol>
-<li><p>批梯度下降(BGD)：每次迭代使用所有样本来进行梯度的更新，能得到全局最优解。缺点是在更新每个参数的时候需要遍历所有的数据，计算量会很大，并且会有很多的冗余计算，导致的结果是当数据量大的时候，每个参数的更新都会很慢。</p>
-</li>
-<li><p>随机梯度下降(SGD)：每次迭代随机使用一个样本来对参数进行更新，优点是每一轮参数的更新速度大大加快，缺点是准确度下降，可能会收敛到局部最优（单个样本不能代表全体样本的趋势）。</p>
-</li>
-<li><p>小批量梯度下降：结合了BGD和SGD的优点，每次更新的时候使用n个样本。减少了参数更新的次数，可以达到更加稳定收敛结果，一般在深度学习当中我们采用这种方法。</p>
-</li>
-</ol>
-</blockquote>
-</li>
-<li><p><strong>逻辑回归的目的</strong></p>
-<p>该函数的目的便是将数据二分类，提高准确率。</p>
-</li>
-<li><p><strong>逻辑回归如何分类</strong></p>
-<ul>
-<li>划定一个阈值，y值大于阈值的是一类，y值小于阈值的是另外一类。阈值具体如何调整根据实际情况选择。一般会选择0.5做为阈值来划分。</li>
-</ul>
-</li>
-</ul>
-<h2 id="LR推导"><a href="#LR推导" class="headerlink" title="LR推导"></a>LR推导</h2><p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.jpg" alt="img"></p>
-<h2 id="LR为什么使用Sigmoid"><a href="#LR为什么使用Sigmoid" class="headerlink" title="LR为什么使用Sigmoid"></a>LR为什么使用Sigmoid</h2><p>需要一个单调可微的函数，把标记值y与线性回归模型的预测值联系起来</p>
-<p>对于二分类问题，由线性回归得来的启发是根据特征的加权平均进行预测，很自然地想到设定一个阈值，即引入阶跃函数，如果加权平均大于该阈值就判为正类，反之判为负类</p>
-<p>但阶跃函数不可导，所以引入Sigmoid函数，将样本的加权平均代入函数得到的值就是样本属于正类的概率，可以将概率大于0.5的判为正类，小于0.5的判为负类。</p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image006.jpg" alt="img"></p>
-<h2 id="损失函数，损失函数中为什么要加-1-m"><a href="#损失函数，损失函数中为什么要加-1-m" class="headerlink" title="损失函数，损失函数中为什么要加-1*m"></a>损失函数，损失函数中为什么要加-1*m</h2><p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image008.png" alt="img"></p>
-<p>除以m这一因子并不改变最终求导极值结果，通过除以m可以得到<strong>平均损失值</strong>，避免<strong>样本数量对于损失值的影响</strong></p>
 <h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p><strong>优点：</strong></p>
 <ol>
 <li><p>速度快，在时间和内存需求上相当高效，它可以应用于分布式数据和在线算法实现，用较少的资源处理大型数据</p>
@@ -422,46 +380,109 @@
 <p><strong>缺点：</strong></p>
 <ol>
 <li>分类精度可能不高，在非线性分类问题上表现不好</li>
-<li>数据特征有缺失或者特征空间很大时表现效果并不好</li>
+<li>数据特征有缺失或者特征空间很大时表现效果并不好，受异常值影响大</li>
 </ol>
-<h2 id="LR为什么是线性模型？"><a href="#LR为什么是线性模型？" class="headerlink" title="LR为什么是线性模型？"></a>LR为什么是线性模型？</h2><p>本质就是线性的，只是特征到结果映射用的是sigmoid函数</p>
-<h2 id="逻辑回归和线性回归的异同"><a href="#逻辑回归和线性回归的异同" class="headerlink" title="逻辑回归和线性回归的异同"></a>逻辑回归和线性回归的异同</h2><p>相同：</p>
-<p>都使用极大似然估计对训练样本进行建模</p>
-<p>求解超参数时都可以使用梯度下降</p>
-<p>联系：</p>
-<p>都是广义线性模型，逻辑回归本质上是一个线性回归模型，LR是以线性回归为理论支持的</p>
-<p>区别：</p>
-<p>\1.    本质：逻辑回归是分类，线性回归是回归，逻辑回归中y是因变量而非p/(1-p)，因变量是离散而非连续</p>
-<p>\2.    LR形式上是线性回归，实质上是在求取输入空间到输出空间的非线性函数映射（对率函数起到将线性回归模型的预测值与真实标记联系起来的作用）</p>
-<p>\3.    LR是直接对分类可能性进行建模，无需事先假设数据分布，而线性回归需要假设数据分布</p>
-<h2 id="LR与最大熵模型"><a href="#LR与最大熵模型" class="headerlink" title="LR与最大熵模型"></a>LR与最大熵模型</h2><p>逻辑回归跟最大熵模型没有本质差别。逻辑回归是最大熵相应类别为二类时的特殊情况。</p>
-<h2 id="LR为什么用的是似然函数不用最小二乘？"><a href="#LR为什么用的是似然函数不用最小二乘？" class="headerlink" title="LR为什么用的是似然函数不用最小二乘？"></a>LR为什么用的是似然函数不用最小二乘？</h2><p>实际上也可以用最小二乘，但是最小二乘得到的权重效果比较差。</p>
+<h2 id="逻辑回归和线性回归的异同"><a href="#逻辑回归和线性回归的异同" class="headerlink" title="逻辑回归和线性回归的异同"></a>逻辑回归和线性回归的异同</h2><p>本质就是线性的，只是特征到结果映射用的是sigmoid函数，属于广义线性模型</p>
+<ul>
+<li>相同</li>
+</ul>
+<p>​    都使用极大似然估计对训练样本进行建模</p>
+<p>​    求解超参数时都可以使用梯度下降</p>
+<ul>
+<li>联系</li>
+</ul>
+<p>​    都是广义线性模型，逻辑回归本质上是一个线性回归模型，LR是以线性回归为理论支持的</p>
+<ul>
+<li>区别<ol>
+<li>本质：逻辑回归是分类，线性回归是回归，逻辑回归中$y$是因变量而非$\frac{p}{1-p}$，因变量是离散而非连续</li>
+<li>LR形式上是线性回归，实质上是在求取输入空间到输出空间的非线性函数映射（对率函数起到将线性回归模型的预测值与真实标记联系起来的作用）</li>
+<li>LR是直接对分类可能性进行建模，无需事先假设数据分布，而线性回归需要假设数据分布</li>
+</ol>
+</li>
+</ul>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p><strong>损失函数是它的极大似然函数取对数再除以样本量的相反数</strong></p>
+<p>极大似然函数：<br>$$<br>L_\theta(x)=\prod_{i=1}^{m}h_\theta(x^i;\theta)^{y^i}*(1-h_\theta(x^i;\theta))^{1-y^i}<br>$$<br>损失函数：<br>$$<br>J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h_\theta(x^i;\theta))]<br>$$</p>
+<p>除以m这一因子并不改变最终求导极值结果，通过除以m可以得到<strong>平均损失值</strong>，避免<strong>样本数量对于损失值的影响</strong></p>
+<blockquote>
+<p><strong>Q：为什么要用极大似然函数作为损失函数？</strong></p>
+<p>损失函数一般有四种：平方损失函数，对数损失函数，HingeLoss损失函数，绝对值损失函数。</p>
+<p>将极大似然函数取对数以后等同于对数损失函数。</p>
+<p><strong>在逻辑回归这个模型下，对数损失函数的训练求解参数的速度是比较快的。</strong></p>
+<p>梯度更新公式：<br>$$<br>θ_j=θ_j−(y^i−h_θ(x^i;θ))∗x^i_j<br>$$<br>这个式子的更新速度只和$x^i_j$和$y^i$相关，和sigmod函数本身的梯度是无关的。这样更新的速度是可以自始至终都比较的稳定。 </p>
+<p><strong>Q：为什么不选平方损失函数？</strong></p>
+<p>其一是因为如果你使用平方损失函数，你会发现梯度更新的速度和sigmod函数本身的梯度是很相关的。<br>$$<br>θ_j=θ_j-2(sigmod(x)*(1-sigmod(x)))x^i_j<br>$$<br>sigmod函数在它在定义域内的梯度都不大于0.25。这样训练会非常的慢。</p>
+<p>实际上也可以用最小二乘，但是最小二乘得到的权重效果比较差。</p>
 <p>如果用最小二乘法，目标函数就是差值的平方和，<strong>是非凸的，不容易求解，很容易陷入到局部最优</strong>。</p>
-<p>如果用最大似然估计，目标函数就是对数似然函数，是关于（w，b）的高阶<strong>连续可导凸函数</strong>，可以方便通过一些凸优化算法求解，比如梯度下降法、牛顿法等。</p>
-<h2 id="牛顿法与梯度下降法求解参数的区别"><a href="#牛顿法与梯度下降法求解参数的区别" class="headerlink" title="牛顿法与梯度下降法求解参数的区别"></a>牛顿法与梯度下降法求解参数的区别</h2><p>两种方法不同在于牛顿法中多了一项二阶导数，这项二阶导数对参数更新的影响主要体现在改变参数更新方向上。如下图所示，红色是牛顿法参数更新的方向，绿色为梯度下降法参数更新方向，因为牛顿法考虑了二阶导数，因而可以找到更优的参数更新方向，在每次更新的步幅相同的情况下，可以比梯度下降法节省很多的迭代次数。 </p>
+<p>如果用极大似然估计，目标函数就是对数似然函数，是关于$(w,b)$的高阶<strong>连续可导凸函数</strong>，可以方便通过一些凸优化算法求解，比如梯度下降法、牛顿法等。</p>
+</blockquote>
+<h2 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h2><p>由于该极大似然函数无法直接求解，我们一般通过对该函数进行<strong>梯度下降</strong>来不断逼近最优解。</p>
+<blockquote>
+<p>梯度下降：随机梯度下降，批梯度下降，small-batch梯度下降</p>
+<p>Q：三种方式的优劣以及如何选择最合适的梯度下降方式</p>
+<ol>
+<li><p>批梯度下降(BGD)：每次迭代使用所有样本来进行梯度的更新，能得到全局最优解。缺点是在更新每个参数的时候需要遍历所有的数据，计算量会很大，并且会有很多的冗余计算，导致的结果是当数据量大的时候，每个参数的更新都会很慢。</p>
+</li>
+<li><p>随机梯度下降(SGD)：每次迭代随机使用一个样本来对参数进行更新，优点是每一轮参数的更新速度大大加快，缺点是准确度下降，可能会收敛到局部最优（单个样本不能代表全体样本的趋势）。</p>
+</li>
+<li><p>小批量梯度下降：结合了BGD和SGD的优点，每次更新的时候使用n个样本。减少了参数更新的次数，可以达到更加稳定收敛结果，一般在深度学习当中我们采用这种方法。</p>
+</li>
+</ol>
+</blockquote>
+<ul>
+<li><p><strong>逻辑回归的目的</strong></p>
+<p>该函数的目的便是将数据二分类，提高准确率。</p>
+</li>
+<li><p><strong>逻辑回归如何分类</strong></p>
+<p>划定一个阈值，y值大于阈值的是一类，y值小于阈值的是另外一类。阈值具体如何调整根据实际情况选择。一般会选择0.5做为阈值来划分。</p>
+</li>
+</ul>
+<h2 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h2><p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg" alt="img"></p>
+<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.jpg" alt="img"></p>
+<h2 id="为什么使用Sigmoid"><a href="#为什么使用Sigmoid" class="headerlink" title="为什么使用Sigmoid"></a>为什么使用Sigmoid</h2><p>需要一个单调可微的函数，把分类任务的真实标记$y$与线性回归模型的预测值联系起来</p>
+<p>对于二分类问题，由线性回归得来的启发是根据特征的加权平均进行预测</p>
+<p>很自然地想到设定一个阈值，即引入阶跃函数，如果加权平均大于该阈值就判为正类，反之判为负类</p>
+<p>但阶跃函数不可导，所以引入Sigmoid函数，将样本的加权平均代入函数得到的值就是样本属于正类的概率，即将输入空间到输出空间作非线性函数映射。</p>
+<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image006.jpg" alt="img"></p>
+<h2 id="LR与最大熵模型"><a href="#LR与最大熵模型" class="headerlink" title="LR与最大熵模型"></a>LR与最大熵模型</h2><p>最大熵模型与LR有类似的形式，它们又称为对数线性模型</p>
+<p>模型学习就是在给定的训练数据条件下，对模型进行极大似然估计或正则化的极大似然估计</p>
+<h2 id="牛顿法与梯度下降法求解参数的区别"><a href="#牛顿法与梯度下降法求解参数的区别" class="headerlink" title="牛顿法与梯度下降法求解参数的区别"></a>牛顿法与梯度下降法求解参数的区别</h2><p>两种方法不同在于牛顿法中<strong>多了一项二阶导数</strong>，这项二阶导数对参数更新的影响主要体现在<strong>改变参数更新方向上</strong>。如下图所示，红色是牛顿法参数更新的方向，绿色为梯度下降法参数更新方向，因为牛顿法考虑了二阶导数，因而可以<strong>找到更优的参数更新方向</strong>，在每次更新的步幅相同的情况下，可以<strong>比梯度下降法节省很多的迭代次数</strong>。 </p>
 <p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png" alt="å¾çåç§°"></p>
-<h2 id="线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？"><a href="#线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？" class="headerlink" title="线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？"></a>线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？</h2><p>最小二乘法以估计值与观测值的平方和作为损失函数，在误差服从正态分布的前提下，与极大似然估计的思想在本质上是相同。我们通常认为ε服从正态分布，通过对极大似然公式的推到，结果就是最小二乘的式子。</p>
-<p><strong>交叉熵</strong></p>
-<p>交叉熵是一个信息论中的概念，给定两个概率分布p和q，通过q来表示p的交叉熵为：</p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image011.png" alt="img"></p>
-<p>   注意，交叉熵刻画的是<strong>两个概率分布之间的距离</strong>， p代表正确答案，q代表的是预测值，交叉熵越小，两个概率的分布约接近。</p>
-<h2 id="LR的输入特征一般是离散的而不是连续的？"><a href="#LR的输入特征一般是离散的而不是连续的？" class="headerlink" title="LR的输入特征一般是离散的而不是连续的？"></a>LR的输入特征一般是离散的而不是连续的？</h2><p>\0. 离散特征的增加和减少都很容易，易于模型的快速迭代；</p>
-<p>\1. 稀疏向量内积乘法<strong>运算速度快</strong>，计算结果方便存储，容易扩展；</p>
-<p>\2. <strong>离散化后的特征对异常数据有很强的鲁棒性</strong>：比如一个特征是年龄&gt;30是1，否则0。如果特征没有离散化，一个异常数据“年龄300岁”会给模型造成很大的干扰；</p>
-<p>\3. 特征离散化后，<strong>模型会更稳定</strong>，比如如果对用户年龄离散化，20-30作为一个区间，不会因为一个用户年龄长了一岁就变成一个完全不同的人。当然处于区间相邻处的样本会刚好相反，所以怎么划分区间是门学问；</p>
-<p>\4. 特征离散化以后，起到了<strong>简化了逻辑回归模型的作用，降低了模型过拟合的风险</strong>。</p>
-<p>\5. 逻辑回归属于广义线性模型，表达能力受限；单变量离散化为N个后，每个变量有单独的权重，相当于为模型引入了非线性，能够提升模型表达能力，加大拟合；</p>
-<p>\6. 离散化后可以进行特征交叉，由M+N个变量变为M*N个变量，进一步引入非线性，提升表达能力；</p>
-<h2 id="LR如何解决共线性"><a href="#LR如何解决共线性" class="headerlink" title="LR如何解决共线性"></a>LR如何解决共线性</h2><p>将所有回归中要用到的变量依次作为因变量、其他变量作为自变量进行回归分析，可以得到各个变量的膨胀系数VIF， VIF越大共线性越严重，通常VIF小于5可以认为共线性不严重，宽泛一点的标准小于10即可。</p>
-<h2 id="LR如何防止过拟合"><a href="#LR如何防止过拟合" class="headerlink" title="LR如何防止过拟合"></a>LR如何防止过拟合</h2><p>第一种方案是直接减少特征数，手动保留那些比较重要的特征。但是有时候舍弃特征也舍弃了有用的信息。比如，所有的特征对预测房价都有重要作用，这时候若舍弃特征，舍弃的便是有用的信息。因此，在很多情况下，第一种解决方案并不是很好，那么我们考虑正则化。</p>
-<p>正则化保留所有的特征，但是减小参数θ的大小，当有很多特征，而且每一个特征都对预测结果有影响时，这种方法比较有效。</p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image012.png" alt="img"></p>
-<h2 id="LR中阈值的设置对模型的影响"><a href="#LR中阈值的设置对模型的影响" class="headerlink" title="LR中阈值的设置对模型的影响"></a>LR中阈值的设置对模型的影响</h2><h2 id="LR多分类"><a href="#LR多分类" class="headerlink" title="LR多分类"></a>LR多分类</h2><p>\1. 多项逻辑回归Softmax Regression</p>
+<h2 id="LR的输入特征一般是离散的而不是连续的？"><a href="#LR的输入特征一般是离散的而不是连续的？" class="headerlink" title="LR的输入特征一般是离散的而不是连续的？"></a>LR的输入特征一般是离散的而不是连续的？</h2><ol>
+<li><p>稀疏向量内积乘法<strong>运算速度快</strong>，计算结果方便存储，容易扩展</p>
+</li>
+<li><p><strong>离散化后的特征对异常数据有很强的鲁棒性，模型会更稳定</strong>：比如一个特征是年龄&gt;30是1，否则0。如果特征没有离散化，一个异常数据“年龄300岁”会给模型造成很大的干扰；比如如果对用户年龄离散化，20-30作为一个区间，不会因为一个用户年龄长了一岁就变成一个完全不同的人</p>
+</li>
+<li><p>特征离散化以后，起到了<strong>降低模型复杂度的作用，降低了模型过拟合的风险</strong>。</p>
+</li>
+<li><p>逻辑回归属于广义线性模型，表达能力受限；单变量离散化为N个后(one-hot？)，每个变量有单独的权重，相当于为模型引入了非线性，能够提升模型表达能力，加大拟合</p>
+</li>
+<li><p>离散化后可以进行特征交叉，由M+N个变量变为M*N个变量，进一步引入非线性，提升表达能力</p>
+</li>
+</ol>
+<h2 id="LR如何解决共线性"><a href="#LR如何解决共线性" class="headerlink" title="LR如何解决共线性"></a>LR如何解决共线性</h2><p>对模型中自变量多重共线性较为敏感，例如两个高度相关自变量同时放入模型，可能导致较弱的一个自变量回归符号不符合预期，符号被扭转。</p>
+<p>将所有回归中要用到的变量依次作为因变量、其他变量作为自变量进行回归分析，可以得到各个变量的膨胀系数VIF， VIF越大共线性越严重，通常VIF小于5可以认为共线性不严重，宽泛一点的标准小于10即可。</p>
+<h2 id="LR如何防止过拟合"><a href="#LR如何防止过拟合" class="headerlink" title="LR如何防止过拟合"></a>LR如何防止过拟合</h2><ol>
+<li><p>直接减少特征数，手动保留那些比较重要的特征。但是有时候舍弃特征也舍弃了有用的信息。比如，所有的特征对预测房价都有重要作用，这时候若舍弃特征，舍弃的便是有用的信息。因此，在很多情况下，第一种解决方案并不是很好</p>
+</li>
+<li><p>正则化保留所有的特征，但是减小参数θ的大小，当有很多特征，而且每一个特征都对预测结果有影响时，这种方法比较有效。<br>$$<br>J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h_\theta(x^i;\theta))]+\frac{\lambda}{2m}\sum_{i=1}^{m}\theta_j^2<br>$$</p>
+</li>
+</ol>
+<h2 id="LR多分类"><a href="#LR多分类" class="headerlink" title="LR多分类"></a>LR多分类</h2><ol>
+<li><p>多项逻辑回归Softmax Regression</p>
 <p>（二分类逻辑回归在多标签分类下的一种拓展）</p>
+</li>
+</ol>
 <p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image014.jpg" alt="img"></p>
-<p>\2. one v.s. rest</p>
+<ol start="2">
+<li><p>one v.s. rest</p>
 <p>k个二分类LR分类器，把标签重新整理为“第i类标签”与“非第i类标签”</p>
-<h2 id="LR调参"><a href="#LR调参" class="headerlink" title="LR调参"></a>LR调参</h2><p>class sklearn.linear_model.LogisticRegression (penalty=’l2’, dual=False, tol=0.0001, C=1.0, ﬁt_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver=’warn’, max_iter=100, multi_class=’warn’, verbose=0, warm_start=False, n_jobs=None)</p>
+</li>
+</ol>
+<h2 id="LR调参"><a href="#LR调参" class="headerlink" title="LR调参"></a>LR调参</h2><ol>
+<li><p>sk-learn</p>
+<p>class sklearn.linear_model.LogisticRegression (penalty=’l2’, dual=False, tol=0.0001, C=1.0, ﬁt_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver=’warn’, max_iter=100, multi_class=’warn’, verbose=0, warm_start=False, n_jobs=None)</p>
+</li>
+</ol>
 <p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image016.jpg" alt="img"></p>
 <p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image018.jpg" alt="img"></p>
 <p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image020.jpg" alt="img"></p>
@@ -650,7 +671,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Logistic-Regression"><span class="nav-number">1.</span> <span class="nav-text">Logistic Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本假设"><span class="nav-number">1.1.</span> <span class="nav-text">基本假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-number">1.2.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解方法"><span class="nav-number">1.3.</span> <span class="nav-text">求解方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR推导"><span class="nav-number">1.4.</span> <span class="nav-text">LR推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么使用Sigmoid"><span class="nav-number">1.5.</span> <span class="nav-text">LR为什么使用Sigmoid</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数，损失函数中为什么要加-1-m"><span class="nav-number">1.6.</span> <span class="nav-text">损失函数，损失函数中为什么要加-1*m</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">1.7.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么是线性模型？"><span class="nav-number">1.8.</span> <span class="nav-text">LR为什么是线性模型？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">1.9.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR与最大熵模型"><span class="nav-number">1.10.</span> <span class="nav-text">LR与最大熵模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR为什么用的是似然函数不用最小二乘？"><span class="nav-number">1.11.</span> <span class="nav-text">LR为什么用的是似然函数不用最小二乘？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法与梯度下降法求解参数的区别"><span class="nav-number">1.12.</span> <span class="nav-text">牛顿法与梯度下降法求解参数的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？"><span class="nav-number">1.13.</span> <span class="nav-text">线性模型为何用的最小二乘作为损失函数而不用似然函数或者交叉熵？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">1.14.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">1.15.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">1.16.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR中阈值的设置对模型的影响"><span class="nav-number">1.17.</span> <span class="nav-text">LR中阈值的设置对模型的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">1.18.</span> <span class="nav-text">LR多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR调参"><span class="nav-number">1.19.</span> <span class="nav-text">LR调参</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Logistic-Regression"><span class="nav-number">1.</span> <span class="nav-text">Logistic Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本假设"><span class="nav-number">1.1.</span> <span class="nav-text">基本假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">1.2.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">1.3.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-number">1.4.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解方法"><span class="nav-number">1.5.</span> <span class="nav-text">求解方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推导"><span class="nav-number">1.6.</span> <span class="nav-text">推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么使用Sigmoid"><span class="nav-number">1.7.</span> <span class="nav-text">为什么使用Sigmoid</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR与最大熵模型"><span class="nav-number">1.8.</span> <span class="nav-text">LR与最大熵模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法与梯度下降法求解参数的区别"><span class="nav-number">1.9.</span> <span class="nav-text">牛顿法与梯度下降法求解参数的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">1.10.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">1.11.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">1.12.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">1.13.</span> <span class="nav-text">LR多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR调参"><span class="nav-number">1.14.</span> <span class="nav-text">LR调参</span></a></li></ol></li></ol></div>
             
 
           </div>
