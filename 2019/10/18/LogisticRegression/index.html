@@ -87,20 +87,17 @@
 <meta property="og:site_name" content="JWKeepsLearning">
 <meta property="og:description" content="逻辑回归面试题总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image006.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image014.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image016.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image018.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image020.jpg">
 <meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image022.jpg">
-<meta property="og:updated_time" content="2019-10-18T06:59:38.525Z">
+<meta property="og:updated_time" content="2019-10-18T13:03:52.223Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logistic Regression 逻辑回归">
 <meta name="twitter:description" content="逻辑回归面试题总结">
-<meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
+<meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png">
 
 
 
@@ -356,16 +353,15 @@
       
 
       
-        <h1 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h1><p><strong>假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。</strong></p>
+        <p><strong>假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。</strong></p>
 <h2 id="基本假设"><a href="#基本假设" class="headerlink" title="基本假设"></a>基本假设</h2><ul>
 <li><p>第一个假设：<strong>假设数据服从伯努利分布</strong>。</p>
 <p>伯努利分布有一个简单的例子是抛硬币，抛中为正面的概率是$p$，抛中为负面的概率是$1-p$。</p>
 <p>在逻辑回归里假设$h_\theta(x)$ 为样本为正的概率，$1-h_\theta(x)$为样本为负的概率。</p>
 <p>整个模型可以描述为<br>$$<br>h_\theta(x;\theta) = p<br>$$<br>（在输入特征为$x$，参数为$\theta$的条件下，标签$y=1$的概率）</p>
 </li>
-<li><p>第二个假设：*<em>假设样本为正的概率是 $p=\frac{1}{1+e^{−θ^Tx}} $ *</em></p>
-</li>
-<li><p>逻辑回归的最终形式<br>$$<br>h_\theta(x;\theta)=\frac{1}{1+e^{−θ^Tx}}<br>$$</p>
+<li><p>第二个假设：<strong>假设样本为正的概率是</strong> $p=\frac{1}{1+e^{−θ^Tx}}$ </p>
+<p>逻辑回归的最终形式<br>$$<br>h_\theta(x;\theta)=\frac{1}{1+e^{−θ^Tx}}<br>$$</p>
 </li>
 </ul>
 <h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p><strong>优点：</strong></p>
@@ -400,6 +396,10 @@
 </ol>
 </li>
 </ul>
+<h2 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h2><p>sigmoid函数<br>$$<br>g(z)=\frac{1}{1+e^{-z}}<br>$$<br>代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：<br>$$<br>g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}<br>$$<br>其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间。</p>
+<p>令$y(x)$除以$1-y(x)$可以得到形似几率(odds)的$\frac{y(x)}{1-y(x)}$，在此基础上取对数，可以得到：<br>$$<br>ln\frac{y(x)}{1-y(x)}=ln(\frac{\frac{1}{1+e^{-\theta^Tx}}}{1-\frac{1}{1+e^{-\theta^Tx}}})=ln(\frac{\frac{1}{1+e^{-\theta^Tx}}}{\frac{e^{-\theta^Tx}}{1+e^{-\theta^Tx}}})=ln(\frac{1}{e^{-\theta^Tx}})=ln(e^{\theta^Tx})=\theta^Tx<br>$$<br>本质上是在对线性回归模型的预测去逼近真实标记的对数几率</p>
+<p>接下来使用极大似然估计对$\theta$进行估计</p>
+<p>令<br>$$<br>h_\theta(x)=g(z)=g(\theta^Tx)=\frac{1}{1+e^{-\theta^Tx}}<br>$$<br>得到<br>$$<br>\left{\begin{matrix}P(Y=1|x;\theta)=h_\theta(x)\ P(Y=0|x;\theta)=1-h_\theta(x)\end{matrix}\right.<br>$$<br>似然函数为<br>$$<br>L(\theta)=\prod_{i=1}^{m}P(y^i|x^i;\theta)=\prod_{i=1}^{m}h_\theta(x^i)^{y^i}*(1-h_\theta(x^i))^{1-y^i}<br>$$<br>对数似然函数为<br>$$<br>l(\theta)=\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))+(1-y^i)log(1-h_\theta(x^i))]<br>$$<br>令损失函数为<br>$$<br>J(\theta)=-\frac{1}{m}l(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))+(1-y^i)log(1-h_\theta(x^i))]<br>$$<br>利用梯度下降求解参数（忽略系数）<br>$$<br>\begin{align}\frac{∂J(\theta)}{∂\theta_j}&amp; =-\sum_{i=1}^{m}[\frac{y^i}{h_\theta(x^i)}-\frac{1-y^i}{1-h_\theta(x^i)}]\frac{∂h_\theta(x^i)}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]\frac{∂g(\theta^Tx^i)}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]g(\theta^Tx^i)(1-g(\theta^Tx^i))\frac{∂\theta^Tx^i}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]g(\theta^Tx^i)(1-g(\theta^Tx^i))x^i_j\&amp; =-\sum_{i=1}^{m}[y^i(1-g(\theta^Tx^i))-(1-y^i)g(\theta^Tx^i)]x^i_j\&amp; =-\sum_{i=1}^{m}[y^i-g(\theta^Tx^i)]x^i_j\&amp; =-\sum_{i=1}^{m}[y^i-h_\theta(x^i)]x^i_j\\end{align}<br>$$<br>因此最终得到参数迭代式<br>$$<br>\theta_j:=\theta_j+\eta\sum_{i=1}^{m}[y^i-h_\theta(x^i)]x^i_j<br>$$</p>
 <h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p><strong>损失函数是它的极大似然函数取对数再除以样本量的相反数</strong></p>
 <p>极大似然函数：<br>$$<br>L_\theta(x)=\prod_{i=1}^{m}h_\theta(x^i;\theta)^{y^i}*(1-h_\theta(x^i;\theta))^{1-y^i}<br>$$<br>损失函数：<br>$$<br>J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h_\theta(x^i;\theta))]<br>$$</p>
 <p>除以m这一因子并不改变最终求导极值结果，通过除以m可以得到<strong>平均损失值</strong>，避免<strong>样本数量对于损失值的影响</strong></p>
@@ -436,13 +436,16 @@
 <p>划定一个阈值，y值大于阈值的是一类，y值小于阈值的是另外一类。阈值具体如何调整根据实际情况选择。一般会选择0.5做为阈值来划分。</p>
 </li>
 </ul>
-<h2 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h2><p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.jpg" alt="img"></p>
-<h2 id="为什么使用Sigmoid"><a href="#为什么使用Sigmoid" class="headerlink" title="为什么使用Sigmoid"></a>为什么使用Sigmoid</h2><p>需要一个单调可微的函数，把分类任务的真实标记$y$与线性回归模型的预测值联系起来</p>
+<h2 id="Sigmoid函数公式和性质"><a href="#Sigmoid函数公式和性质" class="headerlink" title="Sigmoid函数公式和性质"></a>Sigmoid函数公式和性质</h2><p>$$<br>g(z)=\frac{1}{1+e^{-z}}<br>$$</p>
+<p>需要一个单调可微的函数，把分类任务的真实标记$y$与线性回归模型的预测值联系起来</p>
 <p>对于二分类问题，由线性回归得来的启发是根据特征的加权平均进行预测</p>
 <p>很自然地想到设定一个阈值，即引入阶跃函数，如果加权平均大于该阈值就判为正类，反之判为负类</p>
 <p>但阶跃函数不可导，所以引入Sigmoid函数，将样本的加权平均代入函数得到的值就是样本属于正类的概率，即将输入空间到输出空间作非线性函数映射。</p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image006.jpg" alt="img"></p>
+<p>Sigmoid函数是一个S型的函数</p>
+<p>当自变量z趋近正无穷时，因变量g(z)趋近于1，而当z趋近负无穷时，g(z)趋近于0</p>
+<p>它能够将任何实数映射到(0,1)区间，使其可用于将任意值函数转换为更适合二分类的函数。 </p>
+<p>因为这个性质，Sigmoid函数也被当作是归一化的一种方法，与MinMaxSclaer同理，是属于数据预处理中的“缩放”功能，可以将数据压缩到[0,1]之内。</p>
+<p>区别在于，MinMaxScaler归一化之后，是可以取到0和1的（最大值归一化后就是1，最小值归一化后就是0），但Sigmoid函数只是无限趋近于0和1。</p>
 <h2 id="LR与最大熵模型"><a href="#LR与最大熵模型" class="headerlink" title="LR与最大熵模型"></a>LR与最大熵模型</h2><p>最大熵模型与LR有类似的形式，它们又称为对数线性模型</p>
 <p>模型学习就是在给定的训练数据条件下，对模型进行极大似然估计或正则化的极大似然估计</p>
 <h2 id="牛顿法与梯度下降法求解参数的区别"><a href="#牛顿法与梯度下降法求解参数的区别" class="headerlink" title="牛顿法与梯度下降法求解参数的区别"></a>牛顿法与梯度下降法求解参数的区别</h2><p>两种方法不同在于牛顿法中<strong>多了一项二阶导数</strong>，这项二阶导数对参数更新的影响主要体现在<strong>改变参数更新方向上</strong>。如下图所示，红色是牛顿法参数更新的方向，绿色为梯度下降法参数更新方向，因为牛顿法考虑了二阶导数，因而可以<strong>找到更优的参数更新方向</strong>，在每次更新的步幅相同的情况下，可以<strong>比梯度下降法节省很多的迭代次数</strong>。 </p>
@@ -531,6 +534,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/10/18/RandomForest/" rel="prev" title="RandomForest">
+                RandomForest <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -606,7 +613,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -628,7 +635,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -671,7 +678,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Logistic-Regression"><span class="nav-number">1.</span> <span class="nav-text">Logistic Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本假设"><span class="nav-number">1.1.</span> <span class="nav-text">基本假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">1.2.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">1.3.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-number">1.4.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解方法"><span class="nav-number">1.5.</span> <span class="nav-text">求解方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推导"><span class="nav-number">1.6.</span> <span class="nav-text">推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么使用Sigmoid"><span class="nav-number">1.7.</span> <span class="nav-text">为什么使用Sigmoid</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR与最大熵模型"><span class="nav-number">1.8.</span> <span class="nav-text">LR与最大熵模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法与梯度下降法求解参数的区别"><span class="nav-number">1.9.</span> <span class="nav-text">牛顿法与梯度下降法求解参数的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">1.10.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">1.11.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">1.12.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">1.13.</span> <span class="nav-text">LR多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR调参"><span class="nav-number">1.14.</span> <span class="nav-text">LR调参</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本假设"><span class="nav-number">1.</span> <span class="nav-text">基本假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">2.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">3.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推导"><span class="nav-number">4.</span> <span class="nav-text">推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-number">5.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解方法"><span class="nav-number">6.</span> <span class="nav-text">求解方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sigmoid函数公式和性质"><span class="nav-number">7.</span> <span class="nav-text">Sigmoid函数公式和性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR与最大熵模型"><span class="nav-number">8.</span> <span class="nav-text">LR与最大熵模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法与梯度下降法求解参数的区别"><span class="nav-number">9.</span> <span class="nav-text">牛顿法与梯度下降法求解参数的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">10.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">11.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">12.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">13.</span> <span class="nav-text">LR多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR调参"><span class="nav-number">14.</span> <span class="nav-text">LR调参</span></a></li></ol></div>
             
 
           </div>
