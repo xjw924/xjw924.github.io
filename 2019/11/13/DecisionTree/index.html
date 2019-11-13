@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="MachineLearning,Classification,DecisionTree,">
 
 
 
@@ -80,13 +80,14 @@
 
 
 <meta name="description" content="递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。 信息熵表示随机变量不确定性的度量$$H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}$$其中$p_i$指样本集合$D$中第i类样本所占比例 描述样本集合$D$携带的信息量。 信息量越大（值变化越多），则越不确定，越不容易被预测。 信息熵特点：  　　a) 不同类别的概率分布越均匀，信息熵">
+<meta name="keywords" content="MachineLearning,Classification,DecisionTree">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DecisionTree">
 <meta property="og:url" content="http://yoursite.com/2019/11/13/DecisionTree/index.html">
 <meta property="og:site_name" content="小徐小徐不断学习">
 <meta property="og:description" content="递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。 信息熵表示随机变量不确定性的度量$$H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}$$其中$p_i$指样本集合$D$中第i类样本所占比例 描述样本集合$D$携带的信息量。 信息量越大（值变化越多），则越不确定，越不容易被预测。 信息熵特点：  　　a) 不同类别的概率分布越均匀，信息熵">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-13T08:03:58.744Z">
+<meta property="og:updated_time" content="2019-11-13T08:10:32.497Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DecisionTree">
 <meta name="twitter:description" content="递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。 信息熵表示随机变量不确定性的度量$$H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}$$其中$p_i$指样本集合$D$中第i类样本所占比例 描述样本集合$D$携带的信息量。 信息量越大（值变化越多），则越不确定，越不容易被预测。 信息熵特点：  　　a) 不同类别的概率分布越均匀，信息熵">
@@ -292,6 +293,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MachineLearning/" itemprop="url" rel="index">
+                    <span itemprop="name">MachineLearning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -447,6 +470,16 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/MachineLearning/" rel="tag"><i class="fa fa-tag"></i> MachineLearning</a>
+          
+            <a href="/tags/Classification/" rel="tag"><i class="fa fa-tag"></i> Classification</a>
+          
+            <a href="/tags/DecisionTree/" rel="tag"><i class="fa fa-tag"></i> DecisionTree</a>
+          
+        </div>
+      
 
       
       
@@ -563,7 +596,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -807,6 +840,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
