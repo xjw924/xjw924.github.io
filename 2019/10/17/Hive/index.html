@@ -82,18 +82,17 @@
 <meta name="description" content="一些Hive的介绍和面试题目总结">
 <meta name="keywords" content="hive,hadoop">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hive知识点总结">
+<meta property="og:title" content="Hive">
 <meta property="og:url" content="http://yoursite.com/2019/10/17/Hive/index.html">
 <meta property="og:site_name" content="小徐小徐不断学习">
 <meta property="og:description" content="一些Hive的介绍和面试题目总结">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2019/10/17/Hive/C:%5CUsers%5C%E5%BE%90%E4%BD%B3%E6%9C%AA%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571300746878.png">
 <meta property="og:image" content="http://yoursite.com/2019/10/17/Hive/C:%5CUsers%5C%E5%BE%90%E4%BD%B3%E6%9C%AA%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1573652534350.png">
-<meta property="og:updated_time" content="2019-11-13T13:50:14.656Z">
+<meta property="og:updated_time" content="2019-11-13T14:02:10.983Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hive知识点总结">
+<meta name="twitter:title" content="Hive">
 <meta name="twitter:description" content="一些Hive的介绍和面试题目总结">
-<meta name="twitter:image" content="http://yoursite.com/2019/10/17/Hive/C:%5CUsers%5C%E5%BE%90%E4%BD%B3%E6%9C%AA%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571300746878.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/17/Hive/C:%5CUsers%5C%E5%BE%90%E4%BD%B3%E6%9C%AA%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1573652534350.png">
 
 
 
@@ -129,7 +128,7 @@
 
 
 
-  <title>Hive知识点总结 | 小徐小徐不断学习</title>
+  <title>Hive | 小徐小徐不断学习</title>
   
 
 
@@ -273,7 +272,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hive知识点总结</h1>
+          <h1 class="post-title" itemprop="name headline">Hive</h1>
         
 
         <div class="post-meta">
@@ -331,7 +330,6 @@
 <p>数据存储在HDFS上<br>数据底层实现用MapReduce（默认使用MR，也可以使用Spark）<br>执行程序运行在Yarn上</p>
 <p>功能：可以将结构化的数据文件映射为一张表，并提供<strong>类SQL</strong>查询功能</p>
 <p>本质：<strong>将HiveQL转化为MapReduce程序</strong>，是一个分析引擎，相当于一个客户端</p>
-<p><img src="/2019/10/17/Hive/C:%5CUsers%5C%E5%BE%90%E4%BD%B3%E6%9C%AA%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571300746878.png" alt="1571300746878"></p>
 <h1 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h1><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ol>
 <li>操作接口采用<strong>类SQL语法</strong>，<strong>提供快速开发的能力</strong>（简单、容易上手）。提供 SQL 查询功能，可以将 SQL 语句转换为 MapReduce 任务进行运行，使不熟悉MapReduce 的用户也能很方便地对数据进行查询、汇总、分析。</li>
 <li>Hive优势在于处理大数据，对实时性要求不高的场合。对于处理小数据没有优势（大量时间都在开关jvm虚拟机），因为Hive的执行延迟比较高，不支持交互式。</li>
