@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。 信息熵表示随机变量不确定性的度量$$H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}$$其中$p_i$指样本集合$D$中第i类样本所占比例 描述样本集合$D$携带的信息量。 信息量越大（值变化越多），则越不确定，越不容易被预测。 信息熵特点：  　　a) 不同类别的概率分布越均匀，信息熵">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DecisionTree">
+<meta property="og:url" content="http://yoursite.com/2019/11/13/DecisionTree/index.html">
+<meta property="og:site_name" content="小徐小徐不断学习">
+<meta property="og:description" content="递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。 信息熵表示随机变量不确定性的度量$$H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}$$其中$p_i$指样本集合$D$中第i类样本所占比例 描述样本集合$D$携带的信息量。 信息量越大（值变化越多），则越不确定，越不容易被预测。 信息熵特点：  　　a) 不同类别的概率分布越均匀，信息熵">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-13T08:03:58.744Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DecisionTree">
+<meta name="twitter:description" content="递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。 信息熵表示随机变量不确定性的度量$$H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}$$其中$p_i$指样本集合$D$中第i类样本所占比例 描述样本集合$D$携带的信息量。 信息量越大（值变化越多），则越不确定，越不容易被预测。 信息熵特点：  　　a) 不同类别的概率分布越均匀，信息熵">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/11/13/DecisionTree/">
+
+
+
+
+
+  <title>DecisionTree | 小徐小徐不断学习</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小徐小徐不断学习</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/13/DecisionTree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xjw924">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小徐小徐不断学习">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DecisionTree</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-13T14:17:31+08:00">
+                2019-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。</p>
+<h1 id="信息熵"><a href="#信息熵" class="headerlink" title="信息熵"></a>信息熵</h1><p>表示随机变量不确定性的度量<br>$$<br>H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}<br>$$<br>其中$p_i$指样本集合$D$中第i类样本所占比例</p>
+<p>描述样本集合$D$携带的信息量。 信息量越大（值变化越多），则越不确定，越不容易被预测。</p>
+<p><strong>信息熵特点</strong>： </p>
+<p>　　a) 不同类别的概率分布越均匀，信息熵越大；</p>
+<p>　　b) 类别个数越多，信息熵越大；</p>
+<p>　　c) 信息熵越大，越不容易被预测；（变化个数多，变化之间区分小，则越不容易被预测）（对于确定性问题，信息熵为0；p=1; E=p*logp=0）</p>
+<h1 id="决策树的生成"><a href="#决策树的生成" class="headerlink" title="决策树的生成"></a>决策树的生成</h1><p>其实不同的决策树学习算法只是它们<strong>选择特征的依据不同</strong>，决策树的生成过程都是一样的</p>
+<p><strong>特征选择</strong>：从训练数据中众多的特征中选择一个特征作为当前节点的分裂标准，如何选择特征有着很多不同评估标准，从而衍生出不同的决策树算法。</p>
+<p>特征选择的关键是如何选择最优特征对数据集进行划分，随着划分过程的进行，希望决策树的分支结点所包含的样本尽可能属于同一类别，即节点的纯度越来越高。</p>
+<p><strong>决策树生成</strong>：根据选择的特征评估标准，从上至下递归地生成子节点，直到数据集不可分此时决策树停止生长。</p>
+<p>有三种选择最优特征的标准：信息增益、增益率和基尼指数，分别对应了三种决策树算法：ID3，C4.5，CART</p>
+<p>信息增益越大，意味着使用某个特征进行划分所获得的纯度提升越大，所以每次选择信息增益最大的特征进行划分。ID3就是使用信息增益作为标准进行划分的。但信息增益准则对可取值数目较多的特征有偏好（因为信息增益反映的是给定条件后不确定性减少的程度，特征取值越多意味着确定性更高，即条件熵越小，信息增益越大）</p>
+<p>C4.5算法在信息增益的基础上做了一些改进，使用增益率来选择最优划分特征。不过增益率对可取值数目较少的特征有偏好，所以<strong>实际中C4.5算法并不是直接选择增益率最大的特征，而是先从候选划分特征中找出信息增益高于平均水平的特征，再从中选择增益率最高的</strong>。</p>
+<p>基尼指数也是度量数据集纯度的指标，基尼指数越小代表数据集的纯度越高，CART是使用基尼指数来选择最优特征的。</p>
+<h2 id="ID3算法"><a href="#ID3算法" class="headerlink" title="ID3算法"></a>ID3算法</h2><p>核心是在决策树各个节点上应用信息增益准则选择特征，每一次都选择使得<strong>信息增益最大</strong>的特征进行分裂，递归地构建决策树。</p>
+<h3 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h3><p>由于特征A使D的分类不确定性减少的程度<br>$$<br>g(D,A)=H(D)-H(D|A)<br>$$</p>
+<p>根据信息增益准则的特征选择方法：计算每个特征的信息增益，并比较它们的大小，选择信息增益最大的特征。</p>
+<p>缺点：选择取值较多的特征往往会具有较大的信息增益（取值越多意味着确定性更高，条件熵越小，信息增益越大），所以<strong>ID3偏向于选择取值较多的特征</strong>。</p>
+<p> 仅支持分类不支持回归，不支持连续型变量，只有树的生成没有剪枝（容易过拟合），没有缺失值处理方法</p>
+<h2 id="C4-5算法"><a href="#C4-5算法" class="headerlink" title="C4.5算法"></a>C4.5算法</h2><p>针对ID3算法的不足，C4.5算法根据信息增益比来选择特征</p>
+<h3 id="信息增益比"><a href="#信息增益比" class="headerlink" title="信息增益比"></a>信息增益比</h3><p>以信息增益作为划分训练数据集的特征，存在偏向于选择取值较多的特征的问题。使用信息增益比可以对这一问题进行校正。</p>
+<p>定义为信息增益<strong>g(D,A)</strong>与训练数据集D关于特征A的值的熵$H_A(D)$之比<br>$$<br>g_R(D,A)=\frac{g(D,A)}{H_A(D)}<br>$$<br> 其中$H_A(D)=-\sum_{i=1}^{n}\frac{|D_i|}{|D|}log_2\frac{|D_i|}{|D|}$，其中$n$是特征A取值的个数</p>
+<p>特征数越多的特征对应的特征熵越大，它作为分母，一定程度上对取值较多的特征进行惩罚，避免ID3出现过拟合的特性，提升泛化能力 </p>
+<p>但增益率准则<strong>对可取值数目较少</strong>的特征有所偏好，因此C4.5算法不是直接选取增益率最大的候选划分特征，而是使用了一个启发式算法：先从候选特征中找出信息增益高于平均水平的特征，再从中选择增益率最高的。</p>
+<p><strong>过拟合策略：C4.5引入了正则化系数进行剪枝</strong></p>
+<h2 id="CART"><a href="#CART" class="headerlink" title="CART"></a>CART</h2><p>由以下两步组成：</p>
+<p>（1）决策树生成：基于训练数据集生成决策树，生成的决策树要尽量大</p>
+<p>（2）决策树剪枝：用验证数据集对已生成的树进行剪枝并选择最优子树，使用损失函数最小作为剪枝标准</p>
+<p>特征选择</p>
+<p>​    回归树：平方误差最小化准则</p>
+<p>​    分类树：基尼指数最小化准则</p>
+<h3 id="基尼指数"><a href="#基尼指数" class="headerlink" title="基尼指数"></a>基尼指数</h3><p>假设有K个类<br>$$<br>Gini(D)=1-\sum_{k=1}^{K}p_k^2<br>$$<br>代表集合D的不确定性</p>
+<p>特征A的基尼指数为<br>$$<br>Gini(D,A)=\sum_{k=1}^{K}\frac{|D_k|}{|D|}Gini(D^k)<br>$$<br>表示经过特征A分割之后集合D的不确定性</p>
+<p>选<strong>基尼指数最小</strong>的特征的作为最优划分特征。</p>
+<h1 id="决策树的剪枝"><a href="#决策树的剪枝" class="headerlink" title="决策树的剪枝"></a>决策树的剪枝</h1><p>为缓解决策树过拟合，需要对决策树进行剪枝。分为预剪枝和后剪枝</p>
+<p>往往通过极小化决策树整体的损失函数或代价函数来实现</p>
+<p>决策树生成学习局部的模型，而决策树剪枝学习整体的模型</p>
+<h2 id="预剪枝"><a href="#预剪枝" class="headerlink" title="预剪枝"></a>预剪枝</h2><p>在生成决策树的过程中提前停止树的增长。核心思想是在树中节点进行扩展之前，先计算当前的划分是否能带来模型泛化性能的提升，如果不能则不再继续生成子树。</p>
+<p>前剪枝停止决策树生长的几种方法：</p>
+<p>(1) 当树达到一定深度时停止生长。</p>
+<p>(2) 当到达当前节点的样本数量小于某个阈值时停止生长。</p>
+<p>(3) 计算每次分类对测试集的准确率提升，当小于某个阈值时停止生长。</p>
+<p>前剪枝的优缺点：</p>
+<p>优点：简单高效，适合解决大规模问题。</p>
+<p>缺点：</p>
+<p>(1) 深度和阈值这些值很难准确估计，针对不同问题会有很大差别。</p>
+<p>(2) 前剪枝存在一定局限性，有<strong>欠拟合的风险</strong>，虽然当前的划分会导致测试集准确率下降，可能在后面会有显著上升。</p>
+<h2 id="后剪枝"><a href="#后剪枝" class="headerlink" title="后剪枝"></a>后剪枝</h2><p>在已生成的过拟合决策树上进行剪枝。核心思想是让算法生成一棵完全生长的决策树，然后从底层向上计算是否剪枝。(剪枝是将子树删除，用一个叶子节点代替，节点类别按多数投票)如果剪枝之后准确率有提升，则剪枝。</p>
+<p>后剪枝的优缺点：</p>
+<p>优点：通常可以得到泛化能力更强的决策树。</p>
+<p>缺点：<strong>时间开销大。</strong></p>
+<h1 id="ID3-C4-5-CART-对比"><a href="#ID3-C4-5-CART-对比" class="headerlink" title="ID3/C4.5/CART 对比"></a>ID3/C4.5/CART 对比</h1><table>
+<thead>
+<tr>
+<th>算法</th>
+<th>支持模型</th>
+<th>树结构</th>
+<th>特征选择</th>
+<th>连续值处理</th>
+<th>缺失值</th>
+<th>剪枝</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ID3</td>
+<td>分类</td>
+<td>多叉树</td>
+<td>信息增益</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>C4.5</td>
+<td>分类</td>
+<td>多叉树</td>
+<td>信息增益比</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>CART</td>
+<td>分类，回归</td>
+<td>二叉树</td>
+<td>基尼指数，均方误差</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+<p>CART指的是分类回归树，它既可以用来分类，又可以被用来进行回归。</p>
+<p>回归树：用平方误差最小化作为选择特征的准则</p>
+<p>分类树：采用基尼指数最小化原则进行特征选择，递归地生成二叉树。</p>
+<p>也提供了优化的剪枝策略</p>
+<p><strong>从样本类型的角度：</strong></p>
+<p>ID3只能处理离散型变量，而C4.5和CART都可以处理连续型变量。</p>
+<p>C4.5会排序找到切分点，将连续变量转换为多个取值区间的离散型变量；</p>
+<p>CART每次会对特征进行二值划分，适用于连续变量。</p>
+<p><strong>从应用角度：</strong></p>
+<p>ID3和C4.5只能用于分类，CART树可以用于分类和回归。</p>
+<p><strong>从细节、优化过程角度：</strong></p>
+<p>ID3对样本特征缺失值比较敏感，而C4.5和CART树都可以对缺失值进行不同方式的处理。</p>
+<p>ID3和C4.5可以产生多叉分支，且每个特征在层级之间不会复用。CART树是二叉树，<strong>每个特征可以被重复利用</strong>。</p>
+<p>ID3和C4.5通过剪枝来权衡树的准确性和泛化性能，CART树枝节利用全部数据发现所有可能的树结构进行对比。</p>
+<h1 id="Sklearn中树模型输出的特征重要程度"><a href="#Sklearn中树模型输出的特征重要程度" class="headerlink" title="Sklearn中树模型输出的特征重要程度"></a>Sklearn中树模型输出的特征重要程度</h1><p>决策树中节点分裂不纯度的改变量的归一化值</p>
+<h1 id="决策树优缺点"><a href="#决策树优缺点" class="headerlink" title="决策树优缺点"></a>决策树优缺点</h1><p>优点：</p>
+<p>易于理解和解释，可视化分析，容易提取出规则</p>
+<p>可同时处理分类型和数值型变量</p>
+<p>缺点：</p>
+<p>容易过拟合</p>
+<p>通常情况下精确度不如其他算法好</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/21/Hive-1/" rel="next" title="Hive">
+                <i class="fa fa-chevron-left"></i> Hive
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">xjw924</p>
+              <p class="site-description motion-element" itemprop="description">今天不学习！明天变垃圾！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xjw924" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#信息熵"><span class="nav-number">1.</span> <span class="nav-text">信息熵</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#决策树的生成"><span class="nav-number">2.</span> <span class="nav-text">决策树的生成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ID3算法"><span class="nav-number">2.1.</span> <span class="nav-text">ID3算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#信息增益"><span class="nav-number">2.1.1.</span> <span class="nav-text">信息增益</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C4-5算法"><span class="nav-number">2.2.</span> <span class="nav-text">C4.5算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#信息增益比"><span class="nav-number">2.2.1.</span> <span class="nav-text">信息增益比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CART"><span class="nav-number">2.3.</span> <span class="nav-text">CART</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基尼指数"><span class="nav-number">2.3.1.</span> <span class="nav-text">基尼指数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#决策树的剪枝"><span class="nav-number">3.</span> <span class="nav-text">决策树的剪枝</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#预剪枝"><span class="nav-number">3.1.</span> <span class="nav-text">预剪枝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后剪枝"><span class="nav-number">3.2.</span> <span class="nav-text">后剪枝</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ID3-C4-5-CART-对比"><span class="nav-number">4.</span> <span class="nav-text">ID3/C4.5/CART 对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sklearn中树模型输出的特征重要程度"><span class="nav-number">5.</span> <span class="nav-text">Sklearn中树模型输出的特征重要程度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#决策树优缺点"><span class="nav-number">6.</span> <span class="nav-text">决策树优缺点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xjw924</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
