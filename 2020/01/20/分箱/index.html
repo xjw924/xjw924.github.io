@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="特征工程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  模型是使用离散特征还是连续特征，其实是一个“海量离散特征+简单模型” 同 “少量连续特征+复杂模型”的权衡。既可以离散化用线性模型，也可以用连续特征加深度学习。就看是喜欢折腾特征还是折腾模型了。通常来说，前者容易，而且可以n个人一起并行做，有成功经验；后者目前看">
+<meta name="keywords" content="特征工程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分箱">
+<meta property="og:url" content="http://yoursite.com/2020/01/20/分箱/index.html">
+<meta property="og:site_name" content="小徐小徐不断学习">
+<meta property="og:description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  模型是使用离散特征还是连续特征，其实是一个“海量离散特征+简单模型” 同 “少量连续特征+复杂模型”的权衡。既可以离散化用线性模型，也可以用连续特征加深度学习。就看是喜欢折腾特征还是折腾模型了。通常来说，前者容易，而且可以n个人一起并行做，有成功经验；后者目前看">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-26T09:48:23.494Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分箱">
+<meta name="twitter:description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  模型是使用离散特征还是连续特征，其实是一个“海量离散特征+简单模型” 同 “少量连续特征+复杂模型”的权衡。既可以离散化用线性模型，也可以用连续特征加深度学习。就看是喜欢折腾特征还是折腾模型了。通常来说，前者容易，而且可以n个人一起并行做，有成功经验；后者目前看">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/01/20/分箱/">
+
+
+
+
+
+  <title>分箱 | 小徐小徐不断学习</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小徐小徐不断学习</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/20/分箱/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xjw924">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小徐小徐不断学习">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分箱</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-20T12:29:41+08:00">
+                2020-01-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>将连续型的数据分为几个数据段，即特征离散化。</p>
+<p>把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科） </p>
+<p>模型是使用离散特征还是连续特征，其实是一个“海量离散特征+简单模型” 同 “少量连续特征+复杂模型”的权衡。既可以离散化用线性模型，也可以用连续特征加深度学习。就看是喜欢折腾特征还是折腾模型了。通常来说，前者容易，而且可以n个人一起并行做，有成功经验；后者目前看很赞，能走多远还须拭目以待。 </p>
+<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
+<li><p><strong>离散化后的特征对异常数据有很强的鲁棒性，模型更加稳定。</strong>比如年龄&gt;70岁为一个分箱，异常数据如年龄为300岁同样会划分到该箱，不会给模型造成很大的干扰；比如将20岁-30岁划分为一个区间，不会因为年龄增长一岁就变成一个完全不同的人。而对于处于区间相邻处的样本会刚好相反，因此如何划分区间也很重要。</p>
+</li>
+<li><p>对于如逻辑回归的广义线性模型，表达能力受限，单变量离散化为$N$个变量（？）后，每个变量有单独的权重，相当于为模型引入了非线性，能够提升模型表达能力，加大拟合。（？）</p>
+</li>
+<li><p>离散化后可以进行特征交叉，进一步<strong>引入非线性，提升模型表达能力</strong>。</p>
+</li>
+<li><p>可以将缺失值作为独立的箱代入变量。</p>
+</li>
+<li><p>可以将所有变量转换到相似的尺度上（不需要进行归一化）。</p>
+</li>
+</ol>
+<h2 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h2><h3 id="无监督分箱"><a href="#无监督分箱" class="headerlink" title="无监督分箱"></a>无监督分箱</h3><h4 id="等频分箱"><a href="#等频分箱" class="headerlink" title="等频分箱"></a>等频分箱</h4><p>每个箱包含大致相等的样本数量，可以根据分位数进行划分，如四分位数等。</p>
+<h4 id="等距分箱"><a href="#等距分箱" class="headerlink" title="等距分箱"></a>等距分箱</h4><p>从变量的最小值到最大值之间均等分为$N$等份。若$m$和$M$分别代表最小值和最大值，则每个区间的长度为$w=\frac{M-m}{N}$，区间的边界值为$m+w,m+2w,…,m+(N-1)w$。这里只考虑边界，每个等份的样本数量一般不等。</p>
+<h3 id="有监督分箱"><a href="#有监督分箱" class="headerlink" title="有监督分箱"></a>有监督分箱</h3><h4 id="卡方分箱"><a href="#卡方分箱" class="headerlink" title="卡方分箱"></a>卡方分箱</h4><ul>
+<li><p><strong>初始化</strong></p>
+<ul>
+<li><p>根据连续变量值的大小进行排序。</p>
+</li>
+<li><p>把每一个单独的值视为一个箱体，构建最初的离散化。目的是想从每个单独的箱体开始逐渐合并。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>合并</strong>：在初始化构建完毕后，该步就是不断地进行自底向上的合并，直到满足停止条件。</p>
+<ul>
+<li><p><strong>计算所有相邻分箱的卡方值</strong>。比如有1,2,3,4这4个分箱，绑定相邻的两个分箱，一共有3组：12,23,34，然后分别计算三个绑定组的卡方值。卡方值的计算公式为<br>$$<br>\chi^2=\sum_{i=1}^{m}\sum_{j=1}^{k}\frac{(A_{ij}-E_{ij})^2}{E_{ij}}<br>$$<br>其中，$m$表示要合并相邻分箱的数目（$m=2$表示对两个箱进行合并），$k$表示目标变量的类别数（两分类或多分类），$A_{ij}$表示实际频数（即第$i$个分箱第$j$类别的频数），$E_{ij}$表示期望频数，计算公式如下（可根据公式$P(AB)=P(A)P(B)$推导出来）<br>$$<br>E_{ij}=\frac{R_i*C_j}{N}<br>$$<br>其中$R_i$和$C_j$分别是实际频数整行和整列的加和，$N$为总样本量。</p>
+</li>
+<li><p><strong>从计算的卡方值中找出最小的一个，并把这两个分箱合并</strong>。比如23是卡方值最小的一个，那么就将2和3合并，经过本轮的计算后分箱就变为1,23,4。</p>
+<p>从合并的方法可以看出，卡方分箱的基本思想是，<strong>如果两个相邻的区间具有非常类似的类分布（即低卡方值，低卡方值表明它们具有类似的类分布），那么这两个区间可以合并，否则应该分开</strong>。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>停止条件</strong>：以上仅是每一轮需要计算的内容，若不设置停止条件，算法会一直运行。一般从以下两个方面设置停止条件：</p>
+<ul>
+<li>卡方停止的阈值</li>
+<li>分箱数目的限制</li>
+</ul>
+<p>即当所有分箱对的卡方值均大于阈值，且分箱数大于分箱数时，计算就会继续，直到不满足。</p>
+<p>以上两个阈值一般根据经验来定义，来作为分箱函数的参数进行设置，一般使用0.90,0.95,0.99的置信度，分箱数一般可以设置为5。</p>
+</li>
+</ul>
+<p><em>例如：</em></p>
+<p>对于某两个箱（分箱1和分箱2），实际频数如下表<br>|              | <strong>类别1</strong> | <strong>类别2</strong> | 行频数和 |<br>| ———— | ——— | ——— | ——– |<br>| <strong>分箱1</strong>    | $A_{11}$  | $A_{12}$  | $R_1$    |<br>| <strong>分箱2</strong>    | $A_{21}$  | $A_{22}$  | $R_2$    |<br>| <strong>列频数和</strong> | $C_1$     | $C_2$     | $N$      |</p>
+<p>期望频数如下表</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>类别1</th>
+<th>类别2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>分箱1</strong></td>
+<td>$E_{11}=\frac{R_1*C_1}{N}$</td>
+<td>$E_{12}=\frac{R_1*C_2}{N}$</td>
+</tr>
+<tr>
+<td><strong>分箱2</strong></td>
+<td>$E_{21}=\frac{R_2*C_1}{N}$</td>
+<td>$E_{22}=\frac{R_2*C_2}{N}$</td>
+</tr>
+</tbody></table>
+<p>代入卡方公式求解，过程如下：<br>$$<br>\chi^2=\sum_{i=1}^{m}\sum_{j=1}^{k}\frac{(A_{ij}-E_{ij})^2}{E_{ij}}=[\frac{(A_{11}-E_{11})^2}{E_{11}}+\frac{(A_{12}-E_{12})^2}{E_{12}}]+[\frac{(A_{21}-E_{21})^2}{E_{21}}+\frac{(A_{22}-E_{22})^2}{E_{22}}]<br>$$</p>
+<p>如果计算结果是所有卡方值中最小的，说明这两个分箱具有最相似的类分布，因此把它们合并。</p>
+<p>（参考 <a href="https://cloud.tencent.com/developer/article/1418720" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1418720</a> ）</p>
+<h1 id="单机python实现"><a href="#单机python实现" class="headerlink" title="单机python实现"></a>单机python实现</h1><h3 id="无监督分箱-1"><a href="#无监督分箱-1" class="headerlink" title="无监督分箱"></a>无监督分箱</h3><ul>
+<li>UnsupervisedSplitBin函数：对数值型变量进行分组，分组的依据有等频和等距，最后返回划分点列表</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">UnsupervisedSplitBin</span><span class="params">(df,col,numOfSplit=<span class="number">5</span>,method=<span class="string">'equalFreq'</span>)</span>:</span></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	该函数用于对数值型变量进行划分，最后返回划分点组成的列表</span></span><br><span class="line"><span class="string">	:param df: 数据集</span></span><br><span class="line"><span class="string">	:param col: 需要分箱的变量。仅限数值型变量</span></span><br><span class="line"><span class="string">	:param numOfSplit: 需要分箱个数，默认是5</span></span><br><span class="line"><span class="string">	:param method: 分箱方法，'equalFreq'：默认是等频，否则是等距</span></span><br><span class="line"><span class="string">	:return: 返回划分点组成的列表</span></span><br><span class="line"><span class="string">	'''</span></span><br><span class="line">	<span class="keyword">if</span> method == <span class="string">'equalFreq'</span>:</span><br><span class="line">		<span class="comment"># 等频分箱</span></span><br><span class="line">		frequency_cutoff = [np.percentile(df[col], <span class="number">100</span>/numOfSplit*i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,numOfSplit)]</span><br><span class="line">		splitPoint = sorted(list(set(frequency_cutoff)))</span><br><span class="line">		<span class="keyword">return</span> splitPoint</span><br><span class="line">	<span class="keyword">elif</span> method == <span class="string">'equalDis'</span>:</span><br><span class="line">		<span class="comment"># 等距分箱</span></span><br><span class="line">		var_max, var_min = max(df[col]), min(df[col])</span><br><span class="line">		interval_len = (var_max-var_min)/numOfSplit</span><br><span class="line">		splitPoint = [var_min+i*interval_len <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,numOfSplit)]</span><br><span class="line">		<span class="keyword">return</span> splitPoint</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="string">'Sorry, no such method'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="有监督分箱：卡方分箱"><a href="#有监督分箱：卡方分箱" class="headerlink" title="有监督分箱：卡方分箱"></a>有监督分箱：卡方分箱</h3><ul>
+<li><p>SplitData函数：用于对某变量进行划分，根据划分的组数，返回划分点数值组成的列表</p>
+</li>
+<li><p>Chi2函数：用于计算卡方值，返回卡方值（按照卡方检验的原理进行计算）</p>
+</li>
+<li><p>BinBadRate函数：按某变量进行分组，计算分组后每组的坏样本率，返回的有，字典形式，数据框，总体坏样本率（可选）</p>
+</li>
+<li><p>AssignGroup函数：根据分组后的划分点列表，给某个需分箱的变量的每个取值进行分箱前的匹配，形成对应箱的映射</p>
+</li>
+<li><p>AssignBin函数：将某列的每个取值进行分箱编号</p>
+</li>
+<li><p>ChiMerge函数：卡方分箱的主体函数，其中调用了前面五个基础函数，返回的是最终的满足所有限制条件的划分点列表</p>
+<ul>
+<li><p>其中需要满足：</p>
+<p>（1）最后分裂出的分箱数 &lt;= 预设的最大分箱数</p>
+<p>（2）每个箱体必须同时包含好坏样本</p>
+<p>（3）每个箱体的占比不低于预设值（可选）</p>
+<p>（4）如果有特殊的属性值，则最终的分箱数 = 预设的最大分箱数 - 特殊值个数</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">SplitData</span><span class="params">(df,col,numOfSplit,special_attribute=[])</span>:</span></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	该函数用于获得数据切分时对应位置的数值</span></span><br><span class="line"><span class="string">	:param df: pandas.DataFrame</span></span><br><span class="line"><span class="string">	:param col: str 选择数据集中的某列进行操作</span></span><br><span class="line"><span class="string">	:param numOfSplit: int 划分的组数</span></span><br><span class="line"><span class="string">	:param special_attribute: 用于过滤掉一些特殊的值，不参与数据划分（可选，默认不过滤）</span></span><br><span class="line"><span class="string">	:return: 返回划分点位置对应的数值组成的列表</span></span><br><span class="line"><span class="string">	'''</span></span><br><span class="line">	df2 = df.copy()</span><br><span class="line">	<span class="keyword">if</span> special_attribute != []:</span><br><span class="line">		df2 = df2.loc[~df2[col].isin(special_attribute)]  <span class="comment"># 排除有特殊值的样本行</span></span><br><span class="line">	N = len(df2) <span class="comment"># 样本总数</span></span><br><span class="line">	n = int(N/numOfSplit) <span class="comment"># 每组包含的样本量</span></span><br><span class="line">	SplitPointIndex = [i*n <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,numOfSplit)] <span class="comment"># 不包含numOfSplit</span></span><br><span class="line">	<span class="comment"># 如总样本N=20，numofsplit为5组，则每组包含4个元素(n=4)</span></span><br><span class="line">	<span class="comment"># 则最后得到的SplitPointIndex=[4,8,12,16]，即切分点位置，各组样本为0-3/4-7/8-11/12-15</span></span><br><span class="line">	rawValues = sorted(list(df[col])) <span class="comment"># sorted返回一个新的排列后的列表</span></span><br><span class="line">	SplitPoint = [rawValues[i] <span class="keyword">for</span> i <span class="keyword">in</span> SplitPointIndex] <span class="comment"># 返回位置索引上对应的数值</span></span><br><span class="line">	<span class="comment"># 为了以防万一，去重再排序</span></span><br><span class="line">	SplitPoint = sorted(list(set(SplitPoint)))</span><br><span class="line">	<span class="keyword">return</span> SplitPoint </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">AssignGroup</span><span class="params">(x,bin)</span>:</span></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	该函数用于：根据分组后的划分点列表（bin)，给某个需要分箱的变量进行分箱前的匹配，形成对应箱的映射，以便后期分箱操作，将值划分到不同箱体</span></span><br><span class="line"><span class="string">	:param x: 某个变量的某个取值</span></span><br><span class="line"><span class="string">	:param bin: 上述变量分组后（通过SplitData函数）对应的划分位置的数值组成的列表</span></span><br><span class="line"><span class="string">	:return: x在分箱结果下的映射 </span></span><br><span class="line"><span class="string">	'''</span> </span><br><span class="line">	N = len(bin)            <span class="comment"># 划分点的长度</span></span><br><span class="line">	<span class="keyword">if</span> x&lt;=min(bin):         <span class="comment"># 如果某个取值小于等于最小划分点，则返回最小划分点</span></span><br><span class="line">		<span class="keyword">return</span> min(bin)</span><br><span class="line">	<span class="keyword">elif</span> x&gt;max(bin):        <span class="comment"># 如果某个取值大于最小划分点，则返回10e10</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">10e10</span></span><br><span class="line">	<span class="keyword">else</span>:                   <span class="comment"># 除此之外，返回其他对应的划分点</span></span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(N<span class="number">-1</span>):</span><br><span class="line">			<span class="keyword">if</span> bin[i] &lt; x &lt;= bin[i+<span class="number">1</span>]:</span><br><span class="line">				<span class="keyword">return</span> bin[i+<span class="number">1</span>]</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">BinBadRate</span><span class="params">(df,col,target,grantRateIndicator=False)</span>:</span></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	该函数用于对变量按照取值（每个取值都是唯一的）进行分组，获得每箱的坏样本率，后期基于该值判断是否需要合并操作</span></span><br><span class="line"><span class="string">	:param df: pandas.DataFrame 需要计算好坏比率的数据集</span></span><br><span class="line"><span class="string">	:param col: str 需要计算好坏比率的特征</span></span><br><span class="line"><span class="string">	:param target: str 好坏标签</span></span><br><span class="line"><span class="string">	:param grantRateIndicator: bool True返回总体的坏样本率，False不返回（可选，默认不返回）</span></span><br><span class="line"><span class="string">	:return: 每箱的坏样本率，以及总体的坏样本率（当grantRateIndicator==True时）</span></span><br><span class="line"><span class="string">	'''</span></span><br><span class="line">	total = df.groupby([col])[target].count()</span><br><span class="line">	total = pd.DataFrame(&#123;<span class="string">'total'</span>: total&#125;)</span><br><span class="line">	bad = df.groupby([col])[target].sum()</span><br><span class="line">	bad = pd.DataFrame(&#123;<span class="string">'bad'</span>: bad&#125;)</span><br><span class="line">	</span><br><span class="line">	regroup = total.merge(bad, left_index=<span class="literal">True</span>, right_index=<span class="literal">True</span>, how=<span class="string">'left'</span>) <span class="comment"># 每箱的坏样本数，总样本数</span></span><br><span class="line">	regroup.reset_index(level=<span class="number">0</span>, inplace=<span class="literal">True</span>)</span><br><span class="line">	</span><br><span class="line">	regroup[<span class="string">'bad_rate'</span>] = regroup.apply(<span class="keyword">lambda</span> x: x.bad / x.total, axis=<span class="number">1</span>) <span class="comment"># 加上一列坏样本率</span></span><br><span class="line">	dicts = dict(zip(regroup[col],regroup[<span class="string">'bad_rate'</span>])) <span class="comment"># 每箱对应的坏样本率组成的字典</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> grantRateIndicator:</span><br><span class="line">		<span class="keyword">return</span> (dicts, regroup)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		N = sum(regroup[<span class="string">'total'</span>])</span><br><span class="line">		B = sum(regroup[<span class="string">'bad'</span>])</span><br><span class="line">		overallRate = B / N</span><br><span class="line">		<span class="keyword">return</span> (dicts, regroup, overallRate)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Chi2</span><span class="params">(df,totalCol,badCol)</span>:</span></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	该函数用于获得卡方值</span></span><br><span class="line"><span class="string">	:param df: pandas.DataFrame 包含了每个分组下的样本总数和坏样本数</span></span><br><span class="line"><span class="string">	:param totalCol: str 列名，元素由各个分组下的样本总数构成</span></span><br><span class="line"><span class="string">	:param badCol: str 列名，元素由各个分组下的坏样本数构成</span></span><br><span class="line"><span class="string">	:return: 卡方值</span></span><br><span class="line"><span class="string">	'''</span></span><br><span class="line">	df2 = df.copy()</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 计算该特征各个分组下的好样本数</span></span><br><span class="line">	df2[<span class="string">'good'</span>] = df2.apply(<span class="keyword">lambda</span> x: x[totalCol]-x[badCol], axis = <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 求出期望值E</span></span><br><span class="line">	<span class="comment"># 1.求出总体的坏样本率和好样本率</span></span><br><span class="line">	badRate = sum(df2[badCol]) / sum(df2[totalCol])</span><br><span class="line">	goodRate = sum(df2[<span class="string">'good'</span>]) / sum(df2[totalCol])</span><br><span class="line">	<span class="comment"># 特殊情况：当全部样本只有好或者坏样本时，卡方值为0</span></span><br><span class="line">	<span class="keyword">if</span> badRate <span class="keyword">in</span> [<span class="number">0</span>,<span class="number">1</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 2.根据总体的好坏样本率算出期望的好坏样本数，计算公式为：</span></span><br><span class="line">	<span class="comment"># 期望坏（好）样本个数 ＝ 全部样本个数 * 总体的坏（好）样本率</span></span><br><span class="line">	df2[<span class="string">'badExpected'</span>] = df2[totalCol].apply(<span class="keyword">lambda</span> x: x*badRate)</span><br><span class="line">	df2[<span class="string">'goodExpected'</span>] = df2[totalCol].apply(<span class="keyword">lambda</span> x: x*goodRate)</span><br><span class="line">	</span><br><span class="line">	badCombined = zip(df2[<span class="string">'badExpected'</span>], df2[badCol])</span><br><span class="line">	goodCombined = zip(df2[<span class="string">'goodExpected'</span>], df2[<span class="string">'good'</span>])</span><br><span class="line"> </span><br><span class="line">	<span class="comment"># 按照卡方计算的公式计算卡方值：  ∑ (O - E)^2 / E, O代表实际值，E代表期望值     </span></span><br><span class="line">	badChi = [(i[<span class="number">0</span>]-i[<span class="number">1</span>])**<span class="number">2</span>/i[<span class="number">1</span>] <span class="keyword">if</span> i[<span class="number">1</span>]!=<span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> badCombined]</span><br><span class="line">	goodChi = [(i[<span class="number">0</span>]-i[<span class="number">1</span>])**<span class="number">2</span>/i[<span class="number">1</span>] <span class="keyword">if</span> i[<span class="number">1</span>]!=<span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> goodCombined]</span><br><span class="line">	chi2 = sum(badChi) + sum(goodChi)</span><br><span class="line">	<span class="keyword">return</span> chi2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">AssignBin</span><span class="params">(x,cutOffPoints,special_attribute=[])</span>:</span></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	该函数用于对某个列的某个取值进行分箱编号（编码）</span></span><br><span class="line"><span class="string">	:param x: 某个变量的某个取值</span></span><br><span class="line"><span class="string">	:param cutOffPoints: 上述变量的分组结果，用切分点表示，列表形式</span></span><br><span class="line"><span class="string">	:param special_attribute: 不参与分箱的特殊取值（可选）</span></span><br><span class="line"><span class="string">	:return: 分箱后的对应的第几个箱，从0开始</span></span><br><span class="line"><span class="string">	比如，若cutOffPoints=[10,20,30]，当x=7，返回"Bin 0"；当x=35，返回"Bin 3"</span></span><br><span class="line"><span class="string">	'''</span></span><br><span class="line">	numBin = len(cutOffPoints) + <span class="number">1</span> + len(special_attribute)</span><br><span class="line">	<span class="keyword">if</span> x <span class="keyword">in</span> special_attribute:</span><br><span class="line">		i = special_attribute.index(x)+<span class="number">1</span></span><br><span class="line">		<span class="keyword">return</span> <span class="string">'Bin &#123;&#125;'</span>.format(<span class="number">0</span>-i)</span><br><span class="line">	<span class="keyword">if</span> x &lt;= cutOffPoints[<span class="number">0</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="string">'Bin 0'</span></span><br><span class="line">	<span class="keyword">elif</span> x &gt; cutOffPoints[<span class="number">-1</span>]:</span><br><span class="line">		<span class="keyword">return</span> <span class="string">'Bin &#123;&#125;'</span>.format(numBin<span class="number">-1</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,numBin<span class="number">-1</span>):</span><br><span class="line">			<span class="keyword">if</span> cutOffPoints[i] &lt; x &lt;=  cutOffPoints[i+<span class="number">1</span>]:</span><br><span class="line">				<span class="keyword">return</span> <span class="string">'Bin &#123;&#125;'</span>.format(i+<span class="number">1</span>)</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ChiMerge</span><span class="params">(df,col,target,max_interval=<span class="number">5</span>,special_attribute=[],minBinPcnt=<span class="number">0</span>)</span>:</span></span><br><span class="line">	<span class="string">'''</span></span><br><span class="line"><span class="string">	该函数用于实际的卡方分箱算法操作，最后返回有实际的划分点组成的列表</span></span><br><span class="line"><span class="string">	:param df: pandas.DataFrame 包含目标变量与需要分箱变量的数据集</span></span><br><span class="line"><span class="string">	:param col: str 需要分箱的属性</span></span><br><span class="line"><span class="string">	:param target: str 目标变量，取值0或1</span></span><br><span class="line"><span class="string">	:param max_interval: int 最大分箱数（默认5）。如果原始属性的取值个数低于该参数，不执行这段函数</span></span><br><span class="line"><span class="string">	:param special_attribute: list 不参与分箱的属性取值（可选）</span></span><br><span class="line"><span class="string">	:param minBinPcnt：最小箱的占比（默认0），如果不满足最小分箱占比继续进行组别合并</span></span><br><span class="line"><span class="string">	:return: 分箱结果</span></span><br><span class="line"><span class="string">	'''</span></span><br><span class="line">	colLevels = sorted(list(set(df[col])))  <span class="comment"># 某列的不重复值</span></span><br><span class="line">	N_distinct = len(colLevels)             <span class="comment"># 某列的不重复值计数</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> N_distinct &lt;= max_interval:  <span class="comment">#如果原始属性的取值个数低于max_interval，不执行这段函数（不参与分箱）</span></span><br><span class="line">		<span class="keyword">print</span> (<span class="string">"The number of original levels for '&#123;col&#125;' is &#123;dis_cnt&#125;, which is less than or equal to max intervals"</span>.format(col=col, dis_cnt=N_distinct))</span><br><span class="line">		<span class="keyword">return</span> colLevels[:<span class="number">-1</span>]</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">if</span> len(special_attribute)&gt;=<span class="number">1</span>:</span><br><span class="line">			df2 = df.loc[~df[col].isin(special_attribute)] <span class="comment"># 去掉special_attribute后的df</span></span><br><span class="line">			N_distinct = len(list(set(df2[col])))  <span class="comment"># 去掉special_attribute后的非重复值计数</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			df2 = df.copy()</span><br><span class="line">		</span><br><span class="line">		<span class="comment"># 步骤一: 通过col对数据进行分组，求出每组的总样本数和坏样本数</span></span><br><span class="line">		<span class="keyword">if</span> N_distinct &gt; <span class="number">100</span>:</span><br><span class="line">			split_x = SplitData(df2,col,<span class="number">100</span>) <span class="comment"># 若非重复值计数超过100组，均将其转化成100组，将多余样本都划分到最后一个箱中</span></span><br><span class="line">			df2[<span class="string">'temp_cutoff'</span>] = df2[col].map(<span class="keyword">lambda</span> x: AssignGroup(x,split_x))</span><br><span class="line">			<span class="comment"># Assgingroup函数：每一行的数值和切分点做对比，返回原值在切分后的映射，</span></span><br><span class="line">			<span class="comment"># 经过map以后，生成该特征的值对象的"分箱"后的值        </span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			df2[<span class="string">'temp_cutoff'</span>] = df2[col] <span class="comment"># 不重复值计数不超过100时，不需要进行上述步骤</span></span><br><span class="line">			</span><br><span class="line">		<span class="comment"># 通过上述过程，我们现在可以将该列进行BadRate计算，用来计算每个箱体的坏样本率 以及总体的坏样本率      </span></span><br><span class="line">		(binBadRate, regroup, overallRate) = BinBadRate(df2, <span class="string">'temp_cutoff'</span>, target, grantRateIndicator=<span class="literal">True</span>)</span><br><span class="line">		</span><br><span class="line">		<span class="comment"># 在此，我们将每个单独的属性值分成单独一组</span></span><br><span class="line">		<span class="comment"># 对属性值进行去重排序，然后两两组别进行合并，用于后续的卡方值计算</span></span><br><span class="line">		colLevels = sorted(list(set(df2[<span class="string">'temp_cutoff'</span>])))</span><br><span class="line">		groupIntervals = [[i] <span class="keyword">for</span> i <span class="keyword">in</span> colLevels] <span class="comment"># 把每个箱的值打包成[[],[]]的形式</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment"># 步骤二：通过循环的方式，不断的合并相邻的两个组别，直到：</span></span><br><span class="line">		<span class="comment"># （1）最后分裂出的分箱数 &lt;= 预设的最大分箱数</span></span><br><span class="line">		<span class="comment"># （2）每个箱体必须同时包含好坏样本</span></span><br><span class="line">		<span class="comment"># （3）每个箱体的占比不低于预设值（可选）</span></span><br><span class="line">		<span class="comment"># （4）如果有特殊的属性值，则最终的分箱数 = 预设的最大分箱数 - 特殊值个数</span></span><br><span class="line">		split_intervals = max_interval - len(special_attribute)</span><br><span class="line">		</span><br><span class="line">		<span class="comment"># 每次循环时, 计算合并相邻组别后的卡方值。当组别数大于预设的分箱数时，持续选择最小卡方值的组合并</span></span><br><span class="line">		<span class="keyword">while</span> len(groupIntervals)&gt;split_intervals:</span><br><span class="line">			chisqList = []</span><br><span class="line">			<span class="keyword">for</span> k <span class="keyword">in</span> range(len(groupIntervals)<span class="number">-1</span>):</span><br><span class="line">				temp_group = groupIntervals[k] + groupIntervals[k+<span class="number">1</span>]  <span class="comment"># 返回的是，这两个值组成的列表</span></span><br><span class="line">				<span class="comment"># 因此，可以通过temp_group，每次只选相邻的两组进行相关操作</span></span><br><span class="line">				df2b = regroup.loc[regroup[<span class="string">'temp_cutoff'</span>].isin(temp_group)]</span><br><span class="line">				<span class="comment"># 计算相邻两组的卡方值(通过调用Chi2函数)</span></span><br><span class="line">				chisq = Chi2(df2b,<span class="string">'total'</span>,<span class="string">'bad'</span>)</span><br><span class="line">				chisqList.append(chisq)</span><br><span class="line">			best_comnbined = chisqList.index(min(chisqList)) <span class="comment"># 检索最小卡方值所在的索引    </span></span><br><span class="line">			<span class="comment"># 把groupIntervals的值改成类似的值改成类似从[[1],[2],[3]]到[[1,2],[3]]</span></span><br><span class="line">			groupIntervals[best_comnbined] = groupIntervals[best_comnbined] + groupIntervals[best_comnbined+<span class="number">1</span>]</span><br><span class="line">			groupIntervals.remove(groupIntervals[best_comnbined+<span class="number">1</span>])</span><br><span class="line">		</span><br><span class="line">		<span class="comment"># 上述循环结束后，即可获得预设的分箱数，并且可以得到各分箱的划分点</span></span><br><span class="line">		groupIntervals = [sorted(i) <span class="keyword">for</span> i <span class="keyword">in</span> groupIntervals]</span><br><span class="line">		cutOffPoints = [max(i) <span class="keyword">for</span> i <span class="keyword">in</span> groupIntervals[:<span class="number">-1</span>]] </span><br><span class="line">		</span><br><span class="line">		<span class="comment"># 然后，我们将某列进行分箱编号</span></span><br><span class="line">		groupedvalues = df2[<span class="string">'temp_cutoff'</span>].apply(<span class="keyword">lambda</span> x: AssignBin(x, cutOffPoints))</span><br><span class="line">		df2[<span class="string">'temp_Bin'</span>] = groupedvalues</span><br><span class="line">		<span class="comment"># AssignBin函数：每一行的数值和切分点做对比，返回原值所在的分箱编号（形成新列）    </span></span><br><span class="line">		</span><br><span class="line">		<span class="comment"># 进一步，我们想要保证每个箱体都有好坏样本数</span></span><br><span class="line">		<span class="comment"># 检查是否有箱没有好或者坏样本。如果有，需要跟相邻的箱进行合并，直到每箱同时包含好坏样本</span></span><br><span class="line">		(binBadRate,regroup) = BinBadRate(df2, <span class="string">'temp_Bin'</span>, target)    <span class="comment"># 返回每箱坏样本率字典，和包含'分箱号、总样本数、坏样本数、坏样本率的数据框'）</span></span><br><span class="line">		minBadRate, maxBadRate = min(binBadRate.values()), max(binBadRate.values())</span><br><span class="line">		<span class="keyword">while</span> minBadRate ==<span class="number">0</span> <span class="keyword">or</span> maxBadRate == <span class="number">1</span>:</span><br><span class="line">			<span class="comment"># 找出全部为好／坏样本的箱</span></span><br><span class="line">			indexForBad01 = regroup[regroup[<span class="string">'bad_rate'</span>].isin([<span class="number">0</span>,<span class="number">1</span>])].temp_Bin.tolist()    </span><br><span class="line">			bin = indexForBad01[<span class="number">0</span>]</span><br><span class="line">			<span class="comment"># 如果是最后一箱，则需要和上一个箱进行合并，也就意味着分裂点cutOffPoints中的最后一个划分点需要移除</span></span><br><span class="line">			<span class="keyword">if</span> bin == max(regroup.temp_Bin):</span><br><span class="line">				cutOffPoints = cutOffPoints[:<span class="number">-1</span>]</span><br><span class="line">			<span class="comment"># 如果是第一箱，则需要和下一个箱进行合并，也就意味着分裂点cutOffPoints中的第一个需要移除</span></span><br><span class="line">			<span class="keyword">elif</span> bin == min(regroup.temp_Bin):</span><br><span class="line">				cutOffPoints = cutOffPoints[<span class="number">1</span>:]</span><br><span class="line">			<span class="comment"># 如果是中间的某一箱，则需要和前后中的一个箱体进行合并，具体选择哪个箱体，要依据前后箱体哪个卡方值较小</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="comment"># 和前一箱进行合并，并且计算卡方值</span></span><br><span class="line">				currentIndex = list(regroup.temp_Bin).index(bin)</span><br><span class="line">				prevIndex = list(regroup.temp_Bin)[currentIndex - <span class="number">1</span>]</span><br><span class="line">				df3 = df2.loc[df2[<span class="string">'temp_Bin'</span>].isin([prevIndex, bin])]</span><br><span class="line">				(binBadRate, df2b) = BinBadRate(df3, <span class="string">'temp_Bin'</span>, target)</span><br><span class="line">				chisq1 = Chi2(df2b, <span class="string">'total'</span>, <span class="string">'bad'</span>)</span><br><span class="line">				<span class="comment"># 和后一箱进行合并，并且计算卡方值</span></span><br><span class="line">				laterIndex = list(regroup.temp_Bin)[currentIndex + <span class="number">1</span>]</span><br><span class="line">				df3b = df2.loc[df2[<span class="string">'temp_Bin'</span>].isin([laterIndex, bin])]</span><br><span class="line">				(binBadRate, df2b) = BinBadRate(df3b, <span class="string">'temp_Bin'</span>, target)</span><br><span class="line">				chisq2 = Chi2(df2b, <span class="string">'total'</span>, <span class="string">'bad'</span>)</span><br><span class="line">				<span class="keyword">if</span> chisq1 &lt; chisq2:</span><br><span class="line">					cutOffPoints.remove(cutOffPoints[currentIndex - <span class="number">1</span>])</span><br><span class="line">				<span class="keyword">else</span>:</span><br><span class="line">					cutOffPoints.remove(cutOffPoints[currentIndex])</span><br><span class="line">			</span><br><span class="line">			<span class="comment"># 完成此项合并后，需要再次计算，在新的分箱准则下，每箱是否同时包含好坏样本，</span></span><br><span class="line">			<span class="comment"># 如何仍然出现不能同时包含好坏样本的箱体，继续循坏，直到好坏样本同时出现在每个箱体后，跳出</span></span><br><span class="line">			groupedvalues = df2[<span class="string">'temp'</span>].apply(<span class="keyword">lambda</span> x: AssignBin(x, cutOffPoints))</span><br><span class="line">			df2[<span class="string">'temp_Bin'</span>] = groupedvalues</span><br><span class="line">			(binBadRate, regroup) = BinBadRate(df2, <span class="string">'temp_Bin'</span>, target)</span><br><span class="line">			[minBadRate, maxBadRate] = [min(binBadRate.values()), max(binBadRate.values())]</span><br><span class="line">			</span><br><span class="line">		<span class="comment"># 最后，我们来检查分箱后的最小占比</span></span><br><span class="line">		<span class="keyword">if</span> minBinPcnt &gt; <span class="number">0</span>: <span class="comment"># 如果函数调用初期给的minBinPct不是零，则进一步对箱体进行合并</span></span><br><span class="line">			groupedvalues = df2[<span class="string">'temp'</span>].apply(<span class="keyword">lambda</span> x: AssignBin(x, cutOffPoints))</span><br><span class="line">			df2[<span class="string">'temp_Bin'</span>] = groupedvalues</span><br><span class="line">			valueCounts = groupedvalues.value_counts().to_frame()</span><br><span class="line">			valueCounts[<span class="string">'pcnt'</span>] = valueCounts[<span class="string">'temp'</span>].apply(<span class="keyword">lambda</span> x: x / sum(valueCounts[<span class="string">'temp'</span>]))</span><br><span class="line">			valueCounts = valueCounts.sort_index()</span><br><span class="line">			minPcnt = min(valueCounts[<span class="string">'pcnt'</span>]) <span class="comment"># 得到箱体的最小占比</span></span><br><span class="line">			</span><br><span class="line">			<span class="comment"># 如果箱体最小占比小于给定的分箱占比阈值 且 划分点大于2，进入合并循环中</span></span><br><span class="line">			<span class="keyword">while</span> minPcnt &lt; minBinPcnt <span class="keyword">and</span> len(cutOffPoints) &gt; <span class="number">2</span>: </span><br><span class="line">				<span class="comment"># 找出占比最小的箱</span></span><br><span class="line">				indexForMinPcnt = valueCounts[valueCounts[<span class="string">'pcnt'</span>] == minPcnt].index.tolist()[<span class="number">0</span>]</span><br><span class="line">				<span class="comment"># 如果占比最小的箱是最后一箱，则需要和上一个箱进行合并，也就意味着分裂点cutOffPoints中的最后一个需要移除</span></span><br><span class="line">				<span class="keyword">if</span> indexForMinPcnt == max(valueCounts.index):</span><br><span class="line">					cutOffPoints = cutOffPoints[:<span class="number">-1</span>]</span><br><span class="line">				<span class="comment"># 如果占比最小的箱是第一箱，则需要和下一个箱进行合并，也就意味着分裂点cutOffPoints中的第一个需要移除</span></span><br><span class="line">				<span class="keyword">elif</span> indexForMinPcnt == min(valueCounts.index):</span><br><span class="line">					cutOffPoints = cutOffPoints[<span class="number">1</span>:]</span><br><span class="line">				<span class="comment"># 如果占比最小的箱是中间的某一箱，则需要和前后中的一个箱进行合并，合并依据是较小的卡方值</span></span><br><span class="line">				<span class="keyword">else</span>:</span><br><span class="line">					<span class="comment"># 和前一箱进行合并，并且计算卡方值</span></span><br><span class="line">					currentIndex = list(valueCounts.index).index(indexForMinPcnt)</span><br><span class="line">					prevIndex = list(valueCounts.index)[currentIndex - <span class="number">1</span>]</span><br><span class="line">					df3 = df2.loc[df2[<span class="string">'temp_Bin'</span>].isin([prevIndex, indexForMinPcnt])]</span><br><span class="line">					(binBadRate, df2b) = BinBadRate(df3, <span class="string">'temp_Bin'</span>, target)</span><br><span class="line">					chisq1 = Chi2(df2b, <span class="string">'total'</span>, <span class="string">'bad'</span>)</span><br><span class="line">					<span class="comment"># 和后一箱进行合并，并且计算卡方值</span></span><br><span class="line">					laterIndex = list(valueCounts.index)[currentIndex + <span class="number">1</span>]</span><br><span class="line">					df3b = df2.loc[df2[<span class="string">'temp_Bin'</span>].isin([laterIndex, indexForMinPcnt])]</span><br><span class="line">					(binBadRate, df2b) = BinBadRate(df3b, <span class="string">'temp_Bin'</span>, target)</span><br><span class="line">					chisq2 = Chi2(df2b, <span class="string">'total'</span>, <span class="string">'bad'</span>)</span><br><span class="line">					<span class="keyword">if</span> chisq1 &lt; chisq2:</span><br><span class="line">						cutOffPoints.remove(cutOffPoints[currentIndex - <span class="number">1</span>])</span><br><span class="line">					<span class="keyword">else</span>:</span><br><span class="line">						cutOffPoints.remove(cutOffPoints[currentIndex])        </span><br><span class="line">				groupedvalues = df2[<span class="string">'temp'</span>].apply(<span class="keyword">lambda</span> x: AssignBin(x, cutOffPoints))</span><br><span class="line">				df2[<span class="string">'temp_Bin'</span>] = groupedvalues</span><br><span class="line">				valueCounts = groupedvalues.value_counts().to_frame()</span><br><span class="line">				valueCounts[<span class="string">'pcnt'</span>] = valueCounts[<span class="string">'temp'</span>].apply(<span class="keyword">lambda</span> x: x * <span class="number">1.0</span> / sum(valueCounts[<span class="string">'temp'</span>]))</span><br><span class="line">				valueCounts = valueCounts.sort_index()</span><br><span class="line">				minPcnt = min(valueCounts[<span class="string">'pcnt'</span>])</span><br><span class="line">				</span><br><span class="line">		cutOffPoints = special_attribute + cutOffPoints</span><br><span class="line">		<span class="keyword">return</span> cutOffPoints</span><br></pre></td></tr></table></figure>
+
+<p>(参考 <a href="https://blog.csdn.net/LuLuYao9494/article/details/92083755" target="_blank" rel="noopener">https://blog.csdn.net/LuLuYao9494/article/details/92083755</a> )</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用sklearn的乳腺癌数据集作为例子</span></span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_breast_cancer</span><br><span class="line">cancer = load_breast_cancer()</span><br><span class="line">df = pd.DataFrame(cancer.data, columns = cancer.feature_names)</span><br><span class="line">df[<span class="string">'label'</span>] = pd.DataFrame(cancer.target)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置分箱参数</span></span><br><span class="line">bins = <span class="number">5</span> <span class="comment"># 分箱数</span></span><br><span class="line">col = <span class="string">'mean radius'</span> <span class="comment"># 分箱字段名</span></span><br><span class="line">target = <span class="string">'label'</span> <span class="comment"># 标签字段名</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 等频分箱</span></span><br><span class="line">frequency_cutoff = UnsupervisedSplitBin(df,col,numOfSplit=<span class="number">5</span>,method=<span class="string">'equalFreq'</span>)</span><br><span class="line"><span class="comment"># [11.366, 12.726, 14.058000000000002, 17.067999999999998]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 等距分箱</span></span><br><span class="line">distance_cutoff = UnsupervisedSplitBin(df,col,numOfSplit=<span class="number">5</span>,method=<span class="string">'equalDis'</span>)</span><br><span class="line"><span class="comment"># [11.2068, 15.432599999999999, 19.6584, 23.8842]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 卡方分箱</span></span><br><span class="line">chiMerge_cutoff = ChiMerge(df,col,target,max_interval=<span class="number">5</span>,special_attribute=[],minBinPcnt=<span class="number">0</span>)</span><br><span class="line"><span class="comment"># [12.46, 13.38, 15.0, 16.84]</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="集群pyspark实现"><a href="#集群pyspark实现" class="headerlink" title="集群pyspark实现"></a>集群pyspark实现</h1><p>pyspark.ml.feature提供等频分箱的API可以直接调用</p>
+<p><em>class</em> <code>pyspark.ml.feature.QuantileDiscretizer</code>(<em>numBuckets=2</em>, <em>inputCol=None</em>, <em>outputCol=None</em>, <em>relativeError=0.001</em>, <em>handleInvalid=’error’</em>)<a href="http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.QuantileDiscretizer" target="_blank" rel="noopener">[source](http://spark.apache.org/docs/latest/api/python/_modules/pyspark/ml/feature.html#QuantileDiscretizer)</a></p>
+<p>参数：</p>
+<ol>
+<li>numBuckets：分箱数，但若样本数据只有3个取值，但numBuckets=4，则仍只划分为3个箱</li>
+<li>relativeError：用于控制近似的精度，取值范围为[0,1]，当设置为0时会计算精确的分位数（计算代价较高）</li>
+<li>handleInvalid：选择处理空值的方式，有三种选项：’keep’将空值放入专门的箱中，例如如果使用4个箱，则将非空数据放入箱0-3中，将空值放入特殊的箱4中；’skip’：过滤掉含有空值的行；’error’报错。（？实验了一下这三种选项并没有区别？？？结果没有处理缺失值仍输出空值，也没有报错……？？）</li>
+<li>inputCol：输入要分箱的列名，outputCol：输出分箱后新特征的列名</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> QuantileDiscretizer</span><br><span class="line"><span class="comment"># 导入数据集</span></span><br><span class="line">df = spark.sql(<span class="string">"select * from test.sklearn_dataset_iris"</span>)</span><br><span class="line">col = <span class="string">'sepal length (cm)'</span> <span class="comment"># 对该列进行等频分箱</span></span><br><span class="line"></span><br><span class="line">qd = QuantileDiscretizer(numBuckets=<span class="number">5</span>, inputCol=col, outputCol=col+<span class="string">'_bin'</span>)</span><br><span class="line">qd_model = qd.fit(df)</span><br><span class="line"><span class="keyword">print</span> (qd_model.getSplits()) <span class="comment"># 打印分箱的节点</span></span><br><span class="line">df_new = qd_model.transform(df)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/特征工程/" rel="tag"><i class="fa fa-tag"></i> 特征工程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/14/SVM/" rel="next" title="SVM">
+                <i class="fa fa-chevron-left"></i> SVM
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">xjw924</p>
+              <p class="site-description motion-element" itemprop="description">今天不学习！明天变垃圾！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xjw924" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#理论"><span class="nav-number">1.</span> <span class="nav-text">理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优势"><span class="nav-number">1.2.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用方法"><span class="nav-number">1.3.</span> <span class="nav-text">常用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无监督分箱"><span class="nav-number">1.3.1.</span> <span class="nav-text">无监督分箱</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#等频分箱"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">等频分箱</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等距分箱"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">等距分箱</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有监督分箱"><span class="nav-number">1.3.2.</span> <span class="nav-text">有监督分箱</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#卡方分箱"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">卡方分箱</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单机python实现"><span class="nav-number">2.</span> <span class="nav-text">单机python实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无监督分箱-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">无监督分箱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有监督分箱：卡方分箱"><span class="nav-number">2.0.2.</span> <span class="nav-text">有监督分箱：卡方分箱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">2.0.3.</span> <span class="nav-text">测试</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#集群pyspark实现"><span class="nav-number">3.</span> <span class="nav-text">集群pyspark实现</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xjw924</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

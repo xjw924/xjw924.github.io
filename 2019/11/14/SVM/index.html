@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="statistics,">
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
@@ -79,18 +79,19 @@
 
 
 
-<meta name="description" content="大数据 v.s. 统计学统计学注重的是方式方法 大数据则更关注于整个数据价值化的过程，不仅需要统计学知识，还需要具备数学知识和计算机知识 从一定角度来说，统计学为大数据进行数据价值化奠定了一定的基础">
-<meta name="keywords" content="statistics">
+<meta name="description" content="SVM是一种二类分类模型。它的基本模型是在特征空间中寻找间隔最大化的分离超平面的线性分类器。（间隔最大是它有别于感知机） 训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机； 训练数据近似线性可分时，引入松弛变量，通过软间隔最大化，学习一个线性分类器，即线性支持向量机； 训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。 为什么要转化为对偶问题？">
 <meta property="og:type" content="article">
-<meta property="og:title" content="统计思考">
-<meta property="og:url" content="http://yoursite.com/2019/10/18/统计思考/index.html">
+<meta property="og:title" content="SVM">
+<meta property="og:url" content="http://yoursite.com/2019/11/14/SVM/index.html">
 <meta property="og:site_name" content="小徐小徐不断学习">
-<meta property="og:description" content="大数据 v.s. 统计学统计学注重的是方式方法 大数据则更关注于整个数据价值化的过程，不仅需要统计学知识，还需要具备数学知识和计算机知识 从一定角度来说，统计学为大数据进行数据价值化奠定了一定的基础">
+<meta property="og:description" content="SVM是一种二类分类模型。它的基本模型是在特征空间中寻找间隔最大化的分离超平面的线性分类器。（间隔最大是它有别于感知机） 训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机； 训练数据近似线性可分时，引入松弛变量，通过软间隔最大化，学习一个线性分类器，即线性支持向量机； 训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。 为什么要转化为对偶问题？">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-18T02:47:43.633Z">
+<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
+<meta property="og:updated_time" content="2019-11-14T03:36:54.770Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="统计思考">
-<meta name="twitter:description" content="大数据 v.s. 统计学统计学注重的是方式方法 大数据则更关注于整个数据价值化的过程，不仅需要统计学知识，还需要具备数学知识和计算机知识 从一定角度来说，统计学为大数据进行数据价值化奠定了一定的基础">
+<meta name="twitter:title" content="SVM">
+<meta name="twitter:description" content="SVM是一种二类分类模型。它的基本模型是在特征空间中寻找间隔最大化的分离超平面的线性分类器。（间隔最大是它有别于感知机） 训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机； 训练数据近似线性可分时，引入松弛变量，通过软间隔最大化，学习一个线性分类器，即线性支持向量机； 训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。 为什么要转化为对偶问题？">
+<meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
 
 
 
@@ -120,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/10/18/统计思考/">
+  <link rel="canonical" href="http://yoursite.com/2019/11/14/SVM/">
 
 
 
 
 
-  <title>统计思考 | 小徐小徐不断学习</title>
+  <title>SVM | 小徐小徐不断学习</title>
   
 
 
@@ -253,7 +254,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/18/统计思考/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/14/SVM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xjw924">
@@ -270,7 +271,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">统计思考</h1>
+          <h1 class="post-title" itemprop="name headline">SVM</h1>
         
 
         <div class="post-meta">
@@ -282,8 +283,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-18T09:53:47+08:00">
-                2019-10-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-14T11:22:19+08:00">
+                2019-11-14
               </time>
             
 
@@ -320,9 +321,38 @@
       
 
       
-        <h1 id="大数据-v-s-统计学"><a href="#大数据-v-s-统计学" class="headerlink" title="大数据 v.s. 统计学"></a>大数据 v.s. 统计学</h1><p>统计学注重的是方式方法</p>
-<p>大数据则更关注于整个数据价值化的过程，不仅需要统计学知识，还需要具备数学知识和计算机知识</p>
-<p>从一定角度来说，统计学为大数据进行数据价值化奠定了一定的基础</p>
+        <p>SVM是一种二类分类模型。它的基本模型是<strong>在特征空间中寻找间隔最大化的分离超平面的线性分类器</strong>。（间隔最大是它有别于感知机）</p>
+<p>训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机；</p>
+<p>训练数据近似线性可分时，引入松弛变量，通过软间隔最大化，学习一个线性分类器，即线性支持向量机；</p>
+<p>训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。</p>
+<h2 id="为什么要转化为对偶问题？"><a href="#为什么要转化为对偶问题？" class="headerlink" title="为什么要转化为对偶问题？"></a>为什么要转化为对偶问题？</h2><p>对偶问题通常更易求解</p>
+<p>便于引入核函数，推广到非线性分类问题</p>
+<h2 id="SVM的核函数，引入核函数本质"><a href="#SVM的核函数，引入核函数本质" class="headerlink" title="SVM的核函数，引入核函数本质"></a>SVM的核函数，引入核函数本质</h2><p>对于非线性的情况，SVM 的处理方法是选择一个核函数 κ(⋅,⋅) ，通过将数据映射到高维空间，来解决在原始空间中线性不可分的问题。</p>
+<p>此外，因为训练样例一般是不会独立出现的，它们总是以成对样例的内积形式出现，而用对偶形式表示学习器的优势在为在该表示中可调参数的个数不依赖输入属性的个数，通过使用恰当的核函数来替代内积，可以隐式得将非线性的训练数据映射到高维空间</p>
+<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg" alt="img"></p>
+<p><strong>核方法有什么优点：</strong></p>
+<p>\1.    使我们能够使用保证有效收敛的凸优化技术来学习非线性模型（关于x的函数），因为可认为φ是固定的，仅优化α，即优化算法可以将决策函数视为不同空间中的线性函数</p>
+<p>\2.    核函数的实现方法通常比直接构建φ(x)再计算内积高效很多，而且某些时候φ(x)是无限维的，普通地计算内积很困难。</p>
+<h2 id="²-SVM的优缺点"><a href="#²-SVM的优缺点" class="headerlink" title="² SVM的优缺点"></a>² SVM的优缺点</h2><p>优点：</p>
+<p>可以很好地处理小样本数据</p>
+<p>可解决非线性问题</p>
+<p>缺点：</p>
+<p>对缺失数据敏感</p>
+<p>SVC函数的训练时间是随训练样本平方级增长</p>
+<p>对于多分类问题，SVC采用的是OVO投票机制，需要两两类别建立分类器，训练时间可能比较长。</p>
+<h2 id="²-SVM核技巧原理，如何选择核函数"><a href="#²-SVM核技巧原理，如何选择核函数" class="headerlink" title="² SVM核技巧原理，如何选择核函数"></a>² SVM核技巧原理，如何选择核函数</h2><h2 id="²-SVM的损失函数"><a href="#²-SVM的损失函数" class="headerlink" title="² SVM的损失函数"></a>² SVM的损失函数</h2><h2 id="²-SVM的推导过程"><a href="#²-SVM的推导过程" class="headerlink" title="² SVM的推导过程"></a>² SVM的推导过程</h2><h2 id="²-SVM怎么扩展到多分类问题"><a href="#²-SVM怎么扩展到多分类问题" class="headerlink" title="² SVM怎么扩展到多分类问题"></a>² SVM怎么扩展到多分类问题</h2><p>1）直接在目标函数上进行修改，将多个分类面的参数求解合并到一个最优化问题中，通过求解该最优化问题“一次性”实现多类分类，但计算复杂，实现起来较困难</p>
+<p>2）间接法：通过组合多个二分类器来实现多分类器的构造，有一对一，一对多</p>
+<h2 id="²-SVM需要解决的重要数学问题是什么"><a href="#²-SVM需要解决的重要数学问题是什么" class="headerlink" title="² SVM需要解决的重要数学问题是什么"></a>² SVM需要解决的重要数学问题是什么</h2><h2 id="²-LR与SVM的区别"><a href="#²-LR与SVM的区别" class="headerlink" title="² LR与SVM的区别"></a>² LR与SVM的区别</h2><p>联系：</p>
+<p>1）LR和SVM都可以处理分类问题</p>
+<p>2）都基于线性函数wTx+b</p>
+<p>区别：</p>
+<p>1） LR是参数模型，SVM是非参数模型。 </p>
+<p>2） LR可输出概率，SVM不输出概率，只输出类别</p>
+<p>3） 从损失函数来看，LR是logistic loss，SVM是hinge loss，这两个损失函数的目的都是增加对分类影响较大的数据点的权重，减少与分类关系较小的数据点的权重</p>
+<p>4） 在训练集较小时，SVM较适用，而LR需要较多的样本。LR相对来说模型更简单更快，好理解，特别是大规模线性分类时比较方便。而SVM的理解和优化相对来说复杂一些</p>
+<p>5） LR模型找到的超平面是尽量让所有点都远离他，而SVM寻找的那个超平面，是只让最靠近中间分割线的那些点尽量远离，即只用到那些支持向量的样本。</p>
+<p>6） 对非线性问题的处理方式不同，LR主要靠特征变换或构造（组合交叉特征）；SVM也可以这样，还可以通过核方法</p>
+<h2 id="²-什么时候用LR或SVM？"><a href="#²-什么时候用LR或SVM？" class="headerlink" title="² 什么时候用LR或SVM？"></a>² 什么时候用LR或SVM？</h2><p>如果Feature的数量很大，跟样本数量差不多，这时候选用LR或者是Linear Kernel的SVM<br> 如果Feature的数量比较小，样本数量一般，不算大也不算小，选用SVM+Gaussian Kernel<br> 如果Feature的数量比较小，而样本数量很多，需要手工添加一些feature变成第一种情况。(LR和不带核函数的SVM比较类似。)</p>
 
       
     </div>
@@ -338,12 +368,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/statistics/" rel="tag"><i class="fa fa-tag"></i> statistics</a>
-          
-        </div>
-      
 
       
       
@@ -353,8 +377,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/10/17/Hive/" rel="next" title="Hive">
-                <i class="fa fa-chevron-left"></i> Hive
+              <a href="/2019/11/13/GBDT/" rel="next" title="GBDT">
+                <i class="fa fa-chevron-left"></i> GBDT
               </a>
             
           </div>
@@ -363,8 +387,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/10/18/LogisticRegression/" rel="prev" title="Logistic Regression 逻辑回归">
-                Logistic Regression 逻辑回归 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/01/20/分箱/" rel="prev" title="分箱">
+                分箱 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -507,7 +531,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大数据-v-s-统计学"><span class="nav-number">1.</span> <span class="nav-text">大数据 v.s. 统计学</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要转化为对偶问题？"><span class="nav-number">1.</span> <span class="nav-text">为什么要转化为对偶问题？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SVM的核函数，引入核函数本质"><span class="nav-number">2.</span> <span class="nav-text">SVM的核函数，引入核函数本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM的优缺点"><span class="nav-number">3.</span> <span class="nav-text">² SVM的优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM核技巧原理，如何选择核函数"><span class="nav-number">4.</span> <span class="nav-text">² SVM核技巧原理，如何选择核函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM的损失函数"><span class="nav-number">5.</span> <span class="nav-text">² SVM的损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM的推导过程"><span class="nav-number">6.</span> <span class="nav-text">² SVM的推导过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM怎么扩展到多分类问题"><span class="nav-number">7.</span> <span class="nav-text">² SVM怎么扩展到多分类问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM需要解决的重要数学问题是什么"><span class="nav-number">8.</span> <span class="nav-text">² SVM需要解决的重要数学问题是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-LR与SVM的区别"><span class="nav-number">9.</span> <span class="nav-text">² LR与SVM的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-什么时候用LR或SVM？"><span class="nav-number">10.</span> <span class="nav-text">² 什么时候用LR或SVM？</span></a></li></ol></div>
             
 
           </div>
