@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  模型是使用离散特征还是连续特征，其实是一个“海量离散特征+简单模型” 同 “少量连续特征+复杂模型”的权衡。既可以离散化用线性模型，也可以用连续特征加深度学习。就看是喜欢折腾特征还是折腾模型了。通常来说，前者容易，而且可以n个人一起并行做，有成功经验；后者目前看">
+<meta name="description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  优势 离散化后的特征对异常数据有很强的鲁棒性，模型更加稳定。比如年龄&amp;gt;70岁为一个分箱，异常数据如年龄为300岁同样会划分到该箱，不会给模型造成很大的干扰；比如将20岁-30岁划分为一个区间，不会因为年龄增长一岁就变成一个完全不同的人。而对于处于区间相邻处">
 <meta name="keywords" content="特征工程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分箱">
 <meta property="og:url" content="http://yoursite.com/2020/01/20/分箱/index.html">
 <meta property="og:site_name" content="小徐小徐不断学习">
-<meta property="og:description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  模型是使用离散特征还是连续特征，其实是一个“海量离散特征+简单模型” 同 “少量连续特征+复杂模型”的权衡。既可以离散化用线性模型，也可以用连续特征加深度学习。就看是喜欢折腾特征还是折腾模型了。通常来说，前者容易，而且可以n个人一起并行做，有成功经验；后者目前看">
+<meta property="og:description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  优势 离散化后的特征对异常数据有很强的鲁棒性，模型更加稳定。比如年龄&amp;gt;70岁为一个分箱，异常数据如年龄为300岁同样会划分到该箱，不会给模型造成很大的干扰；比如将20岁-30岁划分为一个区间，不会因为年龄增长一岁就变成一个完全不同的人。而对于处于区间相邻处">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-26T09:48:23.494Z">
+<meta property="og:updated_time" content="2020-01-26T09:55:09.098Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分箱">
-<meta name="twitter:description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  模型是使用离散特征还是连续特征，其实是一个“海量离散特征+简单模型” 同 “少量连续特征+复杂模型”的权衡。既可以离散化用线性模型，也可以用连续特征加深度学习。就看是喜欢折腾特征还是折腾模型了。通常来说，前者容易，而且可以n个人一起并行做，有成功经验；后者目前看">
+<meta name="twitter:description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。 把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科）  优势 离散化后的特征对异常数据有很强的鲁棒性，模型更加稳定。比如年龄&amp;gt;70岁为一个分箱，异常数据如年龄为300岁同样会划分到该箱，不会给模型造成很大的干扰；比如将20岁-30岁划分为一个区间，不会因为年龄增长一岁就变成一个完全不同的人。而对于处于区间相邻处">
 
 
 
@@ -293,6 +293,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FeatureEngineering/" itemprop="url" rel="index">
+                    <span itemprop="name">FeatureEngineering</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -322,7 +344,6 @@
       
         <h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>将连续型的数据分为几个数据段，即特征离散化。</p>
 <p>把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科） </p>
-<p>模型是使用离散特征还是连续特征，其实是一个“海量离散特征+简单模型” 同 “少量连续特征+复杂模型”的权衡。既可以离散化用线性模型，也可以用连续特征加深度学习。就看是喜欢折腾特征还是折腾模型了。通常来说，前者容易，而且可以n个人一起并行做，有成功经验；后者目前看很赞，能走多远还须拭目以待。 </p>
 <h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
 <li><p><strong>离散化后的特征对异常数据有很强的鲁棒性，模型更加稳定。</strong>比如年龄&gt;70岁为一个分箱，异常数据如年龄为300岁同样会划分到该箱，不会给模型造成很大的干扰；比如将20岁-30岁划分为一个区间，不会因为年龄增长一岁就变成一个完全不同的人。而对于处于区间相邻处的样本会刚好相反，因此如何划分区间也很重要。</p>
 </li>
@@ -558,7 +579,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
