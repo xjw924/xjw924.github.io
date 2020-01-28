@@ -1,471 +1,332 @@
-<!DOCTYPE HTML>
-<html lang="zh-Hans">
+<!DOCTYPE html>
 
 
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta name="keywords" content="Hive, 小徐小徐不断学习">
-    <meta name="description" content="什么是Hive基于Hadoop的一个数据仓库工具
-数据存储在HDFS上数据底层实现用MapReduce（默认使用MR，也可以使用Spark）执行程序运行在Yarn上
-功能：可以将结构化的数据文件映射为一张表，并提供类SQL查询功能
-本质：将">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="renderer" content="webkit|ie-stand|ie-comp">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Hive | 小徐小徐不断学习</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
 
-    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
-    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
-    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/matery.css">
-    <link rel="stylesheet" type="text/css" href="/css/my.css">
-    
-    <script src="/libs/jquery/jquery.min.js"></script>
-    
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="hive,hadoop,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一些Hive的介绍和面试题目总结">
+<meta name="keywords" content="hive,hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive">
+<meta property="og:url" content="http://yoursite.com/2019/10/17/hive/index.html">
+<meta property="og:site_name" content="小徐小徐不断学习">
+<meta property="og:description" content="一些Hive的介绍和面试题目总结">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/10/17/hive/C:%5CUsers%5C%E5%BE%90%E4%BD%B3%E6%9C%AA%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1573652534350.png">
+<meta property="og:updated_time" content="2019-11-14T03:19:50.980Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hive">
+<meta name="twitter:description" content="一些Hive的介绍和面试题目总结">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/17/hive/C:%5CUsers%5C%E5%BE%90%E4%BD%B3%E6%9C%AA%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1573652534350.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/17/hive/">
+
+
+
+
+
+  <title>Hive | 小徐小徐不断学习</title>
+  
+
+
+
+
+
+
+
+
 <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-<body>
-    <header class="navbar-fixed">
-    <nav id="headNav" class="bg-color nav-transparent">
-        <div id="navContainer" class="nav-wrapper head-container">
-            <div class="brand-logo">
-                <a href="/" class="waves-effect waves-light">
-                    
-                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
-                    
-                    <span class="logo-span">小徐小徐不断学习</span>
-                </a>
-            </div>
-            
+  
+  
+    
+  
 
-<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
-<ul class="right nav-menu">
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/" class="waves-effect waves-light">
-      
-      <i class="fas fa-home" style="zoom: 0.6;"></i>
-      
-      <span>Index</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/tags" class="waves-effect waves-light">
-      
-      <i class="fas fa-tags" style="zoom: 0.6;"></i>
-      
-      <span>Tags</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/categories" class="waves-effect waves-light">
-      
-      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
-      
-      <span>Categories</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/archives" class="waves-effect waves-light">
-      
-      <i class="fas fa-archive" style="zoom: 0.6;"></i>
-      
-      <span>Archives</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/about" class="waves-effect waves-light">
-      
-      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
-      
-      <span>About</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/contact" class="waves-effect waves-light">
-      
-      <i class="fas fa-comments" style="zoom: 0.6;"></i>
-      
-      <span>Contact</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/friends" class="waves-effect waves-light">
-      
-      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
-      
-      <span>Friends</span>
-    </a>
-    
-  </li>
-  
-  <li>
-    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
-      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
-    </a>
-  </li>
-</ul>
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
 
-<div id="mobile-nav" class="side-nav sidenav">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
 
-    <div class="mobile-head bg-color">
-        
-        <img src="/medias/logo.png" class="logo-img circle responsive-img">
-        
-        <div class="logo-name">小徐小徐不断学习</div>
-        <div class="logo-desc">
-            
-            这里是小徐的个人学习blog
-            
-        </div>
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小徐小徐不断学习</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
     </div>
+      
+        <p class="site-subtitle">Hi, there~</p>
+      
+  </div>
 
-    
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
 
-    <ul class="menu-list mobile-menu-list">
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
         
-        <li class="m-nav-item">
-	  
-		<a href="/" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-home"></i>
-			
-			Index
-		</a>
-          
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
         </li>
+      
         
-        <li class="m-nav-item">
-	  
-		<a href="/tags" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-tags"></i>
-			
-			Tags
-		</a>
-          
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
         </li>
+      
         
-        <li class="m-nav-item">
-	  
-		<a href="/categories" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-bookmark"></i>
-			
-			Categories
-		</a>
-          
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
         </li>
+      
         
-        <li class="m-nav-item">
-	  
-		<a href="/archives" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-archive"></i>
-			
-			Archives
-		</a>
-          
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
         </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/about" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-user-circle"></i>
-			
-			About
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/contact" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-comments"></i>
-			
-			Contact
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/friends" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-address-book"></i>
-			
-			Friends
-		</a>
-          
-        </li>
-        
-        
-        <li><div class="divider"></div></li>
-        <li>
-            <a href="https://github.com/xjw924" class="waves-effect waves-light" target="_blank">
-                <i class="fab fa-github-square fa-fw"></i>Fork Me
-            </a>
-        </li>
-        
+      
+
+      
     </ul>
-</div>
+  
 
-        </div>
-
-        
-            <style>
-    .nav-transparent .github-corner {
-        display: none !important;
-    }
-
-    .github-corner {
-        position: absolute;
-        z-index: 10;
-        top: 0;
-        right: 0;
-        border: 0;
-        transform: scale(1.1);
-    }
-
-    .github-corner svg {
-        color: #0f9d58;
-        fill: #fff;
-        height: 64px;
-        width: 64px;
-    }
-
-    .github-corner:hover .octo-arm {
-        animation: a 0.56s ease-in-out;
-    }
-
-    .github-corner .octo-arm {
-        animation: none;
-    }
-
-    @keyframes a {
-        0%,
-        to {
-            transform: rotate(0);
-        }
-        20%,
-        60% {
-            transform: rotate(-25deg);
-        }
-        40%,
-        80% {
-            transform: rotate(10deg);
-        }
-    }
-</style>
-
-<a href="https://github.com/xjw924" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
-   data-tooltip="Fork Me" data-position="left" data-delay="50">
-    <svg viewBox="0 0 250 250" aria-hidden="true">
-        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
-              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
-              fill="currentColor" class="octo-body"></path>
-    </svg>
-</a>
-        
-    </nav>
-
-</header>
-
-    
+  
+</nav>
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
-    <div class="container" style="right: 0px;left: 0px;">
-        <div class="row">
-            <div class="col s12 m12 l12">
-                <div class="brand">
-                    <h1 class="description center-align post-title">Hive</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+ </div>
+    </header>
 
-
-
-
-<main class="post-container content">
-
-    
-    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
-<style>
-    #articleContent h1::before,
-    #articleContent h2::before,
-    #articleContent h3::before,
-    #articleContent h4::before,
-    #articleContent h5::before,
-    #articleContent h6::before {
-        display: block;
-        content: " ";
-        height: 100px;
-        margin-top: -100px;
-        visibility: hidden;
-    }
-
-    #articleContent :focus {
-        outline: none;
-    }
-
-    .toc-fixed {
-        position: fixed;
-        top: 64px;
-    }
-
-    .toc-widget {
-        width: 345px;
-        padding-left: 20px;
-    }
-
-    .toc-widget .toc-title {
-        margin: 35px 0 15px 0;
-        padding-left: 17px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        line-height: 1.5rem;
-    }
-
-    .toc-widget ol {
-        padding: 0;
-        list-style: none;
-    }
-
-    #toc-content {
-        height: calc(100vh - 250px);
-        overflow: auto;
-    }
-
-    #toc-content ol {
-        padding-left: 10px;
-    }
-
-    #toc-content ol li {
-        padding-left: 10px;
-    }
-
-    #toc-content .toc-link:hover {
-        color: #42b983;
-        font-weight: 700;
-        text-decoration: underline;
-    }
-
-    #toc-content .toc-link::before {
-        background-color: transparent;
-        max-height: 25px;
-    }
-
-    #toc-content .is-active-link {
-        color: #42b983;
-    }
-
-    #toc-content .is-active-link::before {
-        background-color: #42b983;
-    }
-
-    #floating-toc-btn {
-        position: fixed;
-        right: 15px;
-        bottom: 76px;
-        padding-top: 15px;
-        margin-bottom: 0;
-        z-index: 998;
-    }
-
-    #floating-toc-btn .btn-floating {
-        width: 48px;
-        height: 48px;
-    }
-
-    #floating-toc-btn .btn-floating i {
-        line-height: 48px;
-        font-size: 1.4rem;
-    }
-</style>
-<div class="row">
-    <div id="main-content" class="col s12 m12 l9">
-        <!-- 文章内容详情 -->
-<div id="artDetail">
-    <div class="card">
-        <div class="card-content article-info">
-            <div class="row tag-cate">
-                <div class="col s7">
-                    
-                    <div class="article-tag">
-                        
-                            <a href="/tags/hive/">
-                                <span class="chip bg-color">hive</span>
-                            </a>
-                        
-                            <a href="/tags/hadoop/">
-                                <span class="chip bg-color">hadoop</span>
-                            </a>
-                        
-                    </div>
-                    
-                </div>
-                <div class="col s5 right-align">
-                    
-                </div>
-            </div>
-
-            <div class="post-info">
-                
-                <div class="post-date info-break-policy">
-                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2019-10-17
-                </div>
-                
-
-                
-
-                
-
-                
-				
-                
-            </div>
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
             
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/17/hive/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xjw924">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小徐小徐不断学习">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hive</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-17T16:06:46+08:00">
+                2019-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  一些Hive的介绍和面试题目总结
+              </div>
+          
+
         </div>
-        <hr class="clearfix">
-        <div class="card-content article-card-content">
-            <div id="articleContent">
-                <h1 id="什么是Hive"><a href="#什么是Hive" class="headerlink" title="什么是Hive"></a>什么是Hive</h1><p><strong>基于Hadoop</strong>的一个<strong>数据仓库工具</strong></p>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是Hive"><a href="#什么是Hive" class="headerlink" title="什么是Hive"></a>什么是Hive</h1><p><strong>基于Hadoop</strong>的一个<strong>数据仓库工具</strong></p>
 <p>数据存储在HDFS上<br>数据底层实现用MapReduce（默认使用MR，也可以使用Spark）<br>执行程序运行在Yarn上</p>
 <p>功能：可以将结构化的数据文件映射为一张表，并提供<strong>类SQL</strong>查询功能</p>
 <p>本质：<strong>将HiveQL转化为MapReduce程序</strong>，是一个分析引擎，相当于一个客户端</p>
@@ -584,40 +445,24 @@
 <h1 id="DDL数据定义"><a href="#DDL数据定义" class="headerlink" title="DDL数据定义"></a>DDL数据定义</h1><p> DDL(Data Definition Language)数据定义语言：</p>
 <p>适用范围：对数据库中的某些对象(例如: database,table)进行管理，如Create,Alter, Drop</p>
 <h2 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h2><p>默认存储路径是/user/hive/warehouse/*.db </p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">database</span> db_hive<span class="token punctuation">;</span></code></pre>
-<h2 id="查询数据库"><a href="#查询数据库" class="headerlink" title="查询数据库"></a>查询数据库</h2><pre class=" language-sql"><code class="language-sql"><span class="token keyword">show</span> <span class="token keyword">databases</span><span class="token punctuation">;</span>
-<span class="token keyword">show</span> <span class="token keyword">databases</span> <span class="token operator">like</span> <span class="token string">'db_hive*'</span><span class="token punctuation">;</span>
-<span class="token keyword">desc</span> <span class="token keyword">database</span> db_hive<span class="token punctuation">;</span>
-<span class="token keyword">desc</span> <span class="token keyword">database</span> <span class="token keyword">extended</span> db_hive<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">--显示数据库详细信息</span></code></pre>
-<h2 id="切换当前数据库"><a href="#切换当前数据库" class="headerlink" title="切换当前数据库"></a>切换当前数据库</h2><pre class=" language-sql"><code class="language-sql"><span class="token keyword">use</span> db_hive<span class="token punctuation">;</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> db_hive;</span><br></pre></td></tr></table></figure>
+
+<h2 id="查询数据库"><a href="#查询数据库" class="headerlink" title="查询数据库"></a>查询数据库</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span> <span class="keyword">like</span> <span class="string">'db_hive*'</span>;</span><br><span class="line">desc database db_hive;</span><br><span class="line">desc database extended db_hive;  <span class="comment">--显示数据库详细信息</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="切换当前数据库"><a href="#切换当前数据库" class="headerlink" title="切换当前数据库"></a>切换当前数据库</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> db_hive;</span><br></pre></td></tr></table></figure>
+
 <h2 id="修改数据库"><a href="#修改数据库" class="headerlink" title="修改数据库"></a>修改数据库</h2><p>用户可以使用ALTER DATABASE命令为某个数据库的DBPROPERTIES设置键-值对属性值，来描述这个数据库的属性信息。</p>
 <p><strong>数据库的其他元数据信息都是不可更改的，包括数据库名和数据库所在的目录位置。</strong></p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">alter</span> <span class="token keyword">database</span> db_hive <span class="token keyword">set</span> dbproperties<span class="token punctuation">(</span><span class="token string">'createtime'</span><span class="token operator">=</span><span class="token string">'20170830'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<h2 id="建表"><a href="#建表" class="headerlink" title="建表"></a>建表</h2><pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token punctuation">[</span>EXTERNAL<span class="token punctuation">]</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span><span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span><span class="token punctuation">]</span> table_name 
-<span class="token punctuation">[</span><span class="token punctuation">(</span>col_name data_type <span class="token punctuation">[</span><span class="token keyword">COMMENT</span> col_comment<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">]</span> 
-<span class="token punctuation">[</span><span class="token keyword">COMMENT</span> table_comment<span class="token punctuation">]</span> <span class="token comment" spellcheck="true">--为表和列添加注释</span>
-<span class="token punctuation">[</span>PARTITIONED <span class="token keyword">BY</span> <span class="token punctuation">(</span>col_name data_type <span class="token punctuation">[</span><span class="token keyword">COMMENT</span> col_comment<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token comment" spellcheck="true">--创建分区表</span>
-<span class="token punctuation">[</span><span class="token keyword">CLUSTERED</span> <span class="token keyword">BY</span> <span class="token punctuation">(</span>col_name<span class="token punctuation">,</span> col_name<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">--创建分桶表</span>
-<span class="token punctuation">[</span>SORTED <span class="token keyword">BY</span> <span class="token punctuation">(</span>col_name <span class="token punctuation">[</span><span class="token keyword">ASC</span><span class="token operator">|</span><span class="token keyword">DESC</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token keyword">INTO</span> num_buckets BUCKETS<span class="token punctuation">]</span> <span class="token comment" spellcheck="true">--不常用</span>
-<span class="token punctuation">[</span><span class="token keyword">ROW</span> FORMAT DELIMITED <span class="token keyword">FIELDS</span> <span class="token keyword">TERMINATED BY</span> char<span class="token punctuation">]</span> <span class="token comment" spellcheck="true">--列分隔符</span>
-<span class="token punctuation">[</span>STORED <span class="token keyword">AS</span> file_format<span class="token punctuation">]</span> <span class="token comment" spellcheck="true">--指定存储文件类型</span>
-<span class="token punctuation">[</span>LOCATION hdfs_path<span class="token punctuation">]</span> <span class="token comment" spellcheck="true">--指定表在HDFS上的存储位置</span>
-<span class="token punctuation">;</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">database</span> db_hive <span class="keyword">set</span> dbproperties(<span class="string">'createtime'</span>=<span class="string">'20170830'</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="建表"><a href="#建表" class="headerlink" title="建表"></a>建表</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> [<span class="keyword">EXTERNAL</span>] <span class="keyword">TABLE</span> [<span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span>] table_name </span><br><span class="line">[(col_name data_type [<span class="keyword">COMMENT</span> col_comment], ...)] </span><br><span class="line">[<span class="keyword">COMMENT</span> table_comment] <span class="comment">--为表和列添加注释</span></span><br><span class="line">[PARTITIONED <span class="keyword">BY</span> (col_name data_type [<span class="keyword">COMMENT</span> col_comment], ...)] <span class="comment">--创建分区表</span></span><br><span class="line">[CLUSTERED <span class="keyword">BY</span> (col_name, col_name, ...) <span class="comment">--创建分桶表</span></span><br><span class="line">[SORTED <span class="keyword">BY</span> (col_name [<span class="keyword">ASC</span>|<span class="keyword">DESC</span>], ...)] <span class="keyword">INTO</span> num_buckets BUCKETS] <span class="comment">--不常用</span></span><br><span class="line">[<span class="keyword">ROW</span> <span class="keyword">FORMAT</span> <span class="keyword">DELIMITED</span> <span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="built_in">char</span>] <span class="comment">--列分隔符</span></span><br><span class="line">[<span class="keyword">STORED</span> <span class="keyword">AS</span> file_format] <span class="comment">--指定存储文件类型</span></span><br><span class="line">[LOCATION hdfs_path] <span class="comment">--指定表在HDFS上的存储位置</span></span><br><span class="line">;</span><br></pre></td></tr></table></figure>
+
 <h3 id="内部表和外部表区别"><a href="#内部表和外部表区别" class="headerlink" title="内部表和外部表区别?"></a>内部表和外部表区别?</h3><p>默认创建的表都是内部表。<br>Hive默认情况下会将这些表的数据存储在由配置项hive.metastore.warehouse.dir(如/user/hive/warehouse)所定义的目录的子目录下。<br>当我们删除一个管理表时，Hive也会删除这个表中数据。管理表不适合和其他工具共享数据。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> xxx<span class="token punctuation">.</span>xxxx
-<span class="token punctuation">(</span>
-    id string<span class="token punctuation">,</span>
-    number string
-<span class="token punctuation">)</span>
-<span class="token keyword">row</span> format delimited <span class="token keyword">fields</span> <span class="token keyword">terminated by</span> <span class="token string">'\t'</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">--以'\t'结尾的行格式分隔字段 </span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> xxx.xxxx</span><br><span class="line">(</span><br><span class="line">	<span class="keyword">id</span> <span class="keyword">string</span>,</span><br><span class="line">	<span class="built_in">number</span> <span class="keyword">string</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;  <span class="comment">--以'\t'结尾的行格式分隔字段</span></span><br></pre></td></tr></table></figure>
+
 <p><strong>被external修饰的为外部表（external table）</strong></p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">create</span> EXTERNAL <span class="token keyword">table</span> xxx<span class="token punctuation">.</span>xxxx
-<span class="token punctuation">(</span>
-    id string<span class="token punctuation">,</span>
-    number string
-<span class="token punctuation">)</span>
-<span class="token keyword">row</span> format delimited <span class="token keyword">fields</span> <span class="token keyword">terminated by</span> <span class="token string">'\t'</span>  <span class="token comment" spellcheck="true">--以'\t'结尾的行格式分隔字段 </span>
-location <span class="token string">'/user/t2'</span><span class="token punctuation">;</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">EXTERNAL</span> <span class="keyword">table</span> xxx.xxxx</span><br><span class="line">(</span><br><span class="line">	<span class="keyword">id</span> <span class="keyword">string</span>,</span><br><span class="line">	<span class="built_in">number</span> <span class="keyword">string</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>  <span class="comment">--以'\t'结尾的行格式分隔字段 </span></span><br><span class="line">location <span class="string">'/user/t2'</span>;</span><br></pre></td></tr></table></figure>
+
 <p><strong>区别：</strong> </p>
 <ol>
 <li>内部表数据由Hive自身管理，外部表数据由HDFS管理 </li>
@@ -625,72 +470,21 @@ location <span class="token string">'/user/t2'</span><span class="token punctuat
 <li>删除内部表会直接删除元数据及存储数据；删除外部表仅仅会删除元数据，HDFS上的文件并不会被删除，这样外部表相对来说更加安全些，数据组织也更加灵活，方便共享源数据。</li>
 </ol>
 <p><strong>相互转换：</strong></p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">alter</span> <span class="token keyword">table</span> student <span class="token keyword">set</span> tblproperties<span class="token punctuation">(</span><span class="token string">'EXTERNAL'</span><span class="token operator">=</span><span class="token string">'TRUE'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">--转为外部表</span>
-<span class="token keyword">alter</span> <span class="token keyword">table</span> student <span class="token keyword">set</span> tblproperties<span class="token punctuation">(</span><span class="token string">'EXTERNAL'</span><span class="token operator">=</span><span class="token string">'FALSE'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">--转为内部表</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> student <span class="keyword">set</span> tblproperties(<span class="string">'EXTERNAL'</span>=<span class="string">'TRUE'</span>); <span class="comment">--转为外部表</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> student <span class="keyword">set</span> tblproperties(<span class="string">'EXTERNAL'</span>=<span class="string">'FALSE'</span>); <span class="comment">--转为内部表</span></span><br></pre></td></tr></table></figure>
+
 <p>注意：(‘EXTERNAL’=’TRUE’)和(‘EXTERNAL’=’FALSE’)为固定写法，区分大小写！</p>
-<h2 id="分区表操作"><a href="#分区表操作" class="headerlink" title="分区表操作"></a>分区表操作</h2><pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 创建分区表</span>
-<span class="token keyword">create</span> <span class="token keyword">table</span> dept_partition   
-<span class="token punctuation">(</span>
-    deptno <span class="token keyword">int</span><span class="token punctuation">,</span> 
-    dname string<span class="token punctuation">,</span> 
-    loc string
-<span class="token punctuation">)</span>
-partitioned <span class="token keyword">by</span> <span class="token punctuation">(</span>month string<span class="token punctuation">)</span>
-<span class="token keyword">row</span> format delimited <span class="token keyword">fields</span> <span class="token keyword">terminated by</span> <span class="token string">'\t'</span><span class="token punctuation">;</span>
+<h2 id="分区表操作"><a href="#分区表操作" class="headerlink" title="分区表操作"></a>分区表操作</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建分区表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> dept_partition   </span><br><span class="line">(</span><br><span class="line">	deptno <span class="built_in">int</span>, </span><br><span class="line">	dname <span class="keyword">string</span>, </span><br><span class="line">	loc <span class="keyword">string</span></span><br><span class="line">)</span><br><span class="line">partitioned <span class="keyword">by</span> (<span class="keyword">month</span> <span class="keyword">string</span>)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建二级分区表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> dept_partition2</span><br><span class="line">(</span><br><span class="line">	deptno <span class="built_in">int</span>, </span><br><span class="line">    dname <span class="keyword">string</span>, </span><br><span class="line">    loc <span class="keyword">string</span></span><br><span class="line">)</span><br><span class="line">partitioned <span class="keyword">by</span> (<span class="keyword">month</span> <span class="keyword">string</span>, <span class="keyword">day</span> <span class="keyword">string</span>)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 导入数据</span></span><br><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/opt/module/datas/dept.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> default.dept_partition <span class="keyword">partition</span>(<span class="keyword">month</span>=<span class="string">'201709'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 增加（多个）分区</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> dept_partition <span class="keyword">add</span> <span class="keyword">partition</span>(<span class="keyword">month</span>=<span class="string">'201705'</span>) <span class="keyword">partition</span>(<span class="keyword">month</span>=<span class="string">'201704'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除分区</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> dept_partition <span class="keyword">drop</span> <span class="keyword">partition</span> (<span class="keyword">month</span>=<span class="string">'201704'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查看分区</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">partitions</span> dept_partition;</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看分区表结构</span></span><br><span class="line">desc formatted dept_partition;</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">-- 创建二级分区表</span>
-<span class="token keyword">create</span> <span class="token keyword">table</span> dept_partition2
-<span class="token punctuation">(</span>
-    deptno <span class="token keyword">int</span><span class="token punctuation">,</span> 
-    dname string<span class="token punctuation">,</span> 
-    loc string
-<span class="token punctuation">)</span>
-partitioned <span class="token keyword">by</span> <span class="token punctuation">(</span>month string<span class="token punctuation">,</span> day string<span class="token punctuation">)</span>
-<span class="token keyword">row</span> format delimited <span class="token keyword">fields</span> <span class="token keyword">terminated by</span> <span class="token string">'\t'</span><span class="token punctuation">;</span>
+<h2 id="修改表"><a href="#修改表" class="headerlink" title="修改表"></a>修改表</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 重命名表</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> old_table <span class="keyword">RENAME</span> <span class="keyword">TO</span> new_table;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加列</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> dept_partition <span class="keyword">add</span> <span class="keyword">columns</span>(deptdesc <span class="keyword">string</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 更新列</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> dept_partition <span class="keyword">change</span> <span class="keyword">column</span> dept_old dept_new <span class="built_in">int</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 替换列</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> dept_partition <span class="keyword">replace</span> <span class="keyword">columns</span>(deptno <span class="keyword">string</span>, dname</span><br><span class="line"> <span class="keyword">string</span>, loc <span class="keyword">string</span>);</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">-- 导入数据</span>
-<span class="token keyword">load</span> <span class="token keyword">data</span> <span class="token keyword">local</span> inpath <span class="token string">'/opt/module/datas/dept.txt'</span> <span class="token keyword">into</span> <span class="token keyword">table</span> <span class="token keyword">default</span><span class="token punctuation">.</span>dept_partition <span class="token keyword">partition</span><span class="token punctuation">(</span>month<span class="token operator">=</span><span class="token string">'201709'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 增加（多个）分区</span>
-<span class="token keyword">alter</span> <span class="token keyword">table</span> dept_partition <span class="token keyword">add</span> <span class="token keyword">partition</span><span class="token punctuation">(</span>month<span class="token operator">=</span><span class="token string">'201705'</span><span class="token punctuation">)</span> <span class="token keyword">partition</span><span class="token punctuation">(</span>month<span class="token operator">=</span><span class="token string">'201704'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 删除分区</span>
-<span class="token keyword">alter</span> <span class="token keyword">table</span> dept_partition <span class="token keyword">drop</span> <span class="token keyword">partition</span> <span class="token punctuation">(</span>month<span class="token operator">=</span><span class="token string">'201704'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 查看分区</span>
-<span class="token keyword">show</span> partitions dept_partition<span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">--查看分区表结构</span>
-<span class="token keyword">desc</span> formatted dept_partition<span class="token punctuation">;</span></code></pre>
-<h2 id="修改表"><a href="#修改表" class="headerlink" title="修改表"></a>修改表</h2><pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 重命名表</span>
-<span class="token keyword">alter</span> <span class="token keyword">table</span> old_table <span class="token keyword">RENAME</span> <span class="token keyword">TO</span> new_table<span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 添加列</span>
-<span class="token keyword">alter</span> <span class="token keyword">table</span> dept_partition <span class="token keyword">add</span> <span class="token keyword">columns</span><span class="token punctuation">(</span>deptdesc string<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 更新列</span>
-<span class="token keyword">alter</span> <span class="token keyword">table</span> dept_partition change <span class="token keyword">column</span> dept_old dept_new <span class="token keyword">int</span><span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 替换列</span>
-<span class="token keyword">alter</span> <span class="token keyword">table</span> dept_partition replace <span class="token keyword">columns</span><span class="token punctuation">(</span>deptno string<span class="token punctuation">,</span> dname
- string<span class="token punctuation">,</span> loc string<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <h1 id="DML数据操作"><a href="#DML数据操作" class="headerlink" title="DML数据操作"></a>DML数据操作</h1><p>DML(Data Manipulation Language 数据操控语言)用于操作数据库对象中包含的数据，也就是说操作的单位是记录。</p>
 <p><strong>DML的操作对象：记录</strong></p>
 <p>DML的主要语句：</p>
 <p>Insert语句：向数据表张插入一条记录。</p>
 <p>Delete语句：删除数据表中的一条或多条记录，也可以删除数据表中的所有记录，但是，它的操作对象仍是记录。</p>
 <p>Update语句：用于修改已存在表中的记录的内容。</p>
-<h2 id="数据导入-导出-清除"><a href="#数据导入-导出-清除" class="headerlink" title="数据导入/导出/清除"></a>数据导入/导出/清除</h2><pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 插入数据</span>
-<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token keyword">table</span> student <span class="token keyword">partition</span><span class="token punctuation">(</span>month<span class="token operator">=</span><span class="token string">'201709'</span><span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">'wangwu'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h2 id="数据导入-导出-清除"><a href="#数据导入-导出-清除" class="headerlink" title="数据导入/导出/清除"></a>数据导入/导出/清除</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 插入数据</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> student <span class="keyword">partition</span>(<span class="keyword">month</span>=<span class="string">'201709'</span>) <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'wangwu'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> student <span class="keyword">partition</span>(<span class="keyword">month</span>=<span class="string">'201708'</span>) </span><br><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>, <span class="keyword">name</span> <span class="keyword">from</span> student <span class="keyword">where</span> <span class="keyword">month</span>=<span class="string">'201709'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- Hive Shell命令导出</span></span><br><span class="line">hive -e 'select * from default.student;' &gt;/opt/module/datas/export/student4.txt;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 清除表中数据（Truncate）</span></span><br><span class="line"><span class="keyword">truncate</span> <span class="keyword">table</span> student;</span><br></pre></td></tr></table></figure>
 
-<span class="token keyword">insert</span> overwrite <span class="token keyword">table</span> student <span class="token keyword">partition</span><span class="token punctuation">(</span>month<span class="token operator">=</span><span class="token string">'201708'</span><span class="token punctuation">)</span> 
-<span class="token keyword">select</span> id<span class="token punctuation">,</span> name <span class="token keyword">from</span> student <span class="token keyword">where</span> month<span class="token operator">=</span><span class="token string">'201709'</span><span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- Hive Shell命令导出</span>
-hive <span class="token operator">-</span><span class="token number">e</span> <span class="token string">'select * from default.student;'</span> <span class="token operator">></span><span class="token operator">/</span>opt<span class="token operator">/</span>module<span class="token operator">/</span>datas<span class="token operator">/</span>export<span class="token operator">/</span>student4<span class="token punctuation">.</span>txt<span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 清除表中数据（Truncate）</span>
-<span class="token keyword">truncate</span> <span class="token keyword">table</span> student<span class="token punctuation">;</span></code></pre>
 <h3 id="drop、truncate和delete的区别"><a href="#drop、truncate和delete的区别" class="headerlink" title="drop、truncate和delete的区别"></a>drop、truncate和delete的区别</h3><ol>
 <li><p>TRUNCATE和DELETE只删除数据， DROP则删除整个表（结构和数据）。</p>
 </li>
@@ -799,20 +593,8 @@ hive <span class="token operator">-</span><span class="token number">e</span> <s
 <h1 id="分区与分桶"><a href="#分区与分桶" class="headerlink" title="分区与分桶"></a>分区与分桶</h1><h2 id="分区表"><a href="#分区表" class="headerlink" title="分区表"></a>分区表</h2><p>按分区键的列值存储在表目录的子目录中，针对的是数据的存储路径，提供一个隔离数据和优化查询的便利方式</p>
 <p>好处：<strong>可以更快地执行查询</strong><br>使用分区列的名称创建一个子目录，当使用where子句进行查询时，<strong>只扫描特定子目录，而不是扫描整个表</strong></p>
 <h2 id="分桶表"><a href="#分桶表" class="headerlink" title="分桶表"></a>分桶表</h2><p>将表中记录按分桶键的哈希值分散进多个文件中，针对的是<strong>数据文件</strong>，将数据集分解成更容易管理的若干部分</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 创建分桶表</span>
-<span class="token keyword">create</span> <span class="token keyword">table</span> stu_buck<span class="token punctuation">(</span>id <span class="token keyword">int</span><span class="token punctuation">,</span> name string<span class="token punctuation">)</span>
-<span class="token keyword">clustered</span> <span class="token keyword">by</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span> 
-<span class="token keyword">into</span> <span class="token number">4</span> buckets
-<span class="token keyword">row</span> format delimited <span class="token keyword">fields</span> <span class="token keyword">terminated by</span> <span class="token string">'\t'</span><span class="token punctuation">;</span>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建分桶表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> stu_buck(<span class="keyword">id</span> <span class="built_in">int</span>, <span class="keyword">name</span> <span class="keyword">string</span>)</span><br><span class="line">clustered <span class="keyword">by</span>(<span class="keyword">id</span>) </span><br><span class="line"><span class="keyword">into</span> <span class="number">4</span> buckets</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 设置参数（否则导入数据后不分桶）</span></span><br><span class="line"><span class="keyword">set</span> hive.enforce.bucketing=<span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 导入数据</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> stu_buck <span class="keyword">select</span> <span class="keyword">id</span>, <span class="keyword">name</span> <span class="keyword">from</span> stu;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 使用分桶抽样查询（对于非常大的数据集，有时用户需要使用的是一个具有代表性的查询结果而不是全部结果。Hive可以通过对表进行抽样来满足这个需求。）</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> stu_buck <span class="keyword">tablesample</span>(<span class="keyword">bucket</span> <span class="number">1</span> <span class="keyword">out</span> <span class="keyword">of</span> <span class="number">4</span> <span class="keyword">on</span> <span class="keyword">id</span>);</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">-- 设置参数（否则导入数据后不分桶）</span>
-<span class="token keyword">set</span> hive<span class="token punctuation">.</span>enforce<span class="token punctuation">.</span>bucketing<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 导入数据</span>
-<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token keyword">table</span> stu_buck <span class="token keyword">select</span> id<span class="token punctuation">,</span> name <span class="token keyword">from</span> stu<span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 使用分桶抽样查询（对于非常大的数据集，有时用户需要使用的是一个具有代表性的查询结果而不是全部结果。Hive可以通过对表进行抽样来满足这个需求。）</span>
-<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> stu_buck tablesample<span class="token punctuation">(</span>bucket <span class="token number">1</span> <span class="token keyword">out</span> <span class="token keyword">of</span> <span class="token number">4</span> <span class="token keyword">on</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span> </code></pre>
 <p>注：tablesample是抽样语句，语法：TABLESAMPLE(BUCKET x OUT OF y) 。</p>
 <p>y必须是table总bucket数的倍数或者因子。hive根据y的大小，<strong>决定抽样的比例</strong>。例如，table总共分了4份，当y=2时，抽取(4/2=)2个bucket的数据，当y=8时，抽取(4/8=)1/2个bucket的数据。</p>
 <p>x表示<strong>从哪个bucket开始抽取</strong>，如果需要取多个分区，以后的分区号为当前分区号加上y。例如，table总bucket数为4，tablesample(bucket 1 out of 2)，表示总共抽取（4/2=）2个bucket的数据，抽取第1(x)个和第3(x+y)个bucket的数据。</p>
@@ -857,17 +639,8 @@ hive <span class="token operator">-</span><span class="token number">e</span> <s
 <td>A</td>
 </tr>
 </tbody></table>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
-    t1<span class="token punctuation">.</span>base<span class="token punctuation">,</span>
-    concat_ws<span class="token punctuation">(</span><span class="token string">','</span><span class="token punctuation">,</span> collect_set<span class="token punctuation">(</span>t1<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span> name
-<span class="token keyword">from</span>
-    <span class="token punctuation">(</span><span class="token keyword">select</span>
-        name<span class="token punctuation">,</span>
-        concat<span class="token punctuation">(</span>constellation<span class="token punctuation">,</span> <span class="token string">","</span><span class="token punctuation">,</span> blood_type<span class="token punctuation">)</span> base
-    <span class="token keyword">from</span>
-        person_info<span class="token punctuation">)</span> t1
-<span class="token keyword">group</span> <span class="token keyword">by</span>
-    t1<span class="token punctuation">.</span>base<span class="token punctuation">;</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    t1.base,</span><br><span class="line">    <span class="keyword">concat_ws</span>(<span class="string">','</span>, collect_set(t1.name)) <span class="keyword">name</span></span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    (<span class="keyword">select</span></span><br><span class="line">        <span class="keyword">name</span>,</span><br><span class="line">        <span class="keyword">concat</span>(constellation, <span class="string">","</span>, blood_type) base</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">        person_info) t1</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span></span><br><span class="line">    t1.base;</span><br></pre></td></tr></table></figure>
+
 <p>结果：</p>
 <table>
 <thead>
@@ -915,11 +688,8 @@ hive <span class="token operator">-</span><span class="token number">e</span> <s
 <td>战争,动作,灾难</td>
 </tr>
 </tbody></table>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span>
-    movie<span class="token punctuation">,</span>
-    category_name
-<span class="token keyword">from</span> 
-    movie_info lateral <span class="token keyword">view</span> explode<span class="token punctuation">(</span>category<span class="token punctuation">)</span> table_tmp <span class="token keyword">as</span> category_name<span class="token punctuation">;</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    movie,</span><br><span class="line">    category_name</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">    movie_info <span class="keyword">lateral</span> <span class="keyword">view</span> <span class="keyword">explode</span>(<span class="keyword">category</span>) table_tmp <span class="keyword">as</span> category_name;</span><br></pre></td></tr></table></figure>
+
 <p>结果：<br>| movie          | category                 |<br>| ————– | ———————— |<br>|《疑犯追踪》  |   悬疑|<br>|《疑犯追踪》  |   动作|<br>|《疑犯追踪》  |   科幻|<br>|《疑犯追踪》  |   剧情|<br>|《Lie to me》 | 悬疑  |<br>|《Lie to me》 | 警匪  |<br>|《Lie to me》 | 动作  |<br>|《Lie to me》 | 心理  |<br>|《Lie to me》 | 剧情  |<br>|《战狼2》     |  战争 |<br>|《战狼2》     |  动作 |<br>|《战狼2》     |  灾难 |</p>
 <h2 id="窗口函数"><a href="#窗口函数" class="headerlink" title="窗口函数"></a>窗口函数</h2><p>OVER()：指定分析函数工作的数据窗口大小，这个数据窗口大小可能会随着行的变而变化</p>
 <p>CURRENT ROW：当前行</p>
@@ -929,39 +699,13 @@ hive <span class="token operator">-</span><span class="token number">e</span> <s
 <p>LAG(col,n)：往前第n行数据</p>
 <p>LEAD(col,n)：往后第n行数据</p>
 <p>NTILE(n)：把有序分区中的行分发到指定数据的组中，各个组有编号，编号从1开始，对于每一行，NTILE返回此行所属的组的编号。<strong>注意：n必须为int类型</strong>。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> name<span class="token punctuation">,</span>orderdate<span class="token punctuation">,</span>cost<span class="token punctuation">,</span> 
-<span class="token function">sum</span><span class="token punctuation">(</span>cost<span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">as</span> sample1<span class="token punctuation">,</span><span class="token comment" spellcheck="true">--所有行相加 </span>
-<span class="token function">sum</span><span class="token punctuation">(</span>cost<span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> name<span class="token punctuation">)</span> <span class="token keyword">as</span> sample2<span class="token punctuation">,</span><span class="token comment" spellcheck="true">--按name分组，组内数据相加 </span>
-<span class="token function">sum</span><span class="token punctuation">(</span>cost<span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> name <span class="token keyword">order</span> <span class="token keyword">by</span> orderdate<span class="token punctuation">)</span> <span class="token keyword">as</span> sample3<span class="token punctuation">,</span><span class="token comment" spellcheck="true">--按name分组，组内数据累加 </span>
-<span class="token function">sum</span><span class="token punctuation">(</span>cost<span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> name <span class="token keyword">order</span> <span class="token keyword">by</span> orderdate <span class="token keyword">rows</span> <span class="token operator">between</span> <span class="token keyword">UNBOUNDED</span> <span class="token keyword">PRECEDING</span> <span class="token operator">and</span> <span class="token keyword">current</span> <span class="token keyword">row</span> <span class="token punctuation">)</span> <span class="token keyword">as</span> sample4 <span class="token punctuation">,</span><span class="token comment" spellcheck="true">--和sample3一样,由起点到当前行的聚合 </span>
-<span class="token function">sum</span><span class="token punctuation">(</span>cost<span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> name <span class="token keyword">order</span> <span class="token keyword">by</span> orderdate <span class="token keyword">rows</span> <span class="token operator">between</span> <span class="token number">1</span> <span class="token keyword">PRECEDING</span> <span class="token operator">and</span> <span class="token keyword">current</span> <span class="token keyword">row</span><span class="token punctuation">)</span> <span class="token keyword">as</span> sample5<span class="token punctuation">,</span> <span class="token comment" spellcheck="true">--当前行和前面一行做聚合 </span>
-<span class="token function">sum</span><span class="token punctuation">(</span>cost<span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> name <span class="token keyword">order</span> <span class="token keyword">by</span> orderdate <span class="token keyword">rows</span> <span class="token operator">between</span> <span class="token number">1</span> <span class="token keyword">PRECEDING</span> <span class="token operator">AND</span> <span class="token number">1</span> <span class="token keyword">FOLLOWING</span> <span class="token punctuation">)</span> <span class="token keyword">as</span> sample6<span class="token punctuation">,</span><span class="token comment" spellcheck="true">--当前行和前边一行及后面一行 </span>
-<span class="token function">sum</span><span class="token punctuation">(</span>cost<span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> name <span class="token keyword">order</span> <span class="token keyword">by</span> orderdate <span class="token keyword">rows</span> <span class="token operator">between</span> <span class="token keyword">current</span> <span class="token keyword">row</span> <span class="token operator">and</span> <span class="token keyword">UNBOUNDED</span> <span class="token keyword">FOLLOWING</span> <span class="token punctuation">)</span> <span class="token keyword">as</span> sample7 <span class="token comment" spellcheck="true">--当前行及后面所有行 </span>
-<span class="token keyword">from</span> business<span class="token punctuation">;</span>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,orderdate,<span class="keyword">cost</span>, </span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>() <span class="keyword">as</span> sample1,<span class="comment">--所有行相加 </span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span>) <span class="keyword">as</span> sample2,<span class="comment">--按name分组，组内数据相加 </span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate) <span class="keyword">as</span> sample3,<span class="comment">--按name分组，组内数据累加 </span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate <span class="keyword">rows</span> <span class="keyword">between</span> <span class="keyword">UNBOUNDED</span> <span class="keyword">PRECEDING</span> <span class="keyword">and</span> <span class="keyword">current</span> <span class="keyword">row</span> ) <span class="keyword">as</span> sample4 ,<span class="comment">--和sample3一样,由起点到当前行的聚合 </span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate <span class="keyword">rows</span> <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">PRECEDING</span> <span class="keyword">and</span> <span class="keyword">current</span> <span class="keyword">row</span>) <span class="keyword">as</span> sample5, <span class="comment">--当前行和前面一行做聚合 </span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate <span class="keyword">rows</span> <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">PRECEDING</span> <span class="keyword">AND</span> <span class="number">1</span> <span class="keyword">FOLLOWING</span> ) <span class="keyword">as</span> sample6,<span class="comment">--当前行和前边一行及后面一行 </span></span><br><span class="line"><span class="keyword">sum</span>(<span class="keyword">cost</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate <span class="keyword">rows</span> <span class="keyword">between</span> <span class="keyword">current</span> <span class="keyword">row</span> <span class="keyword">and</span> <span class="keyword">UNBOUNDED</span> <span class="keyword">FOLLOWING</span> ) <span class="keyword">as</span> sample7 <span class="comment">--当前行及后面所有行 </span></span><br><span class="line"><span class="keyword">from</span> business;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查看顾客上次购买时间</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,orderdate,<span class="keyword">cost</span>, </span><br><span class="line">lag(orderdate,<span class="number">1</span>,<span class="string">'1900-01-01'</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate ) <span class="keyword">as</span> time1, lag(orderdate,<span class="number">2</span>) <span class="keyword">over</span> (<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> orderdate) <span class="keyword">as</span> time2 </span><br><span class="line"><span class="keyword">from</span> business;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 查询前20%时间的订单信息</span></span><br><span class="line"><span class="keyword">select</span> * </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">(</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">name</span>,orderdate,<span class="keyword">cost</span>, ntile(<span class="number">5</span>) <span class="keyword">over</span>(<span class="keyword">order</span> <span class="keyword">by</span> orderdate) sorted</span><br><span class="line">    <span class="keyword">from</span> business</span><br><span class="line">) t</span><br><span class="line"><span class="keyword">where</span> sorted = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">-- 查看顾客上次购买时间</span>
-<span class="token keyword">select</span> name<span class="token punctuation">,</span>orderdate<span class="token punctuation">,</span>cost<span class="token punctuation">,</span> 
-lag<span class="token punctuation">(</span>orderdate<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">'1900-01-01'</span><span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> name <span class="token keyword">order</span> <span class="token keyword">by</span> orderdate <span class="token punctuation">)</span> <span class="token keyword">as</span> time1<span class="token punctuation">,</span> lag<span class="token punctuation">(</span>orderdate<span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token keyword">over</span> <span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> name <span class="token keyword">order</span> <span class="token keyword">by</span> orderdate<span class="token punctuation">)</span> <span class="token keyword">as</span> time2 
-<span class="token keyword">from</span> business<span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">-- 查询前20%时间的订单信息</span>
-<span class="token keyword">select</span> <span class="token operator">*</span> 
-<span class="token keyword">from</span> 
-<span class="token punctuation">(</span>
-    <span class="token keyword">select</span> name<span class="token punctuation">,</span>orderdate<span class="token punctuation">,</span>cost<span class="token punctuation">,</span> ntile<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">order</span> <span class="token keyword">by</span> orderdate<span class="token punctuation">)</span> sorted
-    <span class="token keyword">from</span> business
-<span class="token punctuation">)</span> t
-<span class="token keyword">where</span> sorted <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span></code></pre>
 <h2 id="rank函数"><a href="#rank函数" class="headerlink" title="rank函数"></a>rank函数</h2><p>RANK() 排序相同时会重复，总数不会变</p>
 <p>DENSE_RANK() 排序相同时会重复，总数会减少</p>
 <p>ROW_NUMBER() 会根据顺序计算</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> 
-    name<span class="token punctuation">,</span>subject<span class="token punctuation">,</span>score<span class="token punctuation">,</span>
-    rank<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> subject <span class="token keyword">order</span> <span class="token keyword">by</span> score <span class="token keyword">desc</span><span class="token punctuation">)</span> rank<span class="token punctuation">,</span>
-    dense_rank<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> subject <span class="token keyword">order</span> <span class="token keyword">by</span> score <span class="token keyword">desc</span><span class="token punctuation">)</span> dense_rank<span class="token punctuation">,</span>
-    row_number<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">over</span><span class="token punctuation">(</span><span class="token keyword">partition</span> <span class="token keyword">by</span> subject <span class="token keyword">order</span> <span class="token keyword">by</span> score <span class="token keyword">desc</span><span class="token punctuation">)</span> row_number
-<span class="token keyword">from</span> 
-    score<span class="token punctuation">;</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">	<span class="keyword">name</span>,subject,score,</span><br><span class="line">	<span class="keyword">rank</span>() <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> subject <span class="keyword">order</span> <span class="keyword">by</span> score <span class="keyword">desc</span>) <span class="keyword">rank</span>,</span><br><span class="line">	<span class="keyword">dense_rank</span>() <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> subject <span class="keyword">order</span> <span class="keyword">by</span> score <span class="keyword">desc</span>) <span class="keyword">dense_rank</span>,</span><br><span class="line">	row_number() <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> subject <span class="keyword">order</span> <span class="keyword">by</span> score <span class="keyword">desc</span>) row_number</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">	score;</span><br></pre></td></tr></table></figure>
+
 <table>
 <thead>
 <tr>
@@ -1008,69 +752,38 @@ lag<span class="token punctuation">(</span>orderdate<span class="token punctuati
 </tbody></table>
 <h1 id="Hive调优"><a href="#Hive调优" class="headerlink" title="Hive调优"></a>Hive调优</h1><h2 id="Fetch抓取"><a href="#Fetch抓取" class="headerlink" title="Fetch抓取"></a>Fetch抓取</h2><p>Fetch抓取是指，Hive中对某些情况的查询可以不必使用MapReduce计算。例如：SELECT * FROM employees;在这种情况下，Hive可以简单地读取employee对应的存储目录下的文件，然后输出查询结果到控制台。</p>
 <p>在hive-default.xml.template文件中hive.fetch.task.conversion默认是more，老版本hive默认是minimal，该属性修改为more以后，在全局查找、字段查找、limit查找等都不走mapreduce。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">set</span> hive<span class="token punctuation">.</span><span class="token keyword">fetch</span><span class="token punctuation">.</span>task<span class="token punctuation">.</span>conversion<span class="token operator">=</span>none<span class="token punctuation">;</span>
-<span class="token keyword">select</span> ename <span class="token keyword">from</span> emp <span class="token keyword">limit</span> <span class="token number">3</span><span class="token punctuation">;</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.fetch.task.conversion=<span class="keyword">none</span>;</span><br><span class="line"><span class="keyword">select</span> ename <span class="keyword">from</span> emp <span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
 <h2 id="本地模式"><a href="#本地模式" class="headerlink" title="本地模式"></a>本地模式</h2><p>有时Hive的输入数据量是非常小的。在这种情况下，<strong>为查询触发执行任务消耗的时间可能会比实际job的执行时间要多的多</strong>。对于大多数这种情况，<strong>Hive可以通过本地模式在单台机器上处理所有的任务</strong>。对于小数据集，执行时间可以明显被缩短。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">--开启本地mr</span>
-<span class="token keyword">set</span> hive<span class="token punctuation">.</span><span class="token keyword">exec</span><span class="token punctuation">.</span>mode<span class="token punctuation">.</span><span class="token keyword">local</span><span class="token punctuation">.</span>auto<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">;</span>  
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--开启本地mr</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.mode.local.auto=<span class="literal">true</span>;  </span><br><span class="line"></span><br><span class="line"><span class="comment">--设置local mr的最大输入数据量，当输入数据量小于这个值时采用local  mr的方式，默认为134217728，即128M</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.mode.local.auto.inputbytes.max=<span class="number">50000000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> ename <span class="keyword">from</span> emp <span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">--设置local mr的最大输入数据量，当输入数据量小于这个值时采用local  mr的方式，默认为134217728，即128M</span>
-<span class="token keyword">set</span> hive<span class="token punctuation">.</span><span class="token keyword">exec</span><span class="token punctuation">.</span>mode<span class="token punctuation">.</span><span class="token keyword">local</span><span class="token punctuation">.</span>auto<span class="token punctuation">.</span>inputbytes<span class="token punctuation">.</span>max<span class="token operator">=</span><span class="token number">50000000</span><span class="token punctuation">;</span>
-
-<span class="token keyword">select</span> ename <span class="token keyword">from</span> emp <span class="token keyword">limit</span> <span class="token number">3</span><span class="token punctuation">;</span></code></pre>
 <h2 id="表的优化"><a href="#表的优化" class="headerlink" title="表的优化"></a>表的优化</h2><h3 id="小表-大表join"><a href="#小表-大表join" class="headerlink" title="小表\大表join"></a>小表\大表join</h3><p><strong>将key相对分散，并且数据量小的表放在join的左边</strong>，这样可以有效减少内存溢出错误发生的几率；</p>
 <p>再进一步，可以使用map join让小的维度表（1000条以下的记录条数）先进内存。在map端完成reduce。</p>
 <p><strong>实际测试发现：新版的hive已经对小表JOIN大表和大表JOIN小表进行了优化。小表放在左边和右边已经没有明显区别。</strong></p>
 <h3 id="大表join小表"><a href="#大表join小表" class="headerlink" title="大表join小表"></a>大表join小表</h3><h4 id="空KEY过滤"><a href="#空KEY过滤" class="headerlink" title="空KEY过滤"></a>空KEY过滤</h4><p>有时join超时是因为<strong>某些key对应的数据太多</strong>，而相同key对应的数据都会发送到相同的reducer上，从而导致内存不够。此时我们应该仔细分析这些异常的key，很多情况下，这些key对应的数据是异常数据，我们需要在SQL语句中进行过滤。</p>
 <p>例如key对应的字段为空  </p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">insert</span> overwrite <span class="token keyword">table</span> jointable 
-<span class="token keyword">select</span> n<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">from</span> nullidtable n <span class="token keyword">left</span> <span class="token keyword">join</span> ori o <span class="token keyword">on</span> n<span class="token punctuation">.</span>id <span class="token operator">=</span> o<span class="token punctuation">.</span>id<span class="token punctuation">;</span>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> jointable </span><br><span class="line"><span class="keyword">select</span> n.* <span class="keyword">from</span> nullidtable n <span class="keyword">left</span> <span class="keyword">join</span> ori o <span class="keyword">on</span> n.id = o.id;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> jointable </span><br><span class="line"><span class="keyword">select</span> n.* <span class="keyword">from</span> (<span class="keyword">select</span> * <span class="keyword">from</span> nullidtable <span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">null</span> ) n  <span class="keyword">left</span> <span class="keyword">join</span> ori o <span class="keyword">on</span> n.id = o.id; <span class="comment">-- 更快</span></span><br></pre></td></tr></table></figure>
 
-<span class="token keyword">insert</span> overwrite <span class="token keyword">table</span> jointable 
-<span class="token keyword">select</span> n<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">(</span><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> nullidtable <span class="token keyword">where</span> id <span class="token operator">is</span> <span class="token operator">not</span> <span class="token boolean">null</span> <span class="token punctuation">)</span> n  <span class="token keyword">left</span> <span class="token keyword">join</span> ori o <span class="token keyword">on</span> n<span class="token punctuation">.</span>id <span class="token operator">=</span> o<span class="token punctuation">.</span>id<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">-- 更快</span></code></pre>
 <h4 id="空KEY转换"><a href="#空KEY转换" class="headerlink" title="空KEY转换"></a>空KEY转换</h4><p>有时虽然某个key为空对应的数据很多，但是相应的数据不是异常数据，必须要包含在join的结果中，此时我们可以<strong>表a中key为空的字段赋一个随机的值，使得数据随机均匀地分不到不同的reducer上</strong>。  </p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">insert</span> overwrite <span class="token keyword">table</span> jointable
-<span class="token keyword">select</span> n<span class="token punctuation">.</span><span class="token operator">*</span> <span class="token keyword">from</span> nullidtable n <span class="token keyword">full</span> <span class="token keyword">join</span> ori o <span class="token keyword">on</span> 
-<span class="token keyword">case</span> <span class="token keyword">when</span> n<span class="token punctuation">.</span>id <span class="token operator">is</span> <span class="token boolean">null</span> <span class="token keyword">then</span> concat<span class="token punctuation">(</span><span class="token string">'hive'</span><span class="token punctuation">,</span> rand<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">else</span> n<span class="token punctuation">.</span>id <span class="token keyword">end</span> <span class="token operator">=</span> o<span class="token punctuation">.</span>id<span class="token punctuation">;</span></code></pre>
-<h3 id="MapJoin"><a href="#MapJoin" class="headerlink" title="MapJoin"></a>MapJoin</h3><p>如果不指定MapJoin或者不符合MapJoin的条件，那么Hive解析器会将Join操作转换成Common Join，即：在Reduce阶段完成join。容易发生数据倾斜。<strong>可以用MapJoin把小表全部加载到内存在map端进行join</strong>，避免reducer处理。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 设置自动选择Mapjoin</span>
-<span class="token keyword">set</span> hive<span class="token punctuation">.</span>auto<span class="token punctuation">.</span><span class="token keyword">convert</span><span class="token punctuation">.</span><span class="token keyword">join</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> jointable</span><br><span class="line"><span class="keyword">select</span> n.* <span class="keyword">from</span> nullidtable n <span class="keyword">full</span> <span class="keyword">join</span> ori o <span class="keyword">on</span> </span><br><span class="line"><span class="keyword">case</span> <span class="keyword">when</span> n.id <span class="keyword">is</span> <span class="literal">null</span> <span class="keyword">then</span> <span class="keyword">concat</span>(<span class="string">'hive'</span>, <span class="keyword">rand</span>()) <span class="keyword">else</span> n.id <span class="keyword">end</span> = o.id;</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">-- 大表小表的阈值设置（默认25M一下认为是小表）</span>
-<span class="token keyword">set</span> hive<span class="token punctuation">.</span>mapjoin<span class="token punctuation">.</span>smalltable<span class="token punctuation">.</span>filesize<span class="token operator">=</span><span class="token number">25000000</span><span class="token punctuation">;</span></code></pre>
+<h3 id="MapJoin"><a href="#MapJoin" class="headerlink" title="MapJoin"></a>MapJoin</h3><p>如果不指定MapJoin或者不符合MapJoin的条件，那么Hive解析器会将Join操作转换成Common Join，即：在Reduce阶段完成join。容易发生数据倾斜。<strong>可以用MapJoin把小表全部加载到内存在map端进行join</strong>，避免reducer处理。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 设置自动选择Mapjoin</span></span><br><span class="line"><span class="keyword">set</span> hive.auto.convert.join = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 大表小表的阈值设置（默认25M一下认为是小表）</span></span><br><span class="line"><span class="keyword">set</span> hive.mapjoin.smalltable.filesize=<span class="number">25000000</span>;</span><br></pre></td></tr></table></figure>
+
 <h3 id="Group-By"><a href="#Group-By" class="headerlink" title="Group By"></a>Group By</h3><p>默认情况下，Map阶段同一Key数据分发给一个reduce，当一个key数据过大时就倾斜了。</p>
 <p>并不是所有的聚合操作都需要在Reduce端完成，<strong>很多聚合操作都可以先在Map端进行部分聚合</strong>，最后在Reduce端得出最终结果。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 是否在Map端进行聚合，默认为True</span>
-hive<span class="token punctuation">.</span>map<span class="token punctuation">.</span>aggr <span class="token operator">=</span> <span class="token boolean">true</span>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 是否在Map端进行聚合，默认为True</span></span><br><span class="line">hive.map.aggr = true</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 在Map端进行聚合操作的条目数目</span></span><br><span class="line">hive.groupby.mapaggr.checkinterval = 100000</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 有数据倾斜的时候进行负载均衡（默认是false）</span></span><br><span class="line">hive.groupby.skewindata = true</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">-- 在Map端进行聚合操作的条目数目</span>
-hive<span class="token punctuation">.</span>groupby<span class="token punctuation">.</span>mapaggr<span class="token punctuation">.</span>checkinterval <span class="token operator">=</span> <span class="token number">100000</span>
-
-<span class="token comment" spellcheck="true">-- 有数据倾斜的时候进行负载均衡（默认是false）</span>
-hive<span class="token punctuation">.</span>groupby<span class="token punctuation">.</span>skewindata <span class="token operator">=</span> <span class="token boolean">true</span></code></pre>
 <p>当选项设定为 true，生成的查询计划会有两个MR Job。</p>
 <p>第一个MR Job中，<strong>Map的输出结果会随机分布到Reduce中</strong>，每个Reduce做部分聚合操作，并输出结果，这样处理的结果是<strong>相同的Group By Key有可能被分发到不同的Reduce中</strong>，从而达到负载均衡的目的；</p>
 <p>第二个MR Job再根据预处理的数据结果按照Group By Key分布到Reduce中（这个过程可以保证<strong>相同的Group By Key被分布到同一个Reduce中</strong>），最后完成最终的聚合操作。  </p>
 <h3 id="Count-Distinct-去重统计"><a href="#Count-Distinct-去重统计" class="headerlink" title="Count(Distinct) 去重统计"></a>Count(Distinct) 去重统计</h3><p>数据量大的情况下，由于COUNT DISTINCT操作需要用一个Reduce Task来完成，这一个Reduce需要处理的数据量太大，就会导致整个Job很难完成，一般COUNT DISTINCT使用<strong>先GROUP BY再COUNT</strong>的方式替换  </p>
-<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 原始</span>
-<span class="token keyword">select</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token keyword">distinct</span> id<span class="token punctuation">)</span> <span class="token keyword">from</span> bigtable<span class="token punctuation">;</span>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 原始</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> <span class="keyword">id</span>) <span class="keyword">from</span> bigtable;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 改进</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">id</span>) <span class="keyword">from</span> (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> bigtable <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">id</span>) a;</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">-- 改进</span>
-<span class="token keyword">select</span> <span class="token function">count</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span> <span class="token keyword">from</span> <span class="token punctuation">(</span><span class="token keyword">select</span> id <span class="token keyword">from</span> bigtable <span class="token keyword">group</span> <span class="token keyword">by</span> id<span class="token punctuation">)</span> <span class="token number">a</span><span class="token punctuation">;</span></code></pre>
 <p>虽然会多用一个Job来完成，但在数据量大的情况下，绝对是值得的。</p>
 <h3 id="动态分区"><a href="#动态分区" class="headerlink" title="动态分区"></a>动态分区</h3><p>对分区表Insert数据时候，数据库自动会根据分区字段的值，将数据插入到相应的分区中</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token comment" spellcheck="true">-- 开启动态分区功能（默认true，开启）</span>
-hive<span class="token punctuation">.</span><span class="token keyword">exec</span><span class="token punctuation">.</span>dynamic<span class="token punctuation">.</span><span class="token keyword">partition</span><span class="token operator">=</span><span class="token boolean">true</span>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 开启动态分区功能（默认true，开启）</span></span><br><span class="line">hive.exec.dynamic.partition=true</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 设置为非严格模式（动态分区的模式，默认strict，表示必须指定至少一个分区为静态分区，nonstrict模式表示允许所有的分区字段都可以使用动态分区。）</span></span><br><span class="line">hive.exec.dynamic.partition.mode=nonstrict</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 在所有执行MR的节点上，最大一共可以创建多少个动态分区。</span></span><br><span class="line">hive.exec.max.dynamic.partitions=1000</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 在每个执行MR的节点上，最大可以创建多少个动态分区。该参数需要根据实际的数据来设定。比如：源数据中包含了一年的数据，即day字段有365个值，那么该参数就需要设置成大于365，如果使用默认值100，则会报错。</span></span><br><span class="line">hive.exec.max.dynamic.partitions.pernode=100</span><br></pre></td></tr></table></figure>
 
-<span class="token comment" spellcheck="true">-- 设置为非严格模式（动态分区的模式，默认strict，表示必须指定至少一个分区为静态分区，nonstrict模式表示允许所有的分区字段都可以使用动态分区。）</span>
-hive<span class="token punctuation">.</span><span class="token keyword">exec</span><span class="token punctuation">.</span>dynamic<span class="token punctuation">.</span><span class="token keyword">partition</span><span class="token punctuation">.</span>mode<span class="token operator">=</span>nonstrict
-
-<span class="token comment" spellcheck="true">-- 在所有执行MR的节点上，最大一共可以创建多少个动态分区。</span>
-hive<span class="token punctuation">.</span><span class="token keyword">exec</span><span class="token punctuation">.</span>max<span class="token punctuation">.</span>dynamic<span class="token punctuation">.</span>partitions<span class="token operator">=</span><span class="token number">1000</span>
-
-<span class="token comment" spellcheck="true">-- 在每个执行MR的节点上，最大可以创建多少个动态分区。该参数需要根据实际的数据来设定。比如：源数据中包含了一年的数据，即day字段有365个值，那么该参数就需要设置成大于365，如果使用默认值100，则会报错。</span>
-hive<span class="token punctuation">.</span><span class="token keyword">exec</span><span class="token punctuation">.</span>max<span class="token punctuation">.</span>dynamic<span class="token punctuation">.</span>partitions<span class="token punctuation">.</span>pernode<span class="token operator">=</span><span class="token number">100</span>
-</code></pre>
 <h2 id="数据倾斜"><a href="#数据倾斜" class="headerlink" title="数据倾斜"></a>数据倾斜</h2><p>数据倾斜：由于数据分布不均匀，造成数据大量的集中到一点，造成数据热点</p>
 <p>主要表现：任务进度长时间维持在99%的附近，只有少量reduce子任务未完成，因为其处理的数据量和其他的 reduce 差异过大。 </p>
 <p>数据倾斜的原因：</p>
@@ -1126,8 +839,8 @@ hive<span class="token punctuation">.</span><span class="token keyword">exec</sp
 <h3 id="并行执行"><a href="#并行执行" class="headerlink" title="并行执行"></a>并行执行</h3><p>Hive会将一个查询转化成一个或者多个阶段。这样的阶段可以是MapReduce阶段、抽样阶段、合并阶段、limit阶段。或者Hive执行过程中可能需要的其他阶段。默认情况下，Hive一次只会执行一个阶段。不过，某个特定的job可能包含众多的阶段，而这些阶段可能并非完全互相依赖的，也就是说有些阶段是可以并行执行的，这样可能使得整个job的执行时间缩短。不过，如果有更多的阶段可以并行执行，那么job可能就越快完成。</p>
 <p>通过设置参数hive.exec.parallel值为true，就可以开启并发执行。</p>
 <p>不过，在共享集群中，需要注意下，如果job中并行阶段增多，那么集群利用率就会增加。在系统资源比较空闲的时候才有优势。</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">set</span> hive<span class="token punctuation">.</span><span class="token keyword">exec</span><span class="token punctuation">.</span>parallel<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">--打开任务并行执行</span>
-<span class="token keyword">set</span> hive<span class="token punctuation">.</span><span class="token keyword">exec</span><span class="token punctuation">.</span>parallel<span class="token punctuation">.</span>thread<span class="token punctuation">.</span>number<span class="token operator">=</span><span class="token number">16</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">--同一个sql允许最大并行度，默认为8。</span></code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.exec.parallel=<span class="literal">true</span>;       <span class="comment">--打开任务并行执行</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.parallel.thread.number=<span class="number">16</span>; <span class="comment">--同一个sql允许最大并行度，默认为8。</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="严格模式"><a href="#严格模式" class="headerlink" title="严格模式"></a>严格模式</h3><p>防止用户执行那些可能意想不到的不好的影响的查询。</p>
 <p>开启严格模式需要修改hive.mapred.mode值为strict，开启严格模式可以禁止3种类型的查询。</p>
 <p>1)    <strong>对于分区表，除非where语句中含有分区字段过滤条件来限制范围，否则不允许执行。</strong>换句话说，就是用户不允许扫描所有分区。进行这个限制的原因是，通常分区表都拥有非常大的数据集，而且数据增加迅速。没有进行分区限制的查询可能会消耗令人不可接受的巨大资源来处理这个表。</p>
@@ -1150,445 +863,394 @@ hive<span class="token punctuation">.</span><span class="token keyword">exec</sp
 <p>2）当a != null 且不是表的列名的时候，count(a)为该表的行数；</p>
 <p>3）当a是表的列名时，count(a)为该表中a列的值不等于null的行的总数，它和2)中的差值就是该表中a列值为null的行数</p>
 
-            </div>
-            <hr/>
-
-            
-
-    <div class="reprint" id="reprint-statement">
-        
-            <div class="reprint__author">
-                <span class="reprint-meta" style="font-weight: bold;">
-                    <i class="fas fa-user">
-                        Author:
-                    </i>
-                </span>
-                <span class="reprint-info">
-                    <a href="http://yoursite.com" rel="external nofollow noreferrer">xjw924</a>
-                </span>
-            </div>
-            <div class="reprint__type">
-                <span class="reprint-meta" style="font-weight: bold;">
-                    <i class="fas fa-link">
-                        Link:
-                    </i>
-                </span>
-                <span class="reprint-info">
-                    <a href="http://yoursite.com/2019/10/17/hive/">http://yoursite.com/2019/10/17/hive/</a>
-                </span>
-            </div>
-            <div class="reprint__notice">
-                <span class="reprint-meta" style="font-weight: bold;">
-                    <i class="fas fa-copyright">
-                        Reprint policy:
-                    </i>
-                </span>
-                <span class="reprint-info">
-                    All articles in this blog are used except for special statements
-                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
-                    reprint polocy. If reproduced, please indicate source
-                    <a href="http://yoursite.com" target="_blank">xjw924</a>
-                    !
-                </span>
-            </div>
-        
+      
     </div>
-
-    <script async defer>
-      document.addEventListener("copy", function (e) {
-        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
-        M.toast({html: toastHTML})
-      });
-
-      function navToReprintStatement() {
-        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
-      }
-    </script>
-
-
-
-            <div class="tag_share" style="display: block;">
-                <div class="post-meta__tag-list" style="display: inline-block;">
-                    
-                        <div class="article-tag">
-                            
-                                <a href="/tags/hive/">
-                                    <span class="chip bg-color">hive</span>
-                                </a>
-                            
-                                <a href="/tags/hadoop/">
-                                    <span class="chip bg-color">hadoop</span>
-                                </a>
-                            
-                        </div>
-                    
-                </div>
-                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
-                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
-
-<div id="article-share">
     
     
-    <div class="social-share" data-sites="qq,wechat,weibo" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
-    <script src="/libs/share/js/social-share.min.js"></script>
     
 
     
 
-</div>
+    
 
-                </div>
-            </div>
-            
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hive/" rel="tag"><i class="fa fa-tag"></i> hive</a>
+          
+            <a href="/tags/hadoop/" rel="tag"><i class="fa fa-tag"></i> hadoop</a>
+          
         </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/18/tong-ji-si-kao/" rel="prev" title="统计思考">
+                统计思考 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
     </div>
+  </div>
 
-    
 
-    
+          </div>
+          
 
-    
 
-    
+          
 
-    
+  
 
-    
 
-<article id="prenext-posts" class="prev-next articles">
-    <div class="row article-row">
+
+        </div>
         
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
-            <div class="card">
-                <a href="/2019/10/18/tong-ji-si-kao/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="统计思考">
-                        
-                        <span class="card-title">统计思考</span>
-                    </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">xjw924</p>
+              <p class="site-description motion-element" itemprop="description">这里是小徐的个人学习blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
                 </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            大数据 v.s. 统计学统计学注重的是方式方法
-大数据则更关注于整个数据价值化的过程，不仅需要统计学知识，还需要具备数学知识和计算机知识
-从一定角度来说，统计学为大数据进行数据价值化奠定了一定的基础
+              </div>
+            
 
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-10-18
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            xjw924
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/statistics/">
-                        <span class="chip bg-color">statistics</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                Current&nbsp;<i class="far fa-dot-circle"></i>
-            </div>
-            <div class="card">
-                <a href="/2019/10/17/hive/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Hive">
-                        
-                        <span class="card-title">Hive</span>
-                    </div>
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
                 </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            什么是Hive基于Hadoop的一个数据仓库工具
-数据存储在HDFS上数据底层实现用MapReduce（默认使用MR，也可以使用Spark）执行程序运行在Yarn上
-功能：可以将结构化的数据文件映射为一张表，并提供类SQL查询功能
-本质：将
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-17
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            xjw924
-                            
-                        </span>
-                    </div>
-                </div>
+              </div>
+            
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
                 
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/hive/">
-                        <span class="chip bg-color">hive</span>
-                    </a>
-                    
-                    <a href="/tags/hadoop/">
-                        <span class="chip bg-color">hadoop</span>
-                    </a>
-                    
-                </div>
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xjw924" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
                 
             </div>
-        </div>
-        
-    </div>
-</article>
+          
 
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是Hive"><span class="nav-number">1.</span> <span class="nav-text">什么是Hive</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优缺点"><span class="nav-number">2.</span> <span class="nav-text">优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优点"><span class="nav-number">2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点"><span class="nav-number">2.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hive与数据库的区别"><span class="nav-number">3.</span> <span class="nav-text">Hive与数据库的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查询语言"><span class="nav-number">3.1.</span> <span class="nav-text">查询语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据存储位置"><span class="nav-number">3.2.</span> <span class="nav-text">数据存储位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据更新"><span class="nav-number">3.3.</span> <span class="nav-text">数据更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引"><span class="nav-number">3.4.</span> <span class="nav-text">索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行"><span class="nav-number">3.5.</span> <span class="nav-text">执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行延迟"><span class="nav-number">3.6.</span> <span class="nav-text">执行延迟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可扩展性"><span class="nav-number">3.7.</span> <span class="nav-text">可扩展性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据规模"><span class="nav-number">3.8.</span> <span class="nav-text">数据规模</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据类型"><span class="nav-number">4.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本数据类型"><span class="nav-number">4.1.</span> <span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集合数据类型"><span class="nav-number">4.2.</span> <span class="nav-text">集合数据类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDL数据定义"><span class="nav-number">5.</span> <span class="nav-text">DDL数据定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建数据库"><span class="nav-number">5.1.</span> <span class="nav-text">创建数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询数据库"><span class="nav-number">5.2.</span> <span class="nav-text">查询数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#切换当前数据库"><span class="nav-number">5.3.</span> <span class="nav-text">切换当前数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改数据库"><span class="nav-number">5.4.</span> <span class="nav-text">修改数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建表"><span class="nav-number">5.5.</span> <span class="nav-text">建表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部表和外部表区别"><span class="nav-number">5.5.1.</span> <span class="nav-text">内部表和外部表区别?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区表操作"><span class="nav-number">5.6.</span> <span class="nav-text">分区表操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改表"><span class="nav-number">5.7.</span> <span class="nav-text">修改表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DML数据操作"><span class="nav-number">6.</span> <span class="nav-text">DML数据操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据导入-导出-清除"><span class="nav-number">6.1.</span> <span class="nav-text">数据导入/导出/清除</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#drop、truncate和delete的区别"><span class="nav-number">6.1.1.</span> <span class="nav-text">drop、truncate和delete的区别</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查询"><span class="nav-number">7.</span> <span class="nav-text">查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#比较运算符"><span class="nav-number">7.1.</span> <span class="nav-text">比较运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Like和RLike"><span class="nav-number">7.2.</span> <span class="nav-text">Like和RLike</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Having-与-where-区别"><span class="nav-number">7.3.</span> <span class="nav-text">Having 与 where 区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Join语句"><span class="nav-number">7.4.</span> <span class="nav-text">Join语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#join大表怎么优化"><span class="nav-number">7.4.1.</span> <span class="nav-text">join大表怎么优化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分区与分桶"><span class="nav-number">8.</span> <span class="nav-text">分区与分桶</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分区表"><span class="nav-number">8.1.</span> <span class="nav-text">分区表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分桶表"><span class="nav-number">8.2.</span> <span class="nav-text">分桶表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用函数"><span class="nav-number">9.</span> <span class="nav-text">常用函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#行转列"><span class="nav-number">9.1.</span> <span class="nav-text">行转列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#列转行"><span class="nav-number">9.2.</span> <span class="nav-text">列转行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#窗口函数"><span class="nav-number">9.3.</span> <span class="nav-text">窗口函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rank函数"><span class="nav-number">9.4.</span> <span class="nav-text">rank函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hive调优"><span class="nav-number">10.</span> <span class="nav-text">Hive调优</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Fetch抓取"><span class="nav-number">10.1.</span> <span class="nav-text">Fetch抓取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地模式"><span class="nav-number">10.2.</span> <span class="nav-text">本地模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表的优化"><span class="nav-number">10.3.</span> <span class="nav-text">表的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小表-大表join"><span class="nav-number">10.3.1.</span> <span class="nav-text">小表\大表join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大表join小表"><span class="nav-number">10.3.2.</span> <span class="nav-text">大表join小表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#空KEY过滤"><span class="nav-number">10.3.2.1.</span> <span class="nav-text">空KEY过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#空KEY转换"><span class="nav-number">10.3.2.2.</span> <span class="nav-text">空KEY转换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapJoin"><span class="nav-number">10.3.3.</span> <span class="nav-text">MapJoin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Group-By"><span class="nav-number">10.3.4.</span> <span class="nav-text">Group By</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Count-Distinct-去重统计"><span class="nav-number">10.3.5.</span> <span class="nav-text">Count(Distinct) 去重统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态分区"><span class="nav-number">10.3.6.</span> <span class="nav-text">动态分区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据倾斜"><span class="nav-number">10.4.</span> <span class="nav-text">数据倾斜</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合理设置Map数"><span class="nav-number">10.4.1.</span> <span class="nav-text">合理设置Map数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合理设置Reduce数"><span class="nav-number">10.4.2.</span> <span class="nav-text">合理设置Reduce数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小文件进行合并"><span class="nav-number">10.4.3.</span> <span class="nav-text">小文件进行合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并行执行"><span class="nav-number">10.4.4.</span> <span class="nav-text">并行执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#严格模式"><span class="nav-number">10.4.5.</span> <span class="nav-text">严格模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#union和union-all有何不同？"><span class="nav-number">11.</span> <span class="nav-text">union和union all有何不同？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用union要满足什么条件？"><span class="nav-number">11.1.</span> <span class="nav-text">使用union要满足什么条件？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#count-count-1-和count-字段-的区别"><span class="nav-number">12.</span> <span class="nav-text">count(*), count(1)和count(字段)的区别</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xjw924</span>
+
+  
 </div>
 
 
 
-<!-- 代码块功能依赖 -->
-<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
-<!-- 代码语言 -->
 
-<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
 
     
-<!-- 代码块复制 -->
-
-<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
-
-
-<!-- 代码块收缩 -->
-
-<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
-
-
-<!-- 代码块折行 -->
-
-    </div>
-    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
-        <div class="toc-widget">
-            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
-            <div id="toc-content"></div>
-        </div>
-    </div>
-</div>
-
-<!-- TOC 悬浮按钮. -->
-
-<div id="floating-toc-btn" class="hide-on-med-and-down">
-    <a class="btn-floating btn-large bg-color">
-        <i class="fas fa-list-ul"></i>
-    </a>
-</div>
-
-
-<script src="/libs/tocbot/tocbot.min.js"></script>
-<script>
-    $(function () {
-        tocbot.init({
-            tocSelector: '#toc-content',
-            contentSelector: '#articleContent',
-            headingsOffset: -($(window).height() * 0.4 - 45),
-            collapseDepth: Number('0'),
-            headingSelector: 'h2, h3, h4'
-        });
-
-        // modify the toc link href to support Chinese.
-        let i = 0;
-        let tocHeading = 'toc-heading-';
-        $('#toc-content a').each(function () {
-            $(this).attr('href', '#' + tocHeading + (++i));
-        });
-
-        // modify the heading title id to support Chinese.
-        i = 0;
-        $('#articleContent').children('h2, h3, h4').each(function () {
-            $(this).attr('id', tocHeading + (++i));
-        });
-
-        // Set scroll toc fixed.
-        let tocHeight = parseInt($(window).height() * 0.4 - 64);
-        let $tocWidget = $('.toc-widget');
-        $(window).scroll(function () {
-            let scroll = $(window).scrollTop();
-            /* add post toc fixed. */
-            if (scroll > tocHeight) {
-                $tocWidget.addClass('toc-fixed');
-            } else {
-                $tocWidget.removeClass('toc-fixed');
-            }
-        });
-
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
         
-        /* 修复文章卡片 div 的宽度. */
-        let fixPostCardWidth = function (srcId, targetId) {
-            let srcDiv = $('#' + srcId);
-            if (srcDiv.length === 0) {
-                return;
-            }
-
-            let w = srcDiv.width();
-            if (w >= 450) {
-                w = w + 21;
-            } else if (w >= 350 && w < 450) {
-                w = w + 18;
-            } else if (w >= 300 && w < 350) {
-                w = w + 16;
-            } else {
-                w = w + 14;
-            }
-            $('#' + targetId).width(w);
-        };
-
-        // 切换TOC目录展开收缩的相关操作.
-        const expandedClass = 'expanded';
-        let $tocAside = $('#toc-aside');
-        let $mainContent = $('#main-content');
-        $('#floating-toc-btn .btn-floating').click(function () {
-            if ($tocAside.hasClass(expandedClass)) {
-                $tocAside.removeClass(expandedClass).hide();
-                $mainContent.removeClass('l9');
-            } else {
-                $tocAside.addClass(expandedClass).show();
-                $mainContent.addClass('l9');
-            }
-            fixPostCardWidth('artDetail', 'prenext-posts');
-        });
-        
-    });
-</script>
+      </div>
+    
 
     
 
-</main>
+  </div>
 
+  
 
-
-    <footer class="page-footer bg-color">
-    <div class="container row center-align" style="margin-bottom: 0px !important;">
-        <div class="col s12 m8 l8 copy-right">
-            Copyright&nbsp;&copy;
-            <span id="year">2019</span>
-            <a href="http://yoursite.com" target="_blank">xjw924</a>
-            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
-            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
-            <br>
-            
-            
-            
-            
-            
-            
-            <span id="busuanzi_container_site_pv">
-                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
-                    class="white-color"></span>&nbsp;次
-            </span>
-            
-            
-            <span id="busuanzi_container_site_uv">
-                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
-                    class="white-color"></span>&nbsp;人
-            </span>
-            
-            <br>
-            
-            <br>
-            
-        </div>
-        <div class="col s12 m4 l4 social-link social-statis">
-
-
-    <a href="xjw924@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-</div>
-    </div>
-</footer>
-
-<div class="progress-bar"></div>
-
-
-    <!-- 搜索遮罩框 -->
-<div id="searchModal" class="modal">
-    <div class="modal-content">
-        <div class="search-header">
-            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span>
-            <input type="search" id="searchInput" name="s" placeholder="Please enter a search keyword"
-                   class="search-input">
-        </div>
-        <div id="searchResult"></div>
-    </div>
-</div>
-
-<script src="/js/search.js"></script>
 <script type="text/javascript">
-$(function () {
-    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
-});
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
 </script>
-    <!-- 回到顶部按钮 -->
-<div id="backTop" class="top-scroll">
-    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-</div>
 
 
-    <script src="/libs/materialize/materialize.min.js"></script>
-    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
-    <script src="/libs/aos/aos.js"></script>
-    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
-    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
-    <script src="/js/matery.js"></script>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <!-- Baidu Analytics -->
 
-    <!-- Baidu Push -->
 
-    
-    
-    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
-    
 
-    
 
-    
 
-    
+  
 
-    
 
-    
-    
-    
-    <script src="/libs/instantpage/instantpage.js" type="module"></script>
-    
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
 
 </body>
-
 </html>
