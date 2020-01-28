@@ -5,9 +5,9 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta name="keywords" content="WOE与IV, 小徐小徐不断学习">
-    <meta name="description" content="理论$WOE_i$定义全称：Weight of Evidence
+    <meta name="description" content="理论WOE定义全称：Weight of Evidence
 前提：计算$WOE_i$之前需要是离散化后的连续变量or离散变量。
-对于变量第$i$个取值的$WOE_i$的计算公式为$$WOE_i=ln(\frac{py_i}{pn_i}">
+对于变量第$i$个取值的$WOE_i$的计算公式为$$WOE_i=ln(\frac{py_i}{pn_i})=ln">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -469,7 +469,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><h2 id="WOE-i-定义"><a href="#WOE-i-定义" class="headerlink" title="$WOE_i$定义"></a>$WOE_i$定义</h2><p>全称：Weight of Evidence</p>
+                <h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><h2 id="WOE定义"><a href="#WOE定义" class="headerlink" title="WOE定义"></a>WOE定义</h2><p>全称：Weight of Evidence</p>
 <p>前提：计算$WOE_i$之前需要是离散化后的连续变量or离散变量。</p>
 <p>对于变量第$i$个取值的$WOE_i$的计算公式为<br>$$<br>WOE_i=ln(\frac{py_i}{pn_i})=ln(\frac{\frac{ #y_i }{ #y_T }}{\frac{ #n_i }{ #n_T }})=ln(\frac{\frac{ #y_i }{ #n_i }}{\frac{ #y_T }{ #n_T }})<br>$$<br>其中$ #y_i $表示在第$i$个取值的样本中（或第$i$个箱内）的正样本个数，$ #y_T $表示所有正样本的个数，$py_i$表示在第$i$个取值的样本中（或第$i$个箱内）正样本占所有正样本的比例。</p>
 <p>从最后一个等号后的表达式可以看出，$WOE_i$表示的是某个取值下正样本和负样本的比值，与所有样本中这个比值的差异。这个差异是用比值再取对数来表示的。$WOE_i$越大，表示差异越大，则这个取值下的样本为正的可能性越大。</p>
@@ -477,7 +477,7 @@
 <li>标准化功能。编码过后的自变量其实具备了某种标准化的性质，自变量内部的各个取值之间都可以直接进行比较，且不同自变量之间的各个取值也可以通过$WOE_i$进行直接的比较。</li>
 <li>可以反映出自变量的贡献情况（？）。自变量内部$WOE_i$值的变异（波动）情况，结合模型拟合出的系数，构造出各个自变量的贡献率和相对重要性。一般地，系数越大，$WOE_i$的方差越大，则自变量的贡献率越大。</li>
 </ol>
-<h2 id="IV"><a href="#IV" class="headerlink" title="IV"></a>IV</h2><p>全程：Information Value</p>
+<h2 id="IV​"><a href="#IV​" class="headerlink" title="IV​"></a>IV​</h2><p>全程：Information Value</p>
 <p>在$WOE_i$的基础上，$IV$在$WOE_i$的前面乘以一个系数$(py_i-pn_i)$作为各箱$WOE_i$的权重，并进行加权求和，其计算公式如下<br>$$<br>IV=\sum_{i=1}^{N}(py_i-pn_i)<em>WOE_i=\sum_{i=1}^{N}(py_i-pn_i)</em>ln(\frac{py_i}{pn_i})<br>$$<br>其中$N$为分箱的个数（变量的取值个数），系数$(py_i-pn_i)$为箱内正样本占比与负样本占比的差。该系数不仅保证了每个箱乘积的值为非负数，更重要的是考虑了变量当前箱中样本的数量占整体样本数量的比例，比例越高，该箱对变量整体预测能力的贡献越高。</p>
 <p>$IV$衡量某个特征对目标的影响程度，通过该特征中正负样本的比例与总体正负样本的比例，来对比和计算其关联程度，因此可以代表<strong>该特征上的信息量</strong>以及<strong>该特征对模型的贡献</strong>。</p>
 <p>$IV$是对于整个特征来说的，代表的意义由下表来控制：</p>
@@ -717,9 +717,9 @@ result <span class="token operator">=</span> pd<span class="token punctuation">.
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            理论$WOE_i$定义全称：Weight of Evidence
+                            理论WOE定义全称：Weight of Evidence
 前提：计算$WOE_i$之前需要是离散化后的连续变量or离散变量。
-对于变量第$i$个取值的$WOE_i$的计算公式为$$WOE_i=ln(\frac{py_i}{pn_i}
+对于变量第$i$个取值的$WOE_i$的计算公式为$$WOE_i=ln(\frac{py_i}{pn_i})=ln
                         
                     </div>
                     <div class="publish-info">
