@@ -79,25 +79,22 @@
 
 
 
-<meta name="description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 sigmoid函数$$g(z)=\frac{1}{1+e^{-z}}$$代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：$$g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}$$其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间">
+<meta name="description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 推导逻辑回归是在线性回归的基础上，利用sigmoid函数（或称为logistic函数）$$g(z)=\frac{1}{1+e^{-z}}$$进行映射，代入线性回归部分$$z=\theta^Tx=\theta_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n$$得到二元逻">
 <meta name="keywords" content="MachineLearning,Classification,LogisticRegression">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Logistic Regression 逻辑回归">
-<meta property="og:url" content="http://yoursite.com/2019/10/18/logisticregression/index.html">
+<meta property="og:title" content="Logistic Regression">
+<meta property="og:url" content="http://yoursite.com/2019/10/18/logistic-regression/index.html">
 <meta property="og:site_name" content="小徐小徐不断学习">
-<meta property="og:description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 sigmoid函数$$g(z)=\frac{1}{1+e^{-z}}$$代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：$$g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}$$其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间">
+<meta property="og:description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 推导逻辑回归是在线性回归的基础上，利用sigmoid函数（或称为logistic函数）$$g(z)=\frac{1}{1+e^{-z}}$$进行映射，代入线性回归部分$$z=\theta^Tx=\theta_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n$$得到二元逻">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image014.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image016.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image018.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image020.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image022.jpg">
-<meta property="og:updated_time" content="2020-01-28T11:24:49.289Z">
+<meta property="og:image" content="http://yoursite.com/2019/10/18/logistic-regression/D:%5C1Study%5Chexo%5Csource_posts%5CLogistic-Regression%5C1580272471212.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/18/logistic-regression/D:%5C1Study%5Chexo%5Csource_posts%5CLogistic-Regression%5C1580272455921.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/18/logistic-regression/D:%5C1Study%5Chexo%5Csource_posts%5CLogistic-Regression%5C1580272403199.png">
+<meta property="og:updated_time" content="2020-01-29T15:18:47.715Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Logistic Regression 逻辑回归">
-<meta name="twitter:description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 sigmoid函数$$g(z)=\frac{1}{1+e^{-z}}$$代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：$$g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}$$其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间">
-<meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png">
+<meta name="twitter:title" content="Logistic Regression">
+<meta name="twitter:description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 推导逻辑回归是在线性回归的基础上，利用sigmoid函数（或称为logistic函数）$$g(z)=\frac{1}{1+e^{-z}}$$进行映射，代入线性回归部分$$z=\theta^Tx=\theta_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n$$得到二元逻">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/18/logistic-regression/D:%5C1Study%5Chexo%5Csource_posts%5CLogistic-Regression%5C1580272471212.png">
 
 
 
@@ -127,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/10/18/logisticregression/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/18/logistic-regression/">
 
 
 
 
 
-  <title>Logistic Regression 逻辑回归 | 小徐小徐不断学习</title>
+  <title>Logistic Regression | 小徐小徐不断学习</title>
   
 
 
@@ -260,7 +257,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/18/logisticregression/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/18/logistic-regression/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xjw924">
@@ -277,7 +274,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Logistic Regression 逻辑回归</h1>
+          <h1 class="post-title" itemprop="name headline">Logistic Regression</h1>
         
 
         <div class="post-meta">
@@ -350,20 +347,9 @@
 
       
         <h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><p>假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。</p>
-<p>sigmoid函数<br>$$<br>g(z)=\frac{1}{1+e^{-z}}<br>$$<br>代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：<br>$$<br>g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}<br>$$<br>其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间。</p>
-<p>令$y(x)$除以$1-y(x)$可以得到形似几率(odds)的$\frac{y(x)}{1-y(x)}$，在此基础上取对数，可以得到：<br>$$<br>ln\frac{y(x)}{1-y(x)}=ln(\frac{\frac{1}{1+e^{-\theta^Tx}}}{1-\frac{1}{1+e^{-\theta^Tx}}})=ln(\frac{\frac{1}{1+e^{-\theta^Tx}}}{\frac{e^{-\theta^Tx}}{1+e^{-\theta^Tx}}})=ln(\frac{1}{e^{-\theta^Tx}})=ln(e^{\theta^Tx})=\theta^Tx<br>$$<br>本质上是在对线性回归模型的预测去逼近真实标记的对数几率</p>
-<p>接下来使用极大似然估计对$\theta$进行估计</p>
-<p>令<br>$$<br>h_\theta(x)=g(z)=g(\theta^Tx)=\frac{1}{1+e^{-\theta^Tx}}<br>$$<br>得到<br>$$<br>\left{\begin{matrix}P(Y=1|x;\theta)=h_\theta(x)\ P(Y=0|x;\theta)=1-h_\theta(x)\end{matrix}\right.<br>$$<br>似然函数为<br>$$<br>L(\theta)=\prod_{i=1}^{m}P(y^i|x^i;\theta)=\prod_{i=1}^{m}h_\theta(x^i)^{y^i}*(1-h_\theta(x^i))^{1-y^i}<br>$$<br>对数似然函数为<br>$$<br>l(\theta)=\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))+(1-y^i)log(1-h_\theta(x^i))]<br>$$<br>令损失函数为<br>$$<br>J(\theta)=-\frac{1}{m}l(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))+(1-y^i)log(1-h_\theta(x^i))]<br>$$<br>利用梯度下降求解参数（忽略系数）<br>$$<br>\begin{align}\frac{∂J(\theta)}{∂\theta_j}&amp; =-\sum_{i=1}^{m}[\frac{y^i}{h_\theta(x^i)}-\frac{1-y^i}{1-h_\theta(x^i)}]\frac{∂h_\theta(x^i)}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]\frac{∂g(\theta^Tx^i)}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]g(\theta^Tx^i)(1-g(\theta^Tx^i))\frac{∂\theta^Tx^i}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]g(\theta^Tx^i)(1-g(\theta^Tx^i))x^i_j\&amp; =-\sum_{i=1}^{m}[y^i(1-g(\theta^Tx^i))-(1-y^i)g(\theta^Tx^i)]x^i_j\&amp; =-\sum_{i=1}^{m}[y^i-g(\theta^Tx^i)]x^i_j\&amp; =-\sum_{i=1}^{m}[y^i-h_\theta(x^i)]x^i_j\\end{align}<br>$$<br>因此最终得到参数迭代式<br>$$<br>\theta_j:=\theta_j+\eta\sum_{i=1}^{m}[y^i-h_\theta(x^i)]x^i_j<br>$$</p>
-<h2 id="基本假设"><a href="#基本假设" class="headerlink" title="基本假设"></a>基本假设</h2><ul>
-<li><p>第一个假设：<strong>假设数据服从伯努利分布</strong>。</p>
-<p>伯努利分布有一个简单的例子是抛硬币，抛中为正面的概率是$p$，抛中为负面的概率是$1-p$。</p>
-<p>在逻辑回归里假设$h_\theta(x)$ 为样本为正的概率，$1-h_\theta(x)$为样本为负的概率。</p>
-<p>整个模型可以描述为<br>$$<br>h_\theta(x;\theta) = p<br>$$<br>（在输入特征为$x$，参数为$\theta$的条件下，标签$y=1$的概率）</p>
-</li>
-<li><p>第二个假设：<strong>假设样本为正的概率是</strong> $p=\frac{1}{1+e^{−θ^Tx}}$ </p>
-<p>逻辑回归的最终形式<br>$$<br>h_\theta(x;\theta)=\frac{1}{1+e^{−θ^Tx}}<br>$$</p>
-</li>
-</ul>
+<h2 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h2><p>逻辑回归是在线性回归的基础上，利用sigmoid函数（或称为logistic函数）<br>$$<br>g(z)=\frac{1}{1+e^{-z}}<br>$$<br>进行映射，代入线性回归部分<br>$$<br>z=\theta^Tx=\theta_0+\theta_1x_1+\theta_2x_2+…+\theta_nx_n<br>$$<br>得到二元逻辑回归模型的一般形式：<br>$$<br>h_\theta(x)=g(\theta^Tx)=\frac{1}{1+e^{-\theta^Tx}}<br>$$<br>得到的$h_\theta(x)$就是逻辑回归返回的值，介于0到1之间，可以将其当做样本取正类的“概率”。因此对于样本$x$分类结果为正类1和负类0的概率分别为<br>$$<br>\begin{cases}<br>P(y=1|x;\theta)=h_\theta(x)\<br>P(y=0|x;\theta)=1-h_\theta(x)<br>\end{cases}<br>$$<br>对$h_\theta(x)$进行变换可以得到对数几率的表达式<br>$$<br>ln\frac{h_\theta(x)}{1-h_\theta(x)}=ln(\frac{\frac{1}{1+e^{-\theta^Tx}}}{1-\frac{1}{1+e^{-\theta^Tx}}})=ln(\frac{\frac{1}{1+e^{-\theta^Tx}}}{\frac{e^{-\theta^Tx}}{1+e^{-\theta^Tx}}})=ln(\frac{1}{e^{-\theta^Tx}})=ln(e^{\theta^Tx})=\theta^Tx<br>$$<br>从上式可以看出，<strong>逻辑回归的本质是在对线性回归模型的预测去逼近真实标记的对数几率</strong>。求解的关注点在于求解参数$\theta$上，通常使用极大似然估计的方法对$\theta$进行估计。</p>
+<p>令<br>$$<br>h_\theta(x)=\frac{1}{1+e^{-\theta^Tx}}<br>$$<br>得到的似然函数为<br>$$<br>L(\theta)=\prod_{i=1}^{m}P(y^i|x^i;\theta)=\prod_{i=1}^{m}h_\theta(x^i)^{y^i}*(1-h_\theta(x^i))^{1-y^i}<br>$$<br>其中，$x^i$为第$i$个样本的特征做构成的向量（每个向量$n+1$维，共$m$个向量），$y^i$为第$i$个样本的标签，$m$为样本量。实际中为了简化计算，同时防止连乘所造成的浮点数下溢，通常会转化为对数似然函数<br>$$<br>l(\theta)=\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))+(1-y^i)log(1-h_\theta(x^i))]<br>$$<br>逻辑回归所要解决的问题即为找到参数$\theta$，使得对数似然函数达到最大。</p>
+<p>令损失函数为（忽略正则化项）<br>$$<br>J(\theta)=-\frac{1}{m}l(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))+(1-y^i)log(1-h_\theta(x^i))]<br>$$<br>利用梯度下降求解参数<br>$$<br>\begin{align}\frac{∂J(\theta)}{∂\theta_j}&amp; =-\sum_{i=1}^{m}[\frac{y^i}{h_\theta(x^i)}-\frac{1-y^i}{1-h_\theta(x^i)}]\frac{∂h_\theta(x^i)}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]\frac{∂g(\theta^Tx^i)}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]g(\theta^Tx^i)(1-g(\theta^Tx^i))\frac{∂\theta^Tx^i}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]g(\theta^Tx^i)(1-g(\theta^Tx^i))x^i_j\&amp; =-\sum_{i=1}^{m}[y^i(1-g(\theta^Tx^i))-(1-y^i)g(\theta^Tx^i)]x^i_j\&amp; =-\sum_{i=1}^{m}[y^i-g(\theta^Tx^i)]x^i_j\&amp; =-\sum_{i=1}^{m}[y^i-h_\theta(x^i)]x^i_j\\end{align}<br>$$<br>因此最终得到参数迭代式<br>$$<br>\theta_j:=\theta_j+\eta\sum_{i=1}^{m}[y^i-h_\theta(x^i)]x^i_j<br>$$</p>
 <h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p><strong>优点：</strong></p>
 <ol>
 <li><p>速度快，在时间和内存需求上相当高效，它可以应用于分布式数据和在线算法实现，用较少的资源处理大型数据</p>
@@ -396,7 +382,7 @@
 </ol>
 </li>
 </ul>
-<h2 id><a href="#" class="headerlink" title></a></h2><p><strong>损失函数是它的极大似然函数取对数再除以样本量的相反数</strong></p>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p><strong>损失函数是它的极大似然函数取对数再除以样本量的相反数</strong></p>
 <p>极大似然函数：<br>$$<br>L_\theta(x)=\prod_{i=1}^{m}h_\theta(x^i;\theta)^{y^i}*(1-h_\theta(x^i;\theta))^{1-y^i}<br>$$<br>损失函数：<br>$$<br>J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h_\theta(x^i;\theta))]<br>$$</p>
 <p>除以m这一因子并不改变最终求导极值结果，通过除以m可以得到<strong>平均损失值</strong>，避免<strong>样本数量对于损失值的影响</strong></p>
 <blockquote>
@@ -411,7 +397,10 @@
 <p>如果用最小二乘法，目标函数就是差值的平方和，<strong>是非凸的，不容易求解，很容易陷入到局部最优</strong>。</p>
 <p>如果用极大似然估计，目标函数就是对数似然函数，是关于$(w,b)$的高阶<strong>连续可导凸函数</strong>，可以方便通过一些凸优化算法求解，比如梯度下降法、牛顿法等。</p>
 </blockquote>
-<h2 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h2><p>由于该极大似然函数无法直接求解，我们一般通过对该函数进行<strong>梯度下降</strong>来不断逼近最优解。</p>
+<h2 id="参数求解方法"><a href="#参数求解方法" class="headerlink" title="参数求解方法"></a>参数求解方法</h2><ul>
+<li>梯度下降法</li>
+</ul>
+<p>由于该极大似然函数无法直接求解，我们一般通过对该函数进行<strong>梯度下降</strong>来不断逼近最优解。</p>
 <blockquote>
 <p>梯度下降：随机梯度下降，批梯度下降，small-batch梯度下降</p>
 <p>Q：三种方式的优劣以及如何选择最合适的梯度下降方式</p>
@@ -425,27 +414,24 @@
 </ol>
 </blockquote>
 <ul>
-<li><p><strong>逻辑回归的目的</strong></p>
-<p>该函数的目的便是将数据二分类，提高准确率。</p>
-</li>
-<li><p><strong>逻辑回归如何分类</strong></p>
-<p>划定一个阈值，y值大于阈值的是一类，y值小于阈值的是另外一类。阈值具体如何调整根据实际情况选择。一般会选择0.5做为阈值来划分。</p>
-</li>
+<li>牛顿法</li>
+<li>拟牛顿法</li>
 </ul>
-<h2 id="Sigmoid函数公式和性质"><a href="#Sigmoid函数公式和性质" class="headerlink" title="Sigmoid函数公式和性质"></a>Sigmoid函数公式和性质</h2><p>$$<br>g(z)=\frac{1}{1+e^{-z}}<br>$$</p>
+<blockquote>
+<p>牛顿法与梯度下降法求解参数的区别：</p>
+<p>两种方法不同在于牛顿法中<strong>多了一项二阶导数</strong>，这项二阶导数对参数更新的影响主要体现在<strong>改变参数更新方向上</strong>。如下图所示，红色是牛顿法参数更新的方向，绿色为梯度下降法参数更新方向，因为牛顿法考虑了二阶导数，因而可以<strong>找到更优的参数更新方向</strong>，在每次更新的步幅相同的情况下，可以<strong>比梯度下降法节省很多的迭代次数</strong>。<br><img src="/2019/10/18/logistic-regression/D:%5C1Study%5Chexo%5Csource_posts%5CLogistic-Regression%5C1580272471212.png" alt="1580272471212"></p>
+</blockquote>
+<h2 id="Sigmoid函数公式和性质"><a href="#Sigmoid函数公式和性质" class="headerlink" title="Sigmoid函数公式和性质"></a>Sigmoid函数公式和性质</h2><p>Sigmoid函数：<br>$$<br>g(z)=\frac{1}{1+e^{-z}}<br>$$</p>
 <p>需要一个单调可微的函数，把分类任务的真实标记$y$与线性回归模型的预测值联系起来</p>
 <p>对于二分类问题，由线性回归得来的启发是根据特征的加权平均进行预测</p>
 <p>很自然地想到设定一个阈值，即引入阶跃函数，如果加权平均大于该阈值就判为正类，反之判为负类</p>
-<p>但阶跃函数不可导，所以引入Sigmoid函数，将样本的加权平均代入函数得到的值就是样本属于正类的概率，即将输入空间到输出空间作非线性函数映射。</p>
+<p>但<strong>阶跃函数不可导</strong>，所以引入Sigmoid函数，将样本的加权平均代入函数得到的值就是样本属于正类的概率，即将输入空间到输出空间作非线性函数映射。</p>
 <p>Sigmoid函数是一个S型的函数</p>
+<p> <img src="/2019/10/18/logistic-regression/D:%5C1Study%5Chexo%5Csource_posts%5CLogistic-Regression%5C1580272455921.png" alt="1580272455921"></p>
 <p>当自变量z趋近正无穷时，因变量g(z)趋近于1，而当z趋近负无穷时，g(z)趋近于0</p>
-<p>它能够将任何实数映射到(0,1)区间，使其可用于将任意值函数转换为更适合二分类的函数。 </p>
+<p>它能够<strong>将任何实数映射到(0,1)区间</strong>，使其可用于将任意值函数转换为更适合二分类的函数。 </p>
 <p>因为这个性质，Sigmoid函数也被当作是归一化的一种方法，与MinMaxSclaer同理，是属于数据预处理中的“缩放”功能，可以将数据压缩到[0,1]之内。</p>
-<p>区别在于，MinMaxScaler归一化之后，是可以取到0和1的（最大值归一化后就是1，最小值归一化后就是0），但Sigmoid函数只是无限趋近于0和1。</p>
-<h2 id="LR与最大熵模型"><a href="#LR与最大熵模型" class="headerlink" title="LR与最大熵模型"></a>LR与最大熵模型</h2><p>最大熵模型与LR有类似的形式，它们又称为对数线性模型</p>
-<p>模型学习就是在给定的训练数据条件下，对模型进行极大似然估计或正则化的极大似然估计</p>
-<h2 id="牛顿法与梯度下降法求解参数的区别"><a href="#牛顿法与梯度下降法求解参数的区别" class="headerlink" title="牛顿法与梯度下降法求解参数的区别"></a>牛顿法与梯度下降法求解参数的区别</h2><p>两种方法不同在于牛顿法中<strong>多了一项二阶导数</strong>，这项二阶导数对参数更新的影响主要体现在<strong>改变参数更新方向上</strong>。如下图所示，红色是牛顿法参数更新的方向，绿色为梯度下降法参数更新方向，因为牛顿法考虑了二阶导数，因而可以<strong>找到更优的参数更新方向</strong>，在每次更新的步幅相同的情况下，可以<strong>比梯度下降法节省很多的迭代次数</strong>。 </p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png" alt="å¾çåç§°"></p>
+<p>区别在于，MinMaxScaler归一化之后，是可以取到0和1的（最大值归一化后就是1，最小值归一化后就是0），但<strong>Sigmoid函数只是无限趋近于0和1</strong>。</p>
 <h2 id="LR的输入特征一般是离散的而不是连续的？"><a href="#LR的输入特征一般是离散的而不是连续的？" class="headerlink" title="LR的输入特征一般是离散的而不是连续的？"></a>LR的输入特征一般是离散的而不是连续的？</h2><ol>
 <li><p>稀疏向量内积乘法<strong>运算速度快</strong>，计算结果方便存储，容易扩展</p>
 </li>
@@ -467,25 +453,77 @@
 </li>
 </ol>
 <h2 id="LR多分类"><a href="#LR多分类" class="headerlink" title="LR多分类"></a>LR多分类</h2><ol>
-<li><p>多项逻辑回归Softmax Regression</p>
+<li><p>多项逻辑回归(Softmax Regression)</p>
 <p>（二分类逻辑回归在多标签分类下的一种拓展）</p>
+<p><img src="/2019/10/18/logistic-regression/D:%5C1Study%5Chexo%5Csource_posts%5CLogistic-Regression%5C1580272403199.png" alt="1580272403199"></p>
 </li>
-</ol>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image014.jpg" alt="img"></p>
-<ol start="2">
 <li><p>one v.s. rest</p>
 <p>k个二分类LR分类器，把标签重新整理为“第i类标签”与“非第i类标签”</p>
 </li>
 </ol>
-<h2 id="LR调参"><a href="#LR调参" class="headerlink" title="LR调参"></a>LR调参</h2><ol>
-<li><p>sk-learn</p>
-<p>class sklearn.linear_model.LogisticRegression (penalty=’l2’, dual=False, tol=0.0001, C=1.0, ﬁt_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver=’warn’, max_iter=100, multi_class=’warn’, verbose=0, warm_start=False, n_jobs=None)</p>
+<h1 id="单机python实现"><a href="#单机python实现" class="headerlink" title="单机python实现"></a>单机python实现</h1><p> <a href="http://scikit-learn.sourceforge.net/dev/modules/generated/sklearn.linear_model.LogisticRegression.html" target="_blank" rel="noopener">http://scikit-learn.sourceforge.net/dev/modules/generated/sklearn.linear_model.LogisticRegression.html</a> </p>
+<p><em>class</em> <code>sklearn.linear_model.LogisticRegression</code>(<em>penalty=’l2’</em>, <em>dual=False</em>, <em>tol=0.0001</em>, <em>C=1.0</em>, <em>fit_intercept=True</em>, <em>intercept_scaling=1</em>, <em>class_weight=None</em>, <em>random_state=None</em>, <em>solver=’liblinear’</em>, <em>max_iter=100</em>, <em>multi_class=’ovr’</em>, <em>verbose=0</em>) </p>
+<h2 id="参数列表"><a href="#参数列表" class="headerlink" title="参数列表"></a>参数列表</h2><h3 id="1-基本模型参数"><a href="#1-基本模型参数" class="headerlink" title="1. 基本模型参数"></a>1. 基本模型参数</h3><ul>
+<li><p>fit_intercept：bool，指定是否将截距项添加到线性回归部分中。默认True。</p>
 </li>
-</ol>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image016.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image018.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image020.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image022.jpg" alt="img"></p>
+<li><p>multi_class：’auto’（默认）/‘ovr’/‘multinomial’，表示要预测的分类是二分类或一对多形式的多分类问题，还是多对多形式的多分类问题。</p>
+<ul>
+<li><p>‘auto’：表示自动选择，会根据数据的分类情况和其他参数确定模型要处理的分类问题的类型。</p>
+<blockquote>
+<p>根据源码得到判定方法如下：</p>
+<p>step 1：if solver = ‘liblinear’: multi_class = ‘ovr’</p>
+<p>step 2：elif n_classes &gt; 2: multi_class = ‘multinomial’</p>
+<p>step 3：else: multi_class = ‘ovr’</p>
+</blockquote>
+</li>
+<li><p>‘ovr’：表示当前处理的是二分类或一对多形式的多分类问题</p>
+</li>
+<li><p>‘multinomial’：表示当前处理的是多对多形式的多分类问题</p>
+</li>
+</ul>
+</li>
+<li><p>class_weight：None（默认）/“balanced”/dict，标签(label)的权重。</p>
+<ul>
+<li><p><strong>None</strong>：所有的label持有相同的权重， 所有类别的权值为1 </p>
+</li>
+<li><p><strong>“balanced”</strong>：自动调整与样本中类频率成反比的权重，即<code>n_samples/(n_classes*np.bincount(y))</code></p>
+<blockquote>
+<p>e.g. </p>
+<p>共4个样本n_samples = 4，二分类问题n_classes = 2</p>
+<p>样本标签为y=[1,1,1,0]，则np.bincount(y) = [1,3]</p>
+<p>则n_samples / (n_classes * np.bincount(y)) = [$\frac{4}{2<em>1}$,$\frac{4}{2</em>3}$] = [2,$\frac{2}{3}$]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&gt;<span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">&gt;<span class="keyword">from</span> sklearn.utils.class_weight <span class="keyword">import</span> compute_class_weight </span><br><span class="line">&gt;</span><br><span class="line">&gt;y = [<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>]  <span class="comment"># 标签值，一共16个样本</span></span><br><span class="line">&gt;</span><br><span class="line">&gt;np.bincount(y)  </span><br><span class="line">&gt;<span class="comment"># array([8, 6, 2], dtype=int64) 计算每个类别的样本数量，顺序按类别的出现次序</span></span><br><span class="line">&gt;</span><br><span class="line">&gt;class_weight = <span class="string">'balanced'</span></span><br><span class="line">&gt;classes = np.array([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])  <span class="comment">#标签类别</span></span><br><span class="line">&gt;weight = compute_class_weight(class_weight, classes, y)</span><br><span class="line">&gt;print(weight) <span class="comment"># [0.66666667 0.88888889 2.66666667]</span></span><br><span class="line">&gt;</span><br><span class="line">&gt;<span class="comment"># 验证</span></span><br><span class="line">&gt;print(<span class="number">16</span>/(<span class="number">3</span>*<span class="number">8</span>))  <span class="comment">#输出 0.6666666666666666</span></span><br><span class="line">&gt;print(<span class="number">16</span>/(<span class="number">3</span>*<span class="number">6</span>))  <span class="comment">#输出 0.8888888888888888</span></span><br><span class="line">&gt;print(<span class="number">16</span>/(<span class="number">3</span>*<span class="number">2</span>))  <span class="comment">#输出 2.6666666666666665</span></span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p><strong>dict类型</strong></p>
+<ul>
+<li><p>对于二分类问题，可定义class_weight = {0:0.9, 1:0.1}，这样类别0的权重为0.9，类别1的权重为0.1</p>
+</li>
+<li><p>对于多分类问题，定义的权重必须具体到每个标签下的每个类，其中类是key-value中的key，权重是value。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.utils.class_weight <span class="keyword">import</span> compute_class_weight </span><br><span class="line"></span><br><span class="line">y = [<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>]  <span class="comment">#标签值，一共16个样本</span></span><br><span class="line"></span><br><span class="line">class_weight = &#123;<span class="number">0</span>:<span class="number">1</span>,<span class="number">1</span>:<span class="number">3</span>,<span class="number">2</span>:<span class="number">5</span>&#125;   <span class="comment"># 设置</span></span><br><span class="line">classes = np.array([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])  <span class="comment">#标签类别</span></span><br><span class="line">weight = compute_class_weight(class_weight, classes, y)</span><br><span class="line">print(weight)   <span class="comment"># 输出：[1. 3. 5.]，也就是字典中设置的值</span></span><br></pre></td></tr></table></figure>
+
+<p>（参考： <a href="https://www.cnblogs.com/qi-yuan-008/p/11992156.html" target="_blank" rel="noopener">https://www.cnblogs.com/qi-yuan-008/p/11992156.html</a> )</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>class_weight如何体现在逻辑回归的损失函数上？</strong></p>
+<p>class_weight给每个类别分别设置不同的<strong>惩罚参数C</strong>。</p>
+<p>惩罚项C会相应的放大或者缩小某一类的损失，如果某一类C越大，这一类的损失也被（相对于其他类来说）放大，那么系统会把本次学习重点放在这一类上，使得系统尽可能的预测对这一类的输入，所以惩罚项C不会影响计算的损失，但反向学习时会相应的放大或缩小损失，间接影响学习的方向。</p>
+<p>(参考： <a href="https://www.zhihu.com/question/265420166/answer/293896934" target="_blank" rel="noopener">https://www.zhihu.com/question/265420166/answer/293896934</a> )</p>
+<p>源码关于class_weight与sample_weight在LR损失函数上的具体计算方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;sample_weight *= class_weight_[le.fit_transform(y_bin)] </span><br><span class="line">&gt;<span class="comment"># 将class_weight乘到每个样本的sample_weight上</span></span><br><span class="line">&gt;<span class="comment"># sample_weight : shape (n_samples,)</span></span><br><span class="line">&gt;<span class="comment"># le即LabelEncoder，将标签标准化为0/1</span></span><br><span class="line">&gt;</span><br><span class="line">&gt;<span class="comment"># Logistic loss is the negative of the log of the logistic function</span></span><br><span class="line">&gt;<span class="comment"># 损失函数</span></span><br><span class="line">&gt;out = -np.sum(sample_weight * log_logistic(yz)) + <span class="number">.5</span> * alpha * np.dot(w, w)</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-求解算法参数"><a href="#2-求解算法参数" class="headerlink" title="2. 求解算法参数"></a>2. 求解算法参数</h3><ul>
+<li>solver：用于求解模型最优化问题的算法，可选{‘newton-cg’,’lbfgs’,’liblinear’,’sag’,’saga’}，默认’lbfgs’<ul>
+<li>‘liblinear’</li>
+<li></li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -520,8 +558,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/10/18/logistic-regression/" rel="next" title="Logistic Regression">
-                <i class="fa fa-chevron-left"></i> Logistic Regression
+              <a href="/2019/10/18/tong-ji-si-kao/" rel="next" title="统计思考">
+                <i class="fa fa-chevron-left"></i> 统计思考
               </a>
             
           </div>
@@ -530,8 +568,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/10/18/randomforest/" rel="prev" title="Random Forest 随机森林">
-                Random Forest 随机森林 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/10/18/logisticregression/" rel="prev" title="Logistic Regression 逻辑回归">
+                Logistic Regression 逻辑回归 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -674,7 +712,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#理论"><span class="nav-number">1.</span> <span class="nav-text">理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本假设"><span class="nav-number">1.1.</span> <span class="nav-text">基本假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">1.2.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">1.3.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">1.4.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解方法"><span class="nav-number">1.5.</span> <span class="nav-text">求解方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sigmoid函数公式和性质"><span class="nav-number">1.6.</span> <span class="nav-text">Sigmoid函数公式和性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR与最大熵模型"><span class="nav-number">1.7.</span> <span class="nav-text">LR与最大熵模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法与梯度下降法求解参数的区别"><span class="nav-number">1.8.</span> <span class="nav-text">牛顿法与梯度下降法求解参数的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">1.9.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">1.10.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">1.11.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">1.12.</span> <span class="nav-text">LR多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR调参"><span class="nav-number">1.13.</span> <span class="nav-text">LR调参</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#理论"><span class="nav-number">1.</span> <span class="nav-text">理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#推导"><span class="nav-number">1.1.</span> <span class="nav-text">推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">1.2.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">1.3.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失函数"><span class="nav-number">1.4.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数求解方法"><span class="nav-number">1.5.</span> <span class="nav-text">参数求解方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sigmoid函数公式和性质"><span class="nav-number">1.6.</span> <span class="nav-text">Sigmoid函数公式和性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">1.7.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">1.8.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">1.9.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">1.10.</span> <span class="nav-text">LR多分类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单机python实现"><span class="nav-number">2.</span> <span class="nav-text">单机python实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参数列表"><span class="nav-number">2.1.</span> <span class="nav-text">参数列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-基本模型参数"><span class="nav-number">2.1.1.</span> <span class="nav-text">1. 基本模型参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-求解算法参数"><span class="nav-number">2.1.2.</span> <span class="nav-text">2. 求解算法参数</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

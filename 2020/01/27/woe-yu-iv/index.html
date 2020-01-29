@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="小徐小徐不断学习">
 <meta property="og:description" content="理论WOE定义全称：Weight of Evidence 前提：计算$WOE_i$之前需要是离散化后的连续变量or离散变量。 对于变量第$i$个取值的$WOE_i$的计算公式为$$WOE_i=ln(\frac{py_i}{pn_i})=ln(\frac{\frac{ #y_i }{ #y_T }}{\frac{ #n_i }{ #n_T }})=ln(\frac{\frac{ #y_i }{ #n">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-28T09:57:31.625Z">
+<meta property="og:updated_time" content="2020-01-28T11:21:50.028Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="WOE与IV">
 <meta name="twitter:description" content="理论WOE定义全称：Weight of Evidence 前提：计算$WOE_i$之前需要是离散化后的连续变量or离散变量。 对于变量第$i$个取值的$WOE_i$的计算公式为$$WOE_i=ln(\frac{py_i}{pn_i})=ln(\frac{\frac{ #y_i }{ #y_T }}{\frac{ #n_i }{ #n_T }})=ln(\frac{\frac{ #y_i }{ #n">
@@ -390,6 +390,32 @@
 
 <h1 id="集群pyspark"><a href="#集群pyspark" class="headerlink" title="集群pyspark"></a>集群pyspark</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cal_woe_iv</span><span class="params">(tableName, featureCol, labelCol)</span>:</span></span><br><span class="line">     <span class="string">'''</span></span><br><span class="line"><span class="string">     计算spark.sql.DataFrame的WOE和IV</span></span><br><span class="line"><span class="string">     :param tableName: 储存在HDFS上的表名</span></span><br><span class="line"><span class="string">     :param featureCol: 所需要计算的字段名</span></span><br><span class="line"><span class="string">     :param labelCol: 标签列名</span></span><br><span class="line"><span class="string">     :return WOE字典和IV值</span></span><br><span class="line"><span class="string">     '''</span></span><br><span class="line">     df = spark.sql(<span class="string">"select &#123;featureCol&#125;, &#123;labelCol&#125; from &#123;tableName&#125;"</span>.format(featureCol=featureCol, labelCol=labelCol, tableName=tableName))</span><br><span class="line">     <span class="comment"># 使用crosstab函数生成列联表，并对列进行命名</span></span><br><span class="line">     binCount = df.crosstab(featureCol,labelCol).toDF(<span class="string">'feature'</span>,<span class="string">'neg_cnt'</span>,<span class="string">'pos_cnt'</span>)</span><br><span class="line">     <span class="comment"># 注册临时表便于后续调用</span></span><br><span class="line">     binCount.registerTempTable(<span class="string">"binCount"</span>)</span><br><span class="line">     <span class="comment"># 计算主要步骤</span></span><br><span class="line">     woe_df = spark.sql(<span class="string">"""</span></span><br><span class="line"><span class="string">        select</span></span><br><span class="line"><span class="string">          feature,</span></span><br><span class="line"><span class="string">          nvl(log(pos_per/neg_per), 0) as woe_i,</span></span><br><span class="line"><span class="string">          nvl((pos_per-neg_per)*log(pos_per/neg_per), 0) as iv_i</span></span><br><span class="line"><span class="string">        from</span></span><br><span class="line"><span class="string">        (</span></span><br><span class="line"><span class="string">          select</span></span><br><span class="line"><span class="string">            feature,</span></span><br><span class="line"><span class="string">            neg_cnt/(select sum(neg_cnt) from binCount) as neg_per,</span></span><br><span class="line"><span class="string">            pos_cnt/(select sum(pos_cnt) from binCount) as pos_per</span></span><br><span class="line"><span class="string">          from</span></span><br><span class="line"><span class="string">            binCount</span></span><br><span class="line"><span class="string">        ) t</span></span><br><span class="line"><span class="string">     """</span>)</span><br><span class="line">     <span class="comment"># 将计算结果转化为pandas.DataFrame</span></span><br><span class="line">     woe_df_pandas = woe_df.toPandas()</span><br><span class="line">     woe = dict(zip(woe_df_pandas[<span class="string">"feature"</span>].values.reshape(<span class="number">-1</span>,), woe_df_pandas[<span class="string">"woe_i"</span>].values.reshape(<span class="number">-1</span>,),))</span><br><span class="line">     iv = sum(woe_df_pandas[<span class="string">"iv_i"</span>].values)</span><br><span class="line">     <span class="keyword">return</span> woe, iv</span><br></pre></td></tr></table></figure>
 
+<p>调用并测试运算时间</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line">    <span class="keyword">import</span> time</span><br><span class="line">    <span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">    spark = SparkSession.builder.enableHiveSupport().getOrCreate()</span><br><span class="line">    tableName = <span class="string">"test.calc_woe_iv_sample"</span></span><br><span class="line">    featureCol = <span class="string">"age_level"</span></span><br><span class="line">    labelCol = <span class="string">"label"</span></span><br><span class="line">    time_cost = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">30</span>):</span><br><span class="line">        start = time.time()</span><br><span class="line">        woe, iv = cal_woe_iv(tableName, featureCol, labelCol)</span><br><span class="line">        end = time.time()</span><br><span class="line">        time_cost.append(end-start)</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">'time cost: %.5f sec'</span> % (np.mean(time_cost)))</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">'woe:'</span>, woe)</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">'iv:'</span>, iv)</span><br></pre></td></tr></table></figure>
+
+<p>集群资源配置：</p>
+<blockquote>
+<p>spark.driver.memory=5G<br>spark.driver.maxResultSize=5G<br>num-executors=20<br>executor-cores=6<br>executor-memory=4G</p>
+</blockquote>
+<p>根据样本量的不同，测试计算时间结果（循环30次取平均）</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>10w</th>
+<th>100w</th>
+<th>1000w</th>
+<th>1e</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>计算时间(s)</td>
+<td>0.872</td>
+<td>1.819</td>
+<td>3.172</td>
+<td>25.793</td>
+</tr>
+</tbody></table>
 
       
     </div>
@@ -505,7 +531,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
