@@ -1,743 +1,102 @@
-<!DOCTYPE html>
+extends includes/layout.pug
+
+block top_img
+  - var top_img =  page.top_img || page.cover || theme.post_meta.top_img || theme.default_top_img
+  - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+  div#top-container(style=bg_img)
+    #post-info
+      #post-title
+          .posttitle= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          if (theme.post_meta.date_type === 'both')
+            time.post-meta__date
+              i.fa.fa-calendar.fa-fw(aria-hidden="true")
+              =' '+_p('post.created')+' '+date(page.date, config.date_format)
+              span.post-meta__separator |
+              i.fa.fa-history.fa-fw(aria-hidden="true")
+              =' '+_p('post.updated')+' '+date(page.updated, config.date_format)
+          else
+            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+            time.post-meta__date #[i.fa.fa-calendar.fa-fw(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+                  
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          span
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon.fa-fw(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.fa-fw(aria-hidden="true")
+        .post-meta-wordcount
+          if (theme.wordcount && theme.wordcount.enable)
+            i.fa.fa-file-word-o.post-meta__icon.fa-fw(aria-hidden="true")
+            span= _p('post.wordcount') + ':'
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            i.fa.fa-clock-o.post-meta__icon.fa-fw(aria-hidden="true")
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+          .post-meta-pv-cv
+            if (theme.wordcount && theme.wordcount.enable && theme.busuanzi.page_pv)
+              span.post-meta__separator |
+            if theme.busuanzi.page_pv       
+              span
+                i.fa.fa-eye.post-meta__icon.fa-fw(aria-hidden="true") 
+                =_p('post.page_pv') + ':'
+              span#busuanzi_value_page_pv
+            if (theme.disqus && theme.disqus.enable && theme.disqus.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comment-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment')
+                span.disqus-comment-count(data-disqus-url=page.permalink)
+            if (theme.valine && theme.valine.enable && theme.valine.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comments-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment' itemprop="discussionUrl")
+                span.valine-comment-count.comment-count(data-xid=url_for(page.path) itemprop="commentCount")
+            if (theme.gitalk && theme.gitalk.enable && theme.gitalk.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comments-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment')
+                span.gitalk-comment-count.comment-count
 
 
-
+block content
+  article#post(class="")
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable && page.copyright != false)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
   
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Hexo, NexT">
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="SVM是一种二类分类模型。它的基本模型是在特征空间中寻找间隔最大化的分离超平面的线性分类器。（间隔最大是它有别于感知机） 训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机； 训练数据近似线性可分时，引入松弛变量，通过软间隔最大化，学习一个线性分类器，即线性支持向量机； 训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。 为什么要转化为对偶问题？">
-<meta property="og:type" content="article">
-<meta property="og:title" content="SVM">
-<meta property="og:url" content="http://yoursite.com/2019/11/14/svm/index.html">
-<meta property="og:site_name" content="小徐小徐不断学习">
-<meta property="og:description" content="SVM是一种二类分类模型。它的基本模型是在特征空间中寻找间隔最大化的分离超平面的线性分类器。（间隔最大是它有别于感知机） 训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机； 训练数据近似线性可分时，引入松弛变量，通过软间隔最大化，学习一个线性分类器，即线性支持向量机； 训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。 为什么要转化为对偶问题？">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
-<meta property="og:updated_time" content="2019-11-14T03:36:54.770Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SVM">
-<meta name="twitter:description" content="SVM是一种二类分类模型。它的基本模型是在特征空间中寻找间隔最大化的分离超平面的线性分类器。（间隔最大是它有别于感知机） 训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机； 训练数据近似线性可分时，引入松弛变量，通过软间隔最大化，学习一个线性分类器，即线性支持向量机； 训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。 为什么要转化为对偶问题？">
-<meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/2019/11/14/svm/">
-
-
-
-
-
-  <title>SVM | 小徐小徐不断学习</title>
-  
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">小徐小徐不断学习</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle">Hi, there~</p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+  .tag_share
+    if (theme.post_meta.tags)
+      .post-meta__tag-list
+        each item, index in page.tags.data
+          a(href=url_for(item.path)).post-meta__tags #[=item.name]    
+    include includes/share/index.pug
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
-            
-            分类
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            归档
-          </a>
-        </li>
-      
-
-      
-    </ul>
+  if theme.reward.enable
+    include includes/reward.pug
+  include includes/pagination.pug
   
-
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/14/svm/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xjw924">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小徐小徐不断学习">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">SVM</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-14T11:22:19+08:00">
-                2019-11-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>SVM是一种二类分类模型。它的基本模型是<strong>在特征空间中寻找间隔最大化的分离超平面的线性分类器</strong>。（间隔最大是它有别于感知机）</p>
-<p>训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机；</p>
-<p>训练数据近似线性可分时，引入松弛变量，通过软间隔最大化，学习一个线性分类器，即线性支持向量机；</p>
-<p>训练数据线性不可分时，通过使用核技巧及软间隔最大化，学习非线性支持向量机。</p>
-<h2 id="为什么要转化为对偶问题？"><a href="#为什么要转化为对偶问题？" class="headerlink" title="为什么要转化为对偶问题？"></a>为什么要转化为对偶问题？</h2><p>对偶问题通常更易求解</p>
-<p>便于引入核函数，推广到非线性分类问题</p>
-<h2 id="SVM的核函数，引入核函数本质"><a href="#SVM的核函数，引入核函数本质" class="headerlink" title="SVM的核函数，引入核函数本质"></a>SVM的核函数，引入核函数本质</h2><p>对于非线性的情况，SVM 的处理方法是选择一个核函数 κ(⋅,⋅) ，通过将数据映射到高维空间，来解决在原始空间中线性不可分的问题。</p>
-<p>此外，因为训练样例一般是不会独立出现的，它们总是以成对样例的内积形式出现，而用对偶形式表示学习器的优势在为在该表示中可调参数的个数不依赖输入属性的个数，通过使用恰当的核函数来替代内积，可以隐式得将非线性的训练数据映射到高维空间</p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg" alt="img"></p>
-<p><strong>核方法有什么优点：</strong></p>
-<p>\1.    使我们能够使用保证有效收敛的凸优化技术来学习非线性模型（关于x的函数），因为可认为φ是固定的，仅优化α，即优化算法可以将决策函数视为不同空间中的线性函数</p>
-<p>\2.    核函数的实现方法通常比直接构建φ(x)再计算内积高效很多，而且某些时候φ(x)是无限维的，普通地计算内积很困难。</p>
-<h2 id="²-SVM的优缺点"><a href="#²-SVM的优缺点" class="headerlink" title="² SVM的优缺点"></a>² SVM的优缺点</h2><p>优点：</p>
-<p>可以很好地处理小样本数据</p>
-<p>可解决非线性问题</p>
-<p>缺点：</p>
-<p>对缺失数据敏感</p>
-<p>SVC函数的训练时间是随训练样本平方级增长</p>
-<p>对于多分类问题，SVC采用的是OVO投票机制，需要两两类别建立分类器，训练时间可能比较长。</p>
-<h2 id="²-SVM核技巧原理，如何选择核函数"><a href="#²-SVM核技巧原理，如何选择核函数" class="headerlink" title="² SVM核技巧原理，如何选择核函数"></a>² SVM核技巧原理，如何选择核函数</h2><h2 id="²-SVM的损失函数"><a href="#²-SVM的损失函数" class="headerlink" title="² SVM的损失函数"></a>² SVM的损失函数</h2><h2 id="²-SVM的推导过程"><a href="#²-SVM的推导过程" class="headerlink" title="² SVM的推导过程"></a>² SVM的推导过程</h2><h2 id="²-SVM怎么扩展到多分类问题"><a href="#²-SVM怎么扩展到多分类问题" class="headerlink" title="² SVM怎么扩展到多分类问题"></a>² SVM怎么扩展到多分类问题</h2><p>1）直接在目标函数上进行修改，将多个分类面的参数求解合并到一个最优化问题中，通过求解该最优化问题“一次性”实现多类分类，但计算复杂，实现起来较困难</p>
-<p>2）间接法：通过组合多个二分类器来实现多分类器的构造，有一对一，一对多</p>
-<h2 id="²-SVM需要解决的重要数学问题是什么"><a href="#²-SVM需要解决的重要数学问题是什么" class="headerlink" title="² SVM需要解决的重要数学问题是什么"></a>² SVM需要解决的重要数学问题是什么</h2><h2 id="²-LR与SVM的区别"><a href="#²-LR与SVM的区别" class="headerlink" title="² LR与SVM的区别"></a>² LR与SVM的区别</h2><p>联系：</p>
-<p>1）LR和SVM都可以处理分类问题</p>
-<p>2）都基于线性函数wTx+b</p>
-<p>区别：</p>
-<p>1） LR是参数模型，SVM是非参数模型。 </p>
-<p>2） LR可输出概率，SVM不输出概率，只输出类别</p>
-<p>3） 从损失函数来看，LR是logistic loss，SVM是hinge loss，这两个损失函数的目的都是增加对分类影响较大的数据点的权重，减少与分类关系较小的数据点的权重</p>
-<p>4） 在训练集较小时，SVM较适用，而LR需要较多的样本。LR相对来说模型更简单更快，好理解，特别是大规模线性分类时比较方便。而SVM的理解和优化相对来说复杂一些</p>
-<p>5） LR模型找到的超平面是尽量让所有点都远离他，而SVM寻找的那个超平面，是只让最靠近中间分割线的那些点尽量远离，即只用到那些支持向量的样本。</p>
-<p>6） 对非线性问题的处理方式不同，LR主要靠特征变换或构造（组合交叉特征）；SVM也可以这样，还可以通过核方法</p>
-<h2 id="²-什么时候用LR或SVM？"><a href="#²-什么时候用LR或SVM？" class="headerlink" title="² 什么时候用LR或SVM？"></a>² 什么时候用LR或SVM？</h2><p>如果Feature的数量很大，跟样本数量差不多，这时候选用LR或者是Linear Kernel的SVM<br> 如果Feature的数量比较小，样本数量一般，不算大也不算小，选用SVM+Gaussian Kernel<br> 如果Feature的数量比较小，而样本数量很多，需要手工添加一些feature变成第一种情况。(LR和不带核函数的SVM比较类似。)</p>
-
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/11/13/gbdt/" rel="next" title="GBDT">
-                <i class="fa fa-chevron-left"></i> GBDT
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/01/20/fen-xiang/" rel="prev" title="分箱">
-                分箱 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">xjw924</p>
-              <p class="site-description motion-element" itemprop="description">这里是小徐的个人学习blog</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/xjw924" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要转化为对偶问题？"><span class="nav-number">1.</span> <span class="nav-text">为什么要转化为对偶问题？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SVM的核函数，引入核函数本质"><span class="nav-number">2.</span> <span class="nav-text">SVM的核函数，引入核函数本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM的优缺点"><span class="nav-number">3.</span> <span class="nav-text">² SVM的优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM核技巧原理，如何选择核函数"><span class="nav-number">4.</span> <span class="nav-text">² SVM核技巧原理，如何选择核函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM的损失函数"><span class="nav-number">5.</span> <span class="nav-text">² SVM的损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM的推导过程"><span class="nav-number">6.</span> <span class="nav-text">² SVM的推导过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM怎么扩展到多分类问题"><span class="nav-number">7.</span> <span class="nav-text">² SVM怎么扩展到多分类问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-SVM需要解决的重要数学问题是什么"><span class="nav-number">8.</span> <span class="nav-text">² SVM需要解决的重要数学问题是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-LR与SVM的区别"><span class="nav-number">9.</span> <span class="nav-text">² LR与SVM的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#²-什么时候用LR或SVM？"><span class="nav-number">10.</span> <span class="nav-text">² 什么时候用LR或SVM？</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">xjw924</span>
-
-  
-</div>
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-  
-
-
-  
-
-  
-
-</body>
-</html>
+  if theme.related_post && theme.related_post.enable
+    != related_posts(page,site.posts)
+  if page.comments !== false
+    include includes/comments/index.pug

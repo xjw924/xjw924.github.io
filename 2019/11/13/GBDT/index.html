@@ -1,836 +1,102 @@
-<!DOCTYPE html>
+extends includes/layout.pug
+
+block top_img
+  - var top_img =  page.top_img || page.cover || theme.post_meta.top_img || theme.default_top_img
+  - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+  div#top-container(style=bg_img)
+    #post-info
+      #post-title
+          .posttitle= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          if (theme.post_meta.date_type === 'both')
+            time.post-meta__date
+              i.fa.fa-calendar.fa-fw(aria-hidden="true")
+              =' '+_p('post.created')+' '+date(page.date, config.date_format)
+              span.post-meta__separator |
+              i.fa.fa-history.fa-fw(aria-hidden="true")
+              =' '+_p('post.updated')+' '+date(page.updated, config.date_format)
+          else
+            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+            time.post-meta__date #[i.fa.fa-calendar.fa-fw(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+                  
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          span
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon.fa-fw(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.fa-fw(aria-hidden="true")
+        .post-meta-wordcount
+          if (theme.wordcount && theme.wordcount.enable)
+            i.fa.fa-file-word-o.post-meta__icon.fa-fw(aria-hidden="true")
+            span= _p('post.wordcount') + ':'
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            i.fa.fa-clock-o.post-meta__icon.fa-fw(aria-hidden="true")
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+          .post-meta-pv-cv
+            if (theme.wordcount && theme.wordcount.enable && theme.busuanzi.page_pv)
+              span.post-meta__separator |
+            if theme.busuanzi.page_pv       
+              span
+                i.fa.fa-eye.post-meta__icon.fa-fw(aria-hidden="true") 
+                =_p('post.page_pv') + ':'
+              span#busuanzi_value_page_pv
+            if (theme.disqus && theme.disqus.enable && theme.disqus.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comment-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment')
+                span.disqus-comment-count(data-disqus-url=page.permalink)
+            if (theme.valine && theme.valine.enable && theme.valine.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comments-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment' itemprop="discussionUrl")
+                span.valine-comment-count.comment-count(data-xid=url_for(page.path) itemprop="commentCount")
+            if (theme.gitalk && theme.gitalk.enable && theme.gitalk.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comments-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment')
+                span.gitalk-comment-count.comment-count
 
 
-
+block content
+  article#post(class="")
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable && page.copyright != false)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
   
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="MachineLearning,Ensemble,Classification,GBDT,">
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="原理GBDT是集成学习Boosting家族的成员，是对提升树的改进。 使用的决策树通常为CART回归树（使用回归树的原因是因为：GBDT每次迭代要拟合的是梯度值，是连续值所以要用回归树） 在每一轮的迭代中，首先计算当前模型在所有样本上的负梯度，然后以该值为目标，训练一个新的弱分类器，并计算该弱分类器的权重，以累加的形式结合到现有模型中，实现对模型的更新 利用损失函数的负梯度在当前模型的值，作为回归">
-<meta name="keywords" content="MachineLearning,Ensemble,Classification,GBDT">
-<meta property="og:type" content="article">
-<meta property="og:title" content="GBDT">
-<meta property="og:url" content="http://yoursite.com/2019/11/13/gbdt/index.html">
-<meta property="og:site_name" content="小徐小徐不断学习">
-<meta property="og:description" content="原理GBDT是集成学习Boosting家族的成员，是对提升树的改进。 使用的决策树通常为CART回归树（使用回归树的原因是因为：GBDT每次迭代要拟合的是梯度值，是连续值所以要用回归树） 在每一轮的迭代中，首先计算当前模型在所有样本上的负梯度，然后以该值为目标，训练一个新的弱分类器，并计算该弱分类器的权重，以累加的形式结合到现有模型中，实现对模型的更新 利用损失函数的负梯度在当前模型的值，作为回归">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image006.png">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image008.png">
-<meta property="og:updated_time" content="2019-11-13T14:13:15.092Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GBDT">
-<meta name="twitter:description" content="原理GBDT是集成学习Boosting家族的成员，是对提升树的改进。 使用的决策树通常为CART回归树（使用回归树的原因是因为：GBDT每次迭代要拟合的是梯度值，是连续值所以要用回归树） 在每一轮的迭代中，首先计算当前模型在所有样本上的负梯度，然后以该值为目标，训练一个新的弱分类器，并计算该弱分类器的权重，以累加的形式结合到现有模型中，实现对模型的更新 利用损失函数的负梯度在当前模型的值，作为回归">
-<meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/2019/11/13/gbdt/">
-
-
-
-
-
-  <title>GBDT | 小徐小徐不断学习</title>
-  
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">小徐小徐不断学习</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle">Hi, there~</p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+  .tag_share
+    if (theme.post_meta.tags)
+      .post-meta__tag-list
+        each item, index in page.tags.data
+          a(href=url_for(item.path)).post-meta__tags #[=item.name]    
+    include includes/share/index.pug
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
-            
-            分类
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            归档
-          </a>
-        </li>
-      
-
-      
-    </ul>
+  if theme.reward.enable
+    include includes/reward.pug
+  include includes/pagination.pug
   
-
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/13/gbdt/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xjw924">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小徐小徐不断学习">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">GBDT</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-13T22:03:06+08:00">
-                2019-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MachineLearning/" itemprop="url" rel="index">
-                    <span itemprop="name">MachineLearning</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>GBDT是集成学习Boosting家族的成员，是对提升树的改进。</p>
-<p>使用的决策树通常为CART回归树（使用回归树的原因是因为：GBDT每次迭代要拟合的是梯度值，是连续值所以要用回归树）</p>
-<p>在每一轮的迭代中，首先<strong>计算当前模型在所有样本上的负梯度</strong>，然后以该值为目标，训练一个新的弱分类器，并计算该弱分类器的权重，以累加的形式结合到现有模型中，实现对模型的更新</p>
-<p>利用损失函数的负梯度在当前模型的值，作为回归问题中提升树算法的残差的近似值，拟合一个回归树。</p>
-<h1 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h1><p>优点：它能灵活的处理各种类型的数据；在相对较少的调参时间下，预测的准确度较高，这个是相对SVM来说的。 </p>
-<p>缺点：基学习器之前存在串行关系，难以并行训练数据。</p>
-<h1 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h1><p>1.对于分类算法，其损失函数一般有对数损失函数和指数损失函数两种: </p>
-<p>(1)如果是指数损失函数，此时GBDT退化为Adaboost算法，损失函数表达式为</p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image002.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image004.jpg" alt="img"></p>
-<h1 id="GBDT与Boosting的区别"><a href="#GBDT与Boosting的区别" class="headerlink" title="GBDT与Boosting的区别"></a>GBDT与Boosting的区别</h1><p>GBDT与传统的Boosting区别较大，它的每一次计算都是为了减少上一次的残差，而为了消除残差，我们可以在残差减小的梯度方向上建立模型，所以说，在GBDT每个新的模型的建立是为了使得之前的模型的<strong>残差往梯度下降的方向</strong>，与传统的Boosting中关注正确错误的样本加权有着很大的区别。</p>
-<h1 id="GBDT与Boosting-Tree的区别"><a href="#GBDT与Boosting-Tree的区别" class="headerlink" title="GBDT与Boosting Tree的区别"></a>GBDT与Boosting Tree的区别</h1><p>Boosting Tree的适合于损失函数为<strong>平方损失</strong>或者<strong>指数损失</strong>。而Gradient Boosting适合<strong>各类损失函数</strong>（损失函数为平方损失则相当于Boosting Tree拟合残差；损失函数为指数损失则可以近似于Adaboost，但树是回归树）</p>
-<h1 id="RF与GBDT之间的区别与联系"><a href="#RF与GBDT之间的区别与联系" class="headerlink" title="RF与GBDT之间的区别与联系"></a>RF与GBDT之间的区别与联系</h1><p>1）相同点：都是<strong>由多棵树组成</strong>，最终的结果都是由多棵树共同决定。 </p>
-<p>2）不同点：</p>
-<p>典型的Bagging与Boosting的区别：</p>
-<p>并行/串行：组成RF的树可以<strong>并行</strong>生成，而GBDT是<strong>串行</strong>生成</p>
-<p>方差/偏差：RF是减少模型的<strong>方差</strong>，而GBDT是减少模型的<strong>偏差</strong></p>
-<p>RF的结果是<strong>多数表决</strong>的，而GBDT则是<strong>多棵树累加</strong>的结果</p>
-<p>分类树/回归树：组成RF的树可以分类树也可以是回归树，而GBDT只由<strong>回归树</strong>组成</p>
-<p>异常值：RF对异常值不敏感，因为是多棵树表决，而GBDT对<strong>异常值比较敏感</strong>，因为当前的错误会延续给下一棵树</p>
-<h1 id="GBDT常用调参参数"><a href="#GBDT常用调参参数" class="headerlink" title="GBDT常用调参参数"></a>GBDT常用调参参数</h1><p>在scikit-learn中，GradientBoostingClassifier为GBDT的分类，而GradientBoostingRegressor为GBDT的回归类。两者的参数类型完全相同，当然有些参数比如损失函数loss的可选择项并不相同。把重要参数分为两类，第一类是Boosting参数，第二类是树参数。</p>
-<h2 id="boosting参数"><a href="#boosting参数" class="headerlink" title="boosting参数"></a>boosting参数</h2><p>n_estimators: </p>
-<p>弱学习器的最大迭代次数，或者说弱学习器的个数。一般来说n_estimators太小，容易欠拟合，n_estimators太大，容易过拟合，默认是100。在实际调参的过程中，我们常常将n_estimators和下面介绍的参数learning_rate一起考虑。</p>
-<p>learning_rate: </p>
-<p>每个弱学习器的权重缩减系数ν，也称作步长，ν的取值范围为0&lt;ν≤1。对于同样的训练集拟合效果，较小的ν意味着需要更多的弱学习器的迭代次数。通常我们用步长和迭代最大次数一起来决定算法的拟合效果。<strong>所以这两个参数n_estimators和learning_rate要一起调参</strong>，默认是1。</p>
-<p>subsample: </p>
-<p>子采样比率，取值为(0,1]。注意这里的子采样和随机森林不一样，随机森林使用的是放回抽样，而这里是<strong>不放回抽样</strong>。如果取值为1，则全部样本都使用，等于没有使用子采样。如果取值小于1，则只有一部分样本会去做GBDT的决策树拟合。选择小于1的比例可以减少方差，即防止过拟合，但是会增加样本拟合的偏差，因此取值不能太低。推荐在[0.5, 0.8]之间，默认是1。</p>
-<p>loss: </p>
-<p>损失函数。对于分类模型，有对数似然损失函数”deviance”和指数损失函数”exponential”两者输入选择。一般来说，推荐使用默认的”deviance”。它对二元分离和多元分类各自都有比较好的优化。而指数损失函数等价于Adaboost。</p>
-<p>对于回归模型，有均方差”ls”, 绝对损失”lad”, Huber损失”huber”和分位数损失“quantile”。默认是均方差”ls”。一般来说，如果数据的噪音点不多，用默认的均方差”ls”比较好。如果是噪音点较多，则推荐用抗噪音的损失函数”huber”。而如果需要对训练集进行分段预测的时候，则采用“quantile”。</p>
-<p>alpha：</p>
-<p>这个参数只有GradientBoostingRegressor有，当我们使用Huber损失”huber”和分位数损失“quantile”时，需要指定分位数的值。默认是0.9，如果噪音点较多，可以适当降低这个分位数的值。</p>
-<h2 id="树参数"><a href="#树参数" class="headerlink" title="树参数"></a>树参数</h2><p>由于GBDT使用了CART回归决策树，因此它的参数基本来源于决策树类，也就是说，和DecisionTreeClassifier和DecisionTreeRegressor的参数基本类似。</p>
-<p>max_features: </p>
-<p>划分时考虑的最大特征数，可以使用很多种类型的值，</p>
-<p>默认是”None”：意味着考虑所有的特征数；</p>
-<p>“log2”：意味着划分时最多考虑<img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image006.png" alt="img">个特征；</p>
-<p>“sqrt”或者”auto”：意味着划分时最多考虑<img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image008.png" alt="img">个特征；</p>
-<p>整数：代表考虑的特征绝对数；</p>
-<p>浮点数：代表考虑特征百分比，即考虑（百分比xN）取整后的特征数，其中N为样本总特征数。</p>
-<p>一般来说，如果样本特征数不多，比如小于50，我们用默认的”None”就可以了，如果特征数非常多，我们可以灵活使用刚才描述的其他取值来控制划分时考虑的最大特征数，以控制决策树的生成时间。</p>
-<p>max_depth: </p>
-<p>决策树最大深度，如果不输入的话，默认值是3。一般来说，数据少或者特征少的时候可以不管这个值。如果模型样本量多，特征也多的情况下，推荐限制这个最大深度，具体的取值取决于数据的分布。常用的可以取值10-100之间。</p>
-<p>min_samples_split: </p>
-<p>内部节点再划分所需最小样本数，这个值限制了子树继续划分的条件，如果某节点的样本数少于min_samples_split，则不会继续再尝试选择最优特征来进行划分。默认是2。如果样本量不大，不需要管这个值。如果样本量数量级非常大，则推荐增大这个值。</p>
-<p>min_samples_leaf: </p>
-<p>叶子节点最少样本数，这个值限制了叶子节点最少的样本数，如果某叶子节点数目小于样本数，则会和兄弟节点一起被剪枝。默认是1。可以输入最少的样本数的整数，或者最少样本数占样本总数的百分比。如果样本量不大，不需要管这个值。如果样本量数量级非常大，则推荐增大这个值。</p>
-<p>min_weight_fraction_leaf</p>
-<p>和上面min_ samples_ leaf很像，不同的是这里需要的是一个比例而不是绝对数值：终点节点所需的样本数占总样本数的比值。（两者只需定义一个就行）</p>
-<p>min_weight_fraction_leaf：</p>
-<p>叶子节点最小的样本权重和，这个值限制了叶子节点所有样本权重和的最小值，如果小于这个值，则会和兄弟节点一起被剪枝。默认是0，就是不考虑权重问题。一般来说，如果有较多样本有缺失值，或者分类树样本的分布类别偏差很大，就会引入样本权重，这时就要注意这个值了。</p>
-<p>max_leaf_nodes: </p>
-<p>最大叶子节点数，通过限制最大叶子节点数，可以防止过拟合，默认是”None”，即不限制最大的叶子节点数。如果加了限制，算法会建立在最大叶子节点数内最优的决策树。如果特征不多，可以不考虑这个值，但是如果特征很多的话，可以加以限制，具体的值可以通过交叉验证得到。</p>
-<p>min_impurity_split: </p>
-<p>节点划分的最小不纯度，这个值限制了决策树的增长，如果某节点的不纯度(基于基尼系数，均方差)小于这个阈值，则该节点不再生成子节点，即为叶子节点 。一般不推荐改动，默认值1e-7。</p>
-<p>参数调节的一般方法：</p>
-<p>我们要调节的参数有两种：树参数和boosting参数。learning rate没有什么特别的调节方法，因为只要我们训练的树足够多learning rate总是小值来得好。虽然随着决定树的增多GBM并不会明显得过度拟合，高learing rate还是会导致这个问题，但如果一味地减小learning rate、增多树,计算就会非常昂贵而且需要运行很长时间。</p>
-<p>可以采取以下方法调参：</p>
-<ol>
-<li>选择一个相对来说稍微高一点的learning rate。一般默认的值是0.1，不过针对不同的问题，0.05到0.2之间都可以</li>
-<li>决定当前learning rate下最优的决定树数量。它的值应该在40-70之间。记得选择一个你的电脑还能快速运行的值，因为之后这些树会用来做很多测试和调参。</li>
-<li>接着调节树参数来调整learning rate和树的数量。我们可以选择不同的参数来定义一个决定树， </li>
-<li>降低learning rate，同时会增加相应的决定树数量使得模型更加稳健</li>
-</ol>
-<p>树参数可以按照这些步骤调节：</p>
-<p>调节max_depth和 num_samples_split<br>调节min_samples_leaf<br>调节max_features</p>
-<p>需要注意下调参顺序，对结果影响最大的参数应该优先调节，就像max_depth和num_samples_split。</p>
-
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/MachineLearning/" rel="tag"><i class="fa fa-tag"></i> MachineLearning</a>
-          
-            <a href="/tags/Ensemble/" rel="tag"><i class="fa fa-tag"></i> Ensemble</a>
-          
-            <a href="/tags/Classification/" rel="tag"><i class="fa fa-tag"></i> Classification</a>
-          
-            <a href="/tags/GBDT/" rel="tag"><i class="fa fa-tag"></i> GBDT</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/11/13/decisiontree/" rel="next" title="DecisionTree">
-                <i class="fa fa-chevron-left"></i> DecisionTree
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/11/14/svm/" rel="prev" title="SVM">
-                SVM <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">xjw924</p>
-              <p class="site-description motion-element" itemprop="description">这里是小徐的个人学习blog</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/xjw924" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优缺点"><span class="nav-number">2.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#损失函数"><span class="nav-number">3.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GBDT与Boosting的区别"><span class="nav-number">4.</span> <span class="nav-text">GBDT与Boosting的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GBDT与Boosting-Tree的区别"><span class="nav-number">5.</span> <span class="nav-text">GBDT与Boosting Tree的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RF与GBDT之间的区别与联系"><span class="nav-number">6.</span> <span class="nav-text">RF与GBDT之间的区别与联系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GBDT常用调参参数"><span class="nav-number">7.</span> <span class="nav-text">GBDT常用调参参数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#boosting参数"><span class="nav-number">7.1.</span> <span class="nav-text">boosting参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#树参数"><span class="nav-number">7.2.</span> <span class="nav-text">树参数</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">xjw924</span>
-
-  
-</div>
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  
-
-
-  
-
-  
-
-</body>
-</html>
+  if theme.related_post && theme.related_post.enable
+    != related_posts(page,site.posts)
+  if page.comments !== false
+    include includes/comments/index.pug

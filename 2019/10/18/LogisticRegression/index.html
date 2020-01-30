@@ -1,906 +1,102 @@
-<!DOCTYPE html>
+extends includes/layout.pug
+
+block top_img
+  - var top_img =  page.top_img || page.cover || theme.post_meta.top_img || theme.default_top_img
+  - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+  div#top-container(style=bg_img)
+    #post-info
+      #post-title
+          .posttitle= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          if (theme.post_meta.date_type === 'both')
+            time.post-meta__date
+              i.fa.fa-calendar.fa-fw(aria-hidden="true")
+              =' '+_p('post.created')+' '+date(page.date, config.date_format)
+              span.post-meta__separator |
+              i.fa.fa-history.fa-fw(aria-hidden="true")
+              =' '+_p('post.updated')+' '+date(page.updated, config.date_format)
+          else
+            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+            time.post-meta__date #[i.fa.fa-calendar.fa-fw(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+                  
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          span
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon.fa-fw(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.fa-fw(aria-hidden="true")
+        .post-meta-wordcount
+          if (theme.wordcount && theme.wordcount.enable)
+            i.fa.fa-file-word-o.post-meta__icon.fa-fw(aria-hidden="true")
+            span= _p('post.wordcount') + ':'
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            i.fa.fa-clock-o.post-meta__icon.fa-fw(aria-hidden="true")
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+          .post-meta-pv-cv
+            if (theme.wordcount && theme.wordcount.enable && theme.busuanzi.page_pv)
+              span.post-meta__separator |
+            if theme.busuanzi.page_pv       
+              span
+                i.fa.fa-eye.post-meta__icon.fa-fw(aria-hidden="true") 
+                =_p('post.page_pv') + ':'
+              span#busuanzi_value_page_pv
+            if (theme.disqus && theme.disqus.enable && theme.disqus.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comment-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment')
+                span.disqus-comment-count(data-disqus-url=page.permalink)
+            if (theme.valine && theme.valine.enable && theme.valine.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comments-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment' itemprop="discussionUrl")
+                span.valine-comment-count.comment-count(data-xid=url_for(page.path) itemprop="commentCount")
+            if (theme.gitalk && theme.gitalk.enable && theme.gitalk.count && page.comments !== false)
+              if (theme.busuanzi && theme.busuanzi.page_pv)
+                span.post-meta__separator |
+              i.fa.fa-comments-o.post-meta__icon.fa-fw(aria-hidden="true")
+              span= _p('post.comments') + ':'
+              a(href=url_for(page.path) + '#post-comment')
+                span.gitalk-comment-count.comment-count
 
 
-
+block content
+  article#post(class="")
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable && page.copyright != false)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
   
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="MachineLearning,Classification,LogisticRegression,">
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 sigmoid函数$$g(z)=\frac{1}{1+e^{-z}}$$代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：$$g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}$$其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间">
-<meta name="keywords" content="MachineLearning,Classification,LogisticRegression">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Logistic Regression 逻辑回归">
-<meta property="og:url" content="http://yoursite.com/2019/10/18/logisticregression/index.html">
-<meta property="og:site_name" content="小徐小徐不断学习">
-<meta property="og:description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 sigmoid函数$$g(z)=\frac{1}{1+e^{-z}}$$代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：$$g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}$$其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image014.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image016.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image018.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image020.jpg">
-<meta property="og:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image022.jpg">
-<meta property="og:updated_time" content="2020-01-28T11:24:49.289Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Logistic Regression 逻辑回归">
-<meta name="twitter:description" content="理论假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。 sigmoid函数$$g(z)=\frac{1}{1+e^{-z}}$$代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：$$g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}$$其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间">
-<meta name="twitter:image" content="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/2019/10/18/logisticregression/">
-
-
-
-
-
-  <title>Logistic Regression 逻辑回归 | 小徐小徐不断学习</title>
-  
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">小徐小徐不断学习</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle">Hi, there~</p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
+  .tag_share
+    if (theme.post_meta.tags)
+      .post-meta__tag-list
+        each item, index in page.tags.data
+          a(href=url_for(item.path)).post-meta__tags #[=item.name]    
+    include includes/share/index.pug
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
-            
-            分类
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            归档
-          </a>
-        </li>
-      
-
-      
-    </ul>
+  if theme.reward.enable
+    include includes/reward.pug
+  include includes/pagination.pug
   
-
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/18/logisticregression/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xjw924">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小徐小徐不断学习">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">Logistic Regression 逻辑回归</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-18T10:51:11+08:00">
-                2019-10-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MachineLearning/" itemprop="url" rel="index">
-                    <span itemprop="name">MachineLearning</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><p>假设数据服从伯努利分布，通过极大化似然函数的方法，运用梯度下降来求解参数，来达到二分类的目的。</p>
-<p>sigmoid函数<br>$$<br>g(z)=\frac{1}{1+e^{-z}}<br>$$<br>代入线性回归部分中$z=\theta^Tx$，得到二元逻辑回归模型的一般形式：<br>$$<br>g(z)=y(x)=\frac{1}{1+e^{-\theta^Tx}}<br>$$<br>其中$y(x)$就是逻辑回归返回的值，此时$y(x)$在[0,1]之间。</p>
-<p>令$y(x)$除以$1-y(x)$可以得到形似几率(odds)的$\frac{y(x)}{1-y(x)}$，在此基础上取对数，可以得到：<br>$$<br>ln\frac{y(x)}{1-y(x)}=ln(\frac{\frac{1}{1+e^{-\theta^Tx}}}{1-\frac{1}{1+e^{-\theta^Tx}}})=ln(\frac{\frac{1}{1+e^{-\theta^Tx}}}{\frac{e^{-\theta^Tx}}{1+e^{-\theta^Tx}}})=ln(\frac{1}{e^{-\theta^Tx}})=ln(e^{\theta^Tx})=\theta^Tx<br>$$<br>本质上是在对线性回归模型的预测去逼近真实标记的对数几率</p>
-<p>接下来使用极大似然估计对$\theta$进行估计</p>
-<p>令<br>$$<br>h_\theta(x)=g(z)=g(\theta^Tx)=\frac{1}{1+e^{-\theta^Tx}}<br>$$<br>得到<br>$$<br>\left{\begin{matrix}P(Y=1|x;\theta)=h_\theta(x)\ P(Y=0|x;\theta)=1-h_\theta(x)\end{matrix}\right.<br>$$<br>似然函数为<br>$$<br>L(\theta)=\prod_{i=1}^{m}P(y^i|x^i;\theta)=\prod_{i=1}^{m}h_\theta(x^i)^{y^i}*(1-h_\theta(x^i))^{1-y^i}<br>$$<br>对数似然函数为<br>$$<br>l(\theta)=\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))+(1-y^i)log(1-h_\theta(x^i))]<br>$$<br>令损失函数为<br>$$<br>J(\theta)=-\frac{1}{m}l(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))+(1-y^i)log(1-h_\theta(x^i))]<br>$$<br>利用梯度下降求解参数（忽略系数）<br>$$<br>\begin{align}\frac{∂J(\theta)}{∂\theta_j}&amp; =-\sum_{i=1}^{m}[\frac{y^i}{h_\theta(x^i)}-\frac{1-y^i}{1-h_\theta(x^i)}]\frac{∂h_\theta(x^i)}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]\frac{∂g(\theta^Tx^i)}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]g(\theta^Tx^i)(1-g(\theta^Tx^i))\frac{∂\theta^Tx^i}{∂\theta_j}\&amp; =-\sum_{i=1}^{m}[\frac{y^i}{g(\theta^Tx^i)}-\frac{1-y^i}{1-g(\theta^Tx^i)}]g(\theta^Tx^i)(1-g(\theta^Tx^i))x^i_j\&amp; =-\sum_{i=1}^{m}[y^i(1-g(\theta^Tx^i))-(1-y^i)g(\theta^Tx^i)]x^i_j\&amp; =-\sum_{i=1}^{m}[y^i-g(\theta^Tx^i)]x^i_j\&amp; =-\sum_{i=1}^{m}[y^i-h_\theta(x^i)]x^i_j\\end{align}<br>$$<br>因此最终得到参数迭代式<br>$$<br>\theta_j:=\theta_j+\eta\sum_{i=1}^{m}[y^i-h_\theta(x^i)]x^i_j<br>$$</p>
-<h2 id="基本假设"><a href="#基本假设" class="headerlink" title="基本假设"></a>基本假设</h2><ul>
-<li><p>第一个假设：<strong>假设数据服从伯努利分布</strong>。</p>
-<p>伯努利分布有一个简单的例子是抛硬币，抛中为正面的概率是$p$，抛中为负面的概率是$1-p$。</p>
-<p>在逻辑回归里假设$h_\theta(x)$ 为样本为正的概率，$1-h_\theta(x)$为样本为负的概率。</p>
-<p>整个模型可以描述为<br>$$<br>h_\theta(x;\theta) = p<br>$$<br>（在输入特征为$x$，参数为$\theta$的条件下，标签$y=1$的概率）</p>
-</li>
-<li><p>第二个假设：<strong>假设样本为正的概率是</strong> $p=\frac{1}{1+e^{−θ^Tx}}$ </p>
-<p>逻辑回归的最终形式<br>$$<br>h_\theta(x;\theta)=\frac{1}{1+e^{−θ^Tx}}<br>$$</p>
-</li>
-</ul>
-<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p><strong>优点：</strong></p>
-<ol>
-<li><p>速度快，在时间和内存需求上相当高效，它可以应用于分布式数据和在线算法实现，用较少的资源处理大型数据</p>
-</li>
-<li><p>对线性分类问题拟合很好</p>
-</li>
-<li><p>简单易于理解，直接看到各个特征的权重</p>
-</li>
-</ol>
-<p><strong>缺点：</strong></p>
-<ol>
-<li>分类精度可能不高，在非线性分类问题上表现不好</li>
-<li>数据特征有缺失或者特征空间很大时表现效果并不好，受异常值影响大</li>
-</ol>
-<h2 id="逻辑回归和线性回归的异同"><a href="#逻辑回归和线性回归的异同" class="headerlink" title="逻辑回归和线性回归的异同"></a>逻辑回归和线性回归的异同</h2><p>本质就是线性的，只是特征到结果映射用的是sigmoid函数，属于广义线性模型</p>
-<ul>
-<li>相同</li>
-</ul>
-<p>​    都使用极大似然估计对训练样本进行建模</p>
-<p>​    求解超参数时都可以使用梯度下降</p>
-<ul>
-<li>联系</li>
-</ul>
-<p>​    都是广义线性模型，逻辑回归本质上是一个线性回归模型，LR是以线性回归为理论支持的</p>
-<ul>
-<li>区别<ol>
-<li>本质：逻辑回归是分类，线性回归是回归，逻辑回归中$y$是因变量而非$\frac{p}{1-p}$，因变量是离散而非连续</li>
-<li>LR形式上是线性回归，实质上是在求取输入空间到输出空间的非线性函数映射（对率函数起到将线性回归模型的预测值与真实标记联系起来的作用）</li>
-<li>LR是直接对分类可能性进行建模，无需事先假设数据分布，而线性回归需要假设数据分布</li>
-</ol>
-</li>
-</ul>
-<h2 id><a href="#" class="headerlink" title></a></h2><p><strong>损失函数是它的极大似然函数取对数再除以样本量的相反数</strong></p>
-<p>极大似然函数：<br>$$<br>L_\theta(x)=\prod_{i=1}^{m}h_\theta(x^i;\theta)^{y^i}*(1-h_\theta(x^i;\theta))^{1-y^i}<br>$$<br>损失函数：<br>$$<br>J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h_\theta(x^i;\theta))]<br>$$</p>
-<p>除以m这一因子并不改变最终求导极值结果，通过除以m可以得到<strong>平均损失值</strong>，避免<strong>样本数量对于损失值的影响</strong></p>
-<blockquote>
-<p><strong>Q：为什么要用极大似然函数作为损失函数？</strong></p>
-<p>损失函数一般有四种：平方损失函数，对数损失函数，HingeLoss损失函数，绝对值损失函数。</p>
-<p>将极大似然函数取对数以后等同于对数损失函数。</p>
-<p><strong>在逻辑回归这个模型下，对数损失函数的训练求解参数的速度是比较快的。</strong></p>
-<p>梯度更新公式：<br>$$<br>θ_j=θ_j−(y^i−h_θ(x^i;θ))∗x^i_j<br>$$<br>这个式子的更新速度只和$x^i_j$和$y^i$相关，和sigmod函数本身的梯度是无关的。这样更新的速度是可以自始至终都比较的稳定。 </p>
-<p><strong>Q：为什么不选平方损失函数？</strong></p>
-<p>其一是因为如果你使用平方损失函数，你会发现梯度更新的速度和sigmod函数本身的梯度是很相关的。<br>$$<br>θ_j=θ_j-2(sigmod(x)*(1-sigmod(x)))x^i_j<br>$$<br>sigmod函数在它在定义域内的梯度都不大于0.25。这样训练会非常的慢。</p>
-<p>实际上也可以用最小二乘，但是最小二乘得到的权重效果比较差。</p>
-<p>如果用最小二乘法，目标函数就是差值的平方和，<strong>是非凸的，不容易求解，很容易陷入到局部最优</strong>。</p>
-<p>如果用极大似然估计，目标函数就是对数似然函数，是关于$(w,b)$的高阶<strong>连续可导凸函数</strong>，可以方便通过一些凸优化算法求解，比如梯度下降法、牛顿法等。</p>
-</blockquote>
-<h2 id="求解方法"><a href="#求解方法" class="headerlink" title="求解方法"></a>求解方法</h2><p>由于该极大似然函数无法直接求解，我们一般通过对该函数进行<strong>梯度下降</strong>来不断逼近最优解。</p>
-<blockquote>
-<p>梯度下降：随机梯度下降，批梯度下降，small-batch梯度下降</p>
-<p>Q：三种方式的优劣以及如何选择最合适的梯度下降方式</p>
-<ol>
-<li><p>批梯度下降(BGD)：每次迭代使用所有样本来进行梯度的更新，能得到全局最优解。缺点是在更新每个参数的时候需要遍历所有的数据，计算量会很大，并且会有很多的冗余计算，导致的结果是当数据量大的时候，每个参数的更新都会很慢。</p>
-</li>
-<li><p>随机梯度下降(SGD)：每次迭代随机使用一个样本来对参数进行更新，优点是每一轮参数的更新速度大大加快，缺点是准确度下降，可能会收敛到局部最优（单个样本不能代表全体样本的趋势）。</p>
-</li>
-<li><p>小批量梯度下降：结合了BGD和SGD的优点，每次更新的时候使用n个样本。减少了参数更新的次数，可以达到更加稳定收敛结果，一般在深度学习当中我们采用这种方法。</p>
-</li>
-</ol>
-</blockquote>
-<ul>
-<li><p><strong>逻辑回归的目的</strong></p>
-<p>该函数的目的便是将数据二分类，提高准确率。</p>
-</li>
-<li><p><strong>逻辑回归如何分类</strong></p>
-<p>划定一个阈值，y值大于阈值的是一类，y值小于阈值的是另外一类。阈值具体如何调整根据实际情况选择。一般会选择0.5做为阈值来划分。</p>
-</li>
-</ul>
-<h2 id="Sigmoid函数公式和性质"><a href="#Sigmoid函数公式和性质" class="headerlink" title="Sigmoid函数公式和性质"></a>Sigmoid函数公式和性质</h2><p>$$<br>g(z)=\frac{1}{1+e^{-z}}<br>$$</p>
-<p>需要一个单调可微的函数，把分类任务的真实标记$y$与线性回归模型的预测值联系起来</p>
-<p>对于二分类问题，由线性回归得来的启发是根据特征的加权平均进行预测</p>
-<p>很自然地想到设定一个阈值，即引入阶跃函数，如果加权平均大于该阈值就判为正类，反之判为负类</p>
-<p>但阶跃函数不可导，所以引入Sigmoid函数，将样本的加权平均代入函数得到的值就是样本属于正类的概率，即将输入空间到输出空间作非线性函数映射。</p>
-<p>Sigmoid函数是一个S型的函数</p>
-<p>当自变量z趋近正无穷时，因变量g(z)趋近于1，而当z趋近负无穷时，g(z)趋近于0</p>
-<p>它能够将任何实数映射到(0,1)区间，使其可用于将任意值函数转换为更适合二分类的函数。 </p>
-<p>因为这个性质，Sigmoid函数也被当作是归一化的一种方法，与MinMaxSclaer同理，是属于数据预处理中的“缩放”功能，可以将数据压缩到[0,1]之内。</p>
-<p>区别在于，MinMaxScaler归一化之后，是可以取到0和1的（最大值归一化后就是1，最小值归一化后就是0），但Sigmoid函数只是无限趋近于0和1。</p>
-<h2 id="LR与最大熵模型"><a href="#LR与最大熵模型" class="headerlink" title="LR与最大熵模型"></a>LR与最大熵模型</h2><p>最大熵模型与LR有类似的形式，它们又称为对数线性模型</p>
-<p>模型学习就是在给定的训练数据条件下，对模型进行极大似然估计或正则化的极大似然估计</p>
-<h2 id="牛顿法与梯度下降法求解参数的区别"><a href="#牛顿法与梯度下降法求解参数的区别" class="headerlink" title="牛顿法与梯度下降法求解参数的区别"></a>牛顿法与梯度下降法求解参数的区别</h2><p>两种方法不同在于牛顿法中<strong>多了一项二阶导数</strong>，这项二阶导数对参数更新的影响主要体现在<strong>改变参数更新方向上</strong>。如下图所示，红色是牛顿法参数更新的方向，绿色为梯度下降法参数更新方向，因为牛顿法考虑了二阶导数，因而可以<strong>找到更优的参数更新方向</strong>，在每次更新的步幅相同的情况下，可以<strong>比梯度下降法节省很多的迭代次数</strong>。 </p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image010.png" alt="å¾çåç§°"></p>
-<h2 id="LR的输入特征一般是离散的而不是连续的？"><a href="#LR的输入特征一般是离散的而不是连续的？" class="headerlink" title="LR的输入特征一般是离散的而不是连续的？"></a>LR的输入特征一般是离散的而不是连续的？</h2><ol>
-<li><p>稀疏向量内积乘法<strong>运算速度快</strong>，计算结果方便存储，容易扩展</p>
-</li>
-<li><p><strong>离散化后的特征对异常数据有很强的鲁棒性，模型会更稳定</strong>：比如一个特征是年龄&gt;30是1，否则0。如果特征没有离散化，一个异常数据“年龄300岁”会给模型造成很大的干扰；比如如果对用户年龄离散化，20-30作为一个区间，不会因为一个用户年龄长了一岁就变成一个完全不同的人</p>
-</li>
-<li><p>特征离散化以后，起到了<strong>降低模型复杂度的作用，降低了模型过拟合的风险</strong>。</p>
-</li>
-<li><p>逻辑回归属于广义线性模型，表达能力受限；单变量离散化为N个后(one-hot？)，每个变量有单独的权重，相当于为模型引入了非线性，能够提升模型表达能力，加大拟合</p>
-</li>
-<li><p>离散化后可以进行特征交叉，由M+N个变量变为M*N个变量，进一步引入非线性，提升表达能力</p>
-</li>
-</ol>
-<h2 id="LR如何解决共线性"><a href="#LR如何解决共线性" class="headerlink" title="LR如何解决共线性"></a>LR如何解决共线性</h2><p>对模型中自变量多重共线性较为敏感，例如两个高度相关自变量同时放入模型，可能导致较弱的一个自变量回归符号不符合预期，符号被扭转。</p>
-<p>将所有回归中要用到的变量依次作为因变量、其他变量作为自变量进行回归分析，可以得到各个变量的膨胀系数VIF， VIF越大共线性越严重，通常VIF小于5可以认为共线性不严重，宽泛一点的标准小于10即可。</p>
-<h2 id="LR如何防止过拟合"><a href="#LR如何防止过拟合" class="headerlink" title="LR如何防止过拟合"></a>LR如何防止过拟合</h2><ol>
-<li><p>直接减少特征数，手动保留那些比较重要的特征。但是有时候舍弃特征也舍弃了有用的信息。比如，所有的特征对预测房价都有重要作用，这时候若舍弃特征，舍弃的便是有用的信息。因此，在很多情况下，第一种解决方案并不是很好</p>
-</li>
-<li><p>正则化保留所有的特征，但是减小参数θ的大小，当有很多特征，而且每一个特征都对预测结果有影响时，这种方法比较有效。<br>$$<br>J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h_\theta(x^i;\theta))]+\frac{\lambda}{2m}\sum_{i=1}^{m}\theta_j^2<br>$$</p>
-</li>
-</ol>
-<h2 id="LR多分类"><a href="#LR多分类" class="headerlink" title="LR多分类"></a>LR多分类</h2><ol>
-<li><p>多项逻辑回归Softmax Regression</p>
-<p>（二分类逻辑回归在多标签分类下的一种拓展）</p>
-</li>
-</ol>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image014.jpg" alt="img"></p>
-<ol start="2">
-<li><p>one v.s. rest</p>
-<p>k个二分类LR分类器，把标签重新整理为“第i类标签”与“非第i类标签”</p>
-</li>
-</ol>
-<h2 id="LR调参"><a href="#LR调参" class="headerlink" title="LR调参"></a>LR调参</h2><ol>
-<li><p>sk-learn</p>
-<p>class sklearn.linear_model.LogisticRegression (penalty=’l2’, dual=False, tol=0.0001, C=1.0, ﬁt_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver=’warn’, max_iter=100, multi_class=’warn’, verbose=0, warm_start=False, n_jobs=None)</p>
-</li>
-</ol>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image016.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image018.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image020.jpg" alt="img"></p>
-<p><img src="file:///C:/WINDOWS/Temp/msohtmlclip1/01/clip_image022.jpg" alt="img"></p>
-
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/MachineLearning/" rel="tag"><i class="fa fa-tag"></i> MachineLearning</a>
-          
-            <a href="/tags/Classification/" rel="tag"><i class="fa fa-tag"></i> Classification</a>
-          
-            <a href="/tags/LogisticRegression/" rel="tag"><i class="fa fa-tag"></i> LogisticRegression</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/10/18/logistic-regression/" rel="next" title="Logistic Regression">
-                <i class="fa fa-chevron-left"></i> Logistic Regression
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/10/18/randomforest/" rel="prev" title="Random Forest 随机森林">
-                Random Forest 随机森林 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">xjw924</p>
-              <p class="site-description motion-element" itemprop="description">这里是小徐的个人学习blog</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/xjw924" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#理论"><span class="nav-number">1.</span> <span class="nav-text">理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本假设"><span class="nav-number">1.1.</span> <span class="nav-text">基本假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优缺点"><span class="nav-number">1.2.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归的异同"><span class="nav-number">1.3.</span> <span class="nav-text">逻辑回归和线性回归的异同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">1.4.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解方法"><span class="nav-number">1.5.</span> <span class="nav-text">求解方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sigmoid函数公式和性质"><span class="nav-number">1.6.</span> <span class="nav-text">Sigmoid函数公式和性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR与最大熵模型"><span class="nav-number">1.7.</span> <span class="nav-text">LR与最大熵模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿法与梯度下降法求解参数的区别"><span class="nav-number">1.8.</span> <span class="nav-text">牛顿法与梯度下降法求解参数的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR的输入特征一般是离散的而不是连续的？"><span class="nav-number">1.9.</span> <span class="nav-text">LR的输入特征一般是离散的而不是连续的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何解决共线性"><span class="nav-number">1.10.</span> <span class="nav-text">LR如何解决共线性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR如何防止过拟合"><span class="nav-number">1.11.</span> <span class="nav-text">LR如何防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR多分类"><span class="nav-number">1.12.</span> <span class="nav-text">LR多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LR调参"><span class="nav-number">1.13.</span> <span class="nav-text">LR调参</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">xjw924</span>
-
-  
-</div>
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  
-
-
-  
-
-  
-
-</body>
-</html>
+  if theme.related_post && theme.related_post.enable
+    != related_posts(page,site.posts)
+  if page.comments !== false
+    include includes/comments/index.pug
