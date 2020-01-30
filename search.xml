@@ -85,9 +85,9 @@
             
             <tag> MachineLearning </tag>
             
-            <tag> Classification </tag>
-            
             <tag> Ensemble </tag>
+            
+            <tag> Classification </tag>
             
             <tag> GBDT </tag>
             
@@ -172,9 +172,9 @@
             
             <tag> MachineLearning </tag>
             
-            <tag> Classification </tag>
-            
             <tag> Ensemble </tag>
+            
+            <tag> Classification </tag>
             
             <tag> XGBoost </tag>
             
@@ -203,9 +203,9 @@
             
             <tag> MachineLearning </tag>
             
-            <tag> Classification </tag>
-            
             <tag> Ensemble </tag>
+            
+            <tag> Classification </tag>
             
             <tag> RandomForest </tag>
             
