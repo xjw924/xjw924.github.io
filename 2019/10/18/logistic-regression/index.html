@@ -522,24 +522,7 @@ J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h
 <p>共4个样本<code>n_samples = 4</code>，二分类问题<code>n_classes = 2</code></p>
 <p>样本标签为<code>y=[1,1,1,0]</code>，则<code>np.bincount(y) = [1,3]</code></p>
 <p>则<code>n_samples / (n_classes * np.bincount(y)) = [2,2/3]</code> </p>
-<pre class="line-numbers language-lang-python"><code class="language-lang-python">import numpy as np
-from sklearn.utils.class_weight import compute_class_weight 
-
-y = [0,0,0,0,0,0,0,0,1,1,1,1,1,1,2,2]  # 标签值，一共16个样本
-
-np.bincount(y)  
-# array([8, 6, 2], dtype=int64) 计算每个类别的样本数量，顺序按类别的出现次序
-
-class_weight = 'balanced'
-classes = np.array([0, 1, 2])  #标签类别
-weight = compute_class_weight(class_weight, classes, y)
-print(weight) # [0.66666667 0.88888889 2.66666667]
-
-# 验证
-print(16/(3*8))  #输出 0.6666666666666666
-print(16/(3*6))  #输出 0.8888888888888888
-print(16/(3*2))  #输出 2.6666666666666665
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&gt;<span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">&gt;<span class="keyword">from</span> sklearn.utils.class_weight <span class="keyword">import</span> compute_class_weight </span><br><span class="line">&gt;</span><br><span class="line">&gt;y = [<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>]  <span class="comment"># 标签值，一共16个样本</span></span><br><span class="line">&gt;</span><br><span class="line">&gt;np.bincount(y)  </span><br><span class="line">&gt;<span class="comment"># array([8, 6, 2], dtype=int64) 计算每个类别的样本数量，顺序按类别的出现次序</span></span><br><span class="line">&gt;</span><br><span class="line">&gt;class_weight = <span class="string">'balanced'</span></span><br><span class="line">&gt;classes = np.array([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])  <span class="comment">#标签类别</span></span><br><span class="line">&gt;weight = compute_class_weight(class_weight, classes, y)</span><br><span class="line">&gt;print(weight) <span class="comment"># [0.66666667 0.88888889 2.66666667]</span></span><br><span class="line">&gt;</span><br><span class="line">&gt;<span class="comment"># 验证</span></span><br><span class="line">&gt;print(<span class="number">16</span>/(<span class="number">3</span>*<span class="number">8</span>))  <span class="comment">#输出 0.6666666666666666</span></span><br><span class="line">&gt;print(<span class="number">16</span>/(<span class="number">3</span>*<span class="number">6</span>))  <span class="comment">#输出 0.8888888888888888</span></span><br><span class="line">&gt;print(<span class="number">16</span>/(<span class="number">3</span>*<span class="number">2</span>))  <span class="comment">#输出 2.6666666666666665</span></span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
 </blockquote>
 </li>
 <li><p><strong>dict类型</strong></p>
@@ -547,16 +530,7 @@ print(16/(3*2))  #输出 2.6666666666666665
 <li><p>对于二分类问题，可定义class_weight = {0:0.9, 1:0.1}，这样类别0的权重为0.9，类别1的权重为0.1</p>
 </li>
 <li><p>对于多分类问题，定义的权重必须具体到每个标签下的每个类，其中类是key-value中的key，权重是value。</p>
-<pre class="line-numbers language-lang-python"><code class="language-lang-python">import numpy as np
-from sklearn.utils.class_weight import compute_class_weight 
-
-y = [0,0,0,0,0,0,0,0,1,1,1,1,1,1,2,2]  #标签值，一共16个样本
-
-class_weight = {0:1,1:3,2:5}   # 设置
-classes = np.array([0, 1, 2])  #标签类别
-weight = compute_class_weight(class_weight, classes, y)
-print(weight)   # 输出：[1. 3. 5.]，也就是字典中设置的值
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.utils.class_weight <span class="keyword">import</span> compute_class_weight </span><br><span class="line"></span><br><span class="line">y = [<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>]  <span class="comment">#标签值，一共16个样本</span></span><br><span class="line"></span><br><span class="line">class_weight = &#123;<span class="number">0</span>:<span class="number">1</span>,<span class="number">1</span>:<span class="number">3</span>,<span class="number">2</span>:<span class="number">5</span>&#125;   <span class="comment"># 设置</span></span><br><span class="line">classes = np.array([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])  <span class="comment">#标签类别</span></span><br><span class="line">weight = compute_class_weight(class_weight, classes, y)</span><br><span class="line">print(weight)   <span class="comment"># 输出：[1. 3. 5.]，也就是字典中设置的值</span></span><br></pre></td></tr></table></figure>
 <p>（参考： <a href="https://www.cnblogs.com/qi-yuan-008/p/11992156.html" target="_blank" rel="noopener">https://www.cnblogs.com/qi-yuan-008/p/11992156.html</a> )</p>
 </li>
 </ul>
@@ -568,15 +542,7 @@ print(weight)   # 输出：[1. 3. 5.]，也就是字典中设置的值
 <p>惩罚项C会相应的放大或者缩小某一类的损失，如果某一类C越大，这一类的损失也被（相对于其他类来说）放大，那么系统会把本次学习重点放在这一类上，使得系统尽可能的预测对这一类的输入，所以惩罚项C不会影响计算的损失，但反向学习时会相应的放大或缩小损失，间接影响学习的方向。</p>
 <p>(参考： <a href="https://www.zhihu.com/question/265420166/answer/293896934" target="_blank" rel="noopener">https://www.zhihu.com/question/265420166/answer/293896934</a> )</p>
 <p>源码关于class_weight与sample_weight在LR损失函数上的具体计算方式：</p>
-<pre class="line-numbers language-lang-python"><code class="language-lang-python">sample_weight *= class_weight_[le.fit_transform(y_bin)] 
-# 将class_weight乘到每个样本的sample_weight上
-# sample_weight : shape (n_samples,)
-# le即LabelEncoder，将标签标准化为0/1
-
-# Logistic loss is the negative of the log of the logistic function
-# 损失函数
-out = -np.sum(sample_weight * log_logistic(yz)) + .5 * alpha * np.dot(w, w)
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;sample_weight *= class_weight_[le.fit_transform(y_bin)] </span><br><span class="line">&gt;<span class="comment"># 将class_weight乘到每个样本的sample_weight上</span></span><br><span class="line">&gt;<span class="comment"># sample_weight : shape (n_samples,)</span></span><br><span class="line">&gt;<span class="comment"># le即LabelEncoder，将标签标准化为0/1</span></span><br><span class="line">&gt;</span><br><span class="line">&gt;<span class="comment"># Logistic loss is the negative of the log of the logistic function</span></span><br><span class="line">&gt;<span class="comment"># 损失函数</span></span><br><span class="line">&gt;out = -np.sum(sample_weight * log_logistic(yz)) + <span class="number">.5</span> * alpha * np.dot(w, w)</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
 </blockquote>
 </li>
 </ul>

@@ -392,112 +392,12 @@ IV=\sum_{i=1}^{N}(py_i-pn_i)*WOE_i=\sum_{i=1}^{N}(py_i-pn_i)*ln(\frac{py_i}{pn_i
 </table>
 </div>
 <p>因此通常会选择$IV$值在0.1~0.5范围内的特征。</p>
-<h1 id="单机python"><a href="#单机python" class="headerlink" title="单机python"></a>单机python</h1><pre class="line-numbers language-lang-python"><code class="language-lang-python">def CalcWOE(df, col, target):
-    '''
-    获得某个变量的分箱操作后每个箱体对应的WOE值，并且基于WOE值计算该变量的IV值
-    :param df: 包含需要计算WOE的变量和目标变量
-    :param col: 需要计算WOE、IV的变量，必须是分箱后的变量，或者不需要分箱的离散型变量
-    :param target: 目标变量，0、1表示好、坏
-    :return: 返回WOE和IV
-    '''
-    total = df.groupby([col])[target].count()  # 每个箱体的总数
-    total = pd.DataFrame({'total': total})    
-    bad = df.groupby([col])[target].sum()      # 每个箱体的坏样本数
-    bad = pd.DataFrame({'bad': bad})
-    regroup = total.merge(bad, left_index=True, right_index=True, how='left')
-    regroup.reset_index(level=0, inplace=True)
-    N = sum(regroup['total']) # 总体样本数
-    B = sum(regroup['bad'])   # 总体坏样本数
-    regroup['good'] = regroup['total'] - regroup['bad']  # 每个箱体的好样本数
-    G = N - B                 # 总体好样本数
-    regroup['bad_pcnt'] = regroup['bad'].map(lambda x: x/B)    # 每个箱体的坏样本数占总体的坏样本数的比例
-    regroup['good_pcnt'] = regroup['good'].map(lambda x: x/G)  # 每个箱体的好样本数占总体的好样本数的比例
-    # WOEi计算公式(不含系数)： WOE(每个箱体) = ln(该箱体的好样本数占总体的好样本数的比例/该箱体的好样本数占总体的好样本数的比例）
-    regroup['WOE'] = regroup.apply(lambda x: np.log(x.good_pcnt/x.bad_pcnt),axis=1)   
-    WOE_dict = regroup[[col,'WOE']].set_index(col).to_dict(orient='index')
-    for k, v in WOE_dict.items(): # k代表箱体名，v代表了以WOE为键，箱体的实际WOE值为value的字典
-        WOE_dict[k] = v['WOE']
-    # 计算该变量的IV值：sum((某箱体的好样本数占总体的好样本数的比例 - 该箱体的坏样本数占总体的坏样本数的比例)*WOE(某个箱体))
-    IV = regroup.apply(lambda x: (x.good_pcnt-x.bad_pcnt)*np.log(x.good_pcnt/x.bad_pcnt),axis = 1)
-    IV = sum(IV)
-    return {col: {"WOE": WOE_dict, 'IV':IV}}
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="单机python"><a href="#单机python" class="headerlink" title="单机python"></a>单机python</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">CalcWOE</span><span class="params">(df, col, target)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    获得某个变量的分箱操作后每个箱体对应的WOE值，并且基于WOE值计算该变量的IV值</span></span><br><span class="line"><span class="string">    :param df: 包含需要计算WOE的变量和目标变量</span></span><br><span class="line"><span class="string">    :param col: 需要计算WOE、IV的变量，必须是分箱后的变量，或者不需要分箱的离散型变量</span></span><br><span class="line"><span class="string">    :param target: 目标变量，0、1表示好、坏</span></span><br><span class="line"><span class="string">    :return: 返回WOE和IV</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    total = df.groupby([col])[target].count()  <span class="comment"># 每个箱体的总数</span></span><br><span class="line">    total = pd.DataFrame(&#123;<span class="string">'total'</span>: total&#125;)    </span><br><span class="line">    bad = df.groupby([col])[target].sum()      <span class="comment"># 每个箱体的坏样本数</span></span><br><span class="line">    bad = pd.DataFrame(&#123;<span class="string">'bad'</span>: bad&#125;)</span><br><span class="line">    regroup = total.merge(bad, left_index=<span class="literal">True</span>, right_index=<span class="literal">True</span>, how=<span class="string">'left'</span>)</span><br><span class="line">    regroup.reset_index(level=<span class="number">0</span>, inplace=<span class="literal">True</span>)</span><br><span class="line">    N = sum(regroup[<span class="string">'total'</span>]) <span class="comment"># 总体样本数</span></span><br><span class="line">    B = sum(regroup[<span class="string">'bad'</span>])   <span class="comment"># 总体坏样本数</span></span><br><span class="line">    regroup[<span class="string">'good'</span>] = regroup[<span class="string">'total'</span>] - regroup[<span class="string">'bad'</span>]  <span class="comment"># 每个箱体的好样本数</span></span><br><span class="line">    G = N - B                 <span class="comment"># 总体好样本数</span></span><br><span class="line">    regroup[<span class="string">'bad_pcnt'</span>] = regroup[<span class="string">'bad'</span>].map(<span class="keyword">lambda</span> x: x/B)    <span class="comment"># 每个箱体的坏样本数占总体的坏样本数的比例</span></span><br><span class="line">    regroup[<span class="string">'good_pcnt'</span>] = regroup[<span class="string">'good'</span>].map(<span class="keyword">lambda</span> x: x/G)  <span class="comment"># 每个箱体的好样本数占总体的好样本数的比例</span></span><br><span class="line">    <span class="comment"># WOEi计算公式(不含系数)： WOE(每个箱体) = ln(该箱体的好样本数占总体的好样本数的比例/该箱体的好样本数占总体的好样本数的比例）</span></span><br><span class="line">    regroup[<span class="string">'WOE'</span>] = regroup.apply(<span class="keyword">lambda</span> x: np.log(x.good_pcnt/x.bad_pcnt),axis=<span class="number">1</span>)   </span><br><span class="line">    WOE_dict = regroup[[col,<span class="string">'WOE'</span>]].set_index(col).to_dict(orient=<span class="string">'index'</span>)</span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> WOE_dict.items(): <span class="comment"># k代表箱体名，v代表了以WOE为键，箱体的实际WOE值为value的字典</span></span><br><span class="line">        WOE_dict[k] = v[<span class="string">'WOE'</span>]</span><br><span class="line">    <span class="comment"># 计算该变量的IV值：sum((某箱体的好样本数占总体的好样本数的比例 - 该箱体的坏样本数占总体的坏样本数的比例)*WOE(某个箱体))</span></span><br><span class="line">    IV = regroup.apply(<span class="keyword">lambda</span> x: (x.good_pcnt-x.bad_pcnt)*np.log(x.good_pcnt/x.bad_pcnt),axis = <span class="number">1</span>)</span><br><span class="line">    IV = sum(IV)</span><br><span class="line">    <span class="keyword">return</span> &#123;col: &#123;<span class="string">"WOE"</span>: WOE_dict, <span class="string">'IV'</span>:IV&#125;&#125;</span><br></pre></td></tr></table></figure>
 <p>测试</p>
-<pre class="line-numbers language-lang-python"><code class="language-lang-python">import pandas as pd
-import numpy as np
-
-# 使用sklearn的乳腺癌数据集作为例子
-from sklearn.datasets import load_breast_cancer
-cancer = load_breast_cancer()
-df = pd.DataFrame(cancer.data, columns = cancer.feature_names)
-df['label'] = pd.DataFrame(cancer.target)
-
-# 首先进行等频分箱和编码（用到的函数见'分箱'）
-df_cut = df.copy()
-for col in df_cut.columns[:-1]:
-     cutoff = UnsupervisedSplitBin(df,col,numOfSplit=5,method='equalFreq')
-     df_cut[col] = df_cut[col].apply(lambda x: AssignBin(x, cutoff))
-
-# 然后循环计算每个变量的各箱WOE和IV，输出result
-result = pd.DataFrame()
-for col in df_cut.columns[:-1]:
-     woe_iv_dict = CalcWOE(df_cut, col, target = 'label')
-     result = pd.concat([result, pd.DataFrame(woe_iv_dict).T])
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="集群pyspark"><a href="#集群pyspark" class="headerlink" title="集群pyspark"></a>集群pyspark</h1><pre class="line-numbers language-lang-python"><code class="language-lang-python">def cal_woe_iv(tableName, featureCol, labelCol):
-     '''
-     计算spark.sql.DataFrame的WOE和IV
-     :param tableName: 储存在HDFS上的表名
-     :param featureCol: 所需要计算的字段名
-     :param labelCol: 标签列名
-     :return WOE字典和IV值
-     '''
-     df = spark.sql("select {featureCol}, {labelCol} from {tableName}".format(featureCol=featureCol, labelCol=labelCol, tableName=tableName))
-     # 使用crosstab函数生成列联表，并对列进行命名
-     binCount = df.crosstab(featureCol,labelCol).toDF('feature','neg_cnt','pos_cnt')
-     # 注册临时表便于后续调用
-     binCount.registerTempTable("binCount")
-     # 计算主要步骤
-     woe_df = spark.sql("""
-        select
-          feature,
-          nvl(log(pos_per/neg_per), 0) as woe_i,
-          nvl((pos_per-neg_per)*log(pos_per/neg_per), 0) as iv_i
-        from
-        (
-          select
-            feature,
-            neg_cnt/(select sum(neg_cnt) from binCount) as neg_per,
-            pos_cnt/(select sum(pos_cnt) from binCount) as pos_per
-          from
-            binCount
-        ) t
-     """)
-     # 将计算结果转化为pandas.DataFrame
-     woe_df_pandas = woe_df.toPandas()
-     woe = dict(zip(woe_df_pandas["feature"].values.reshape(-1,), woe_df_pandas["woe_i"].values.reshape(-1,),))
-     iv = sum(woe_df_pandas["iv_i"].values)
-     return woe, iv
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用sklearn的乳腺癌数据集作为例子</span></span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_breast_cancer</span><br><span class="line">cancer = load_breast_cancer()</span><br><span class="line">df = pd.DataFrame(cancer.data, columns = cancer.feature_names)</span><br><span class="line">df[<span class="string">'label'</span>] = pd.DataFrame(cancer.target)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 首先进行等频分箱和编码（用到的函数见'分箱'）</span></span><br><span class="line">df_cut = df.copy()</span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> df_cut.columns[:<span class="number">-1</span>]:</span><br><span class="line">     cutoff = UnsupervisedSplitBin(df,col,numOfSplit=<span class="number">5</span>,method=<span class="string">'equalFreq'</span>)</span><br><span class="line">     df_cut[col] = df_cut[col].apply(<span class="keyword">lambda</span> x: AssignBin(x, cutoff))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 然后循环计算每个变量的各箱WOE和IV，输出result</span></span><br><span class="line">result = pd.DataFrame()</span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> df_cut.columns[:<span class="number">-1</span>]:</span><br><span class="line">     woe_iv_dict = CalcWOE(df_cut, col, target = <span class="string">'label'</span>)</span><br><span class="line">     result = pd.concat([result, pd.DataFrame(woe_iv_dict).T])</span><br></pre></td></tr></table></figure>
+<h1 id="集群pyspark"><a href="#集群pyspark" class="headerlink" title="集群pyspark"></a>集群pyspark</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cal_woe_iv</span><span class="params">(tableName, featureCol, labelCol)</span>:</span></span><br><span class="line">     <span class="string">'''</span></span><br><span class="line"><span class="string">     计算spark.sql.DataFrame的WOE和IV</span></span><br><span class="line"><span class="string">     :param tableName: 储存在HDFS上的表名</span></span><br><span class="line"><span class="string">     :param featureCol: 所需要计算的字段名</span></span><br><span class="line"><span class="string">     :param labelCol: 标签列名</span></span><br><span class="line"><span class="string">     :return WOE字典和IV值</span></span><br><span class="line"><span class="string">     '''</span></span><br><span class="line">     df = spark.sql(<span class="string">"select &#123;featureCol&#125;, &#123;labelCol&#125; from &#123;tableName&#125;"</span>.format(featureCol=featureCol, labelCol=labelCol, tableName=tableName))</span><br><span class="line">     <span class="comment"># 使用crosstab函数生成列联表，并对列进行命名</span></span><br><span class="line">     binCount = df.crosstab(featureCol,labelCol).toDF(<span class="string">'feature'</span>,<span class="string">'neg_cnt'</span>,<span class="string">'pos_cnt'</span>)</span><br><span class="line">     <span class="comment"># 注册临时表便于后续调用</span></span><br><span class="line">     binCount.registerTempTable(<span class="string">"binCount"</span>)</span><br><span class="line">     <span class="comment"># 计算主要步骤</span></span><br><span class="line">     woe_df = spark.sql(<span class="string">"""</span></span><br><span class="line"><span class="string">        select</span></span><br><span class="line"><span class="string">          feature,</span></span><br><span class="line"><span class="string">          nvl(log(pos_per/neg_per), 0) as woe_i,</span></span><br><span class="line"><span class="string">          nvl((pos_per-neg_per)*log(pos_per/neg_per), 0) as iv_i</span></span><br><span class="line"><span class="string">        from</span></span><br><span class="line"><span class="string">        (</span></span><br><span class="line"><span class="string">          select</span></span><br><span class="line"><span class="string">            feature,</span></span><br><span class="line"><span class="string">            neg_cnt/(select sum(neg_cnt) from binCount) as neg_per,</span></span><br><span class="line"><span class="string">            pos_cnt/(select sum(pos_cnt) from binCount) as pos_per</span></span><br><span class="line"><span class="string">          from</span></span><br><span class="line"><span class="string">            binCount</span></span><br><span class="line"><span class="string">        ) t</span></span><br><span class="line"><span class="string">     """</span>)</span><br><span class="line">     <span class="comment"># 将计算结果转化为pandas.DataFrame</span></span><br><span class="line">     woe_df_pandas = woe_df.toPandas()</span><br><span class="line">     woe = dict(zip(woe_df_pandas[<span class="string">"feature"</span>].values.reshape(<span class="number">-1</span>,), woe_df_pandas[<span class="string">"woe_i"</span>].values.reshape(<span class="number">-1</span>,),))</span><br><span class="line">     iv = sum(woe_df_pandas[<span class="string">"iv_i"</span>].values)</span><br><span class="line">     <span class="keyword">return</span> woe, iv</span><br></pre></td></tr></table></figure>
 <p>调用并测试运算时间</p>
-<pre class="line-numbers language-lang-python"><code class="language-lang-python">if __name__ == '__main__':
-    from pyspark.sql import SparkSession
-    import time
-    import numpy as np
-    spark = SparkSession.builder.enableHiveSupport().getOrCreate()
-    tableName = "test.calc_woe_iv_sample"
-    featureCol = "age_level"
-    labelCol = "label"
-    time_cost = []
-    for i in range(30):
-        start = time.time()
-        woe, iv = cal_woe_iv(tableName, featureCol, labelCol)
-        end = time.time()
-        time_cost.append(end-start)
-    print ('time cost: %.5f sec' % (np.mean(time_cost)))
-    print ('woe:', woe)
-    print ('iv:', iv)
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line">    <span class="keyword">import</span> time</span><br><span class="line">    <span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">    spark = SparkSession.builder.enableHiveSupport().getOrCreate()</span><br><span class="line">    tableName = <span class="string">"test.calc_woe_iv_sample"</span></span><br><span class="line">    featureCol = <span class="string">"age_level"</span></span><br><span class="line">    labelCol = <span class="string">"label"</span></span><br><span class="line">    time_cost = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">30</span>):</span><br><span class="line">        start = time.time()</span><br><span class="line">        woe, iv = cal_woe_iv(tableName, featureCol, labelCol)</span><br><span class="line">        end = time.time()</span><br><span class="line">        time_cost.append(end-start)</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">'time cost: %.5f sec'</span> % (np.mean(time_cost)))</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">'woe:'</span>, woe)</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">'iv:'</span>, iv)</span><br></pre></td></tr></table></figure>
 <p>集群资源配置：</p>
 <blockquote>
 <p>spark.driver.memory=5G<br>spark.driver.maxResultSize=5G<br>num-executors=20<br>executor-cores=6<br>executor-memory=4G</p>
