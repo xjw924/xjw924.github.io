@@ -1,0 +1,1310 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="分箱, 小徐小徐不断学习">
+    <meta name="description" content="理论概念将连续型的数据分为几个数据段，即特征离散化。
+把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科） 
+优势
+离散化后的特征对异常数据有很强的鲁棒性，模型更加稳定。比如年龄&amp;gt;70岁为一个分箱，异常数据">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>分箱 | 小徐小徐不断学习</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper head-container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">小徐小徐不断学习</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>联系</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">小徐小徐不断学习</div>
+        <div class="logo-desc">
+            
+            统计|数据分析|机器学习|大数据
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			联系
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/19.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">分箱</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/特征工程/">
+                                <span class="chip bg-color">特征工程</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/FeatureEngineering/" class="post-category">
+                                FeatureEngineering
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    2020-01-20
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
+                    2020-01-30
+                </div>
+                
+
+                
+
+                
+				
+                
+            </div>
+            
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>将连续型的数据分为几个数据段，即特征离散化。</p>
+<p>把无限空间中有限的个体映射到有限的空间中去，以此提高算法的时空效率。（百度百科） </p>
+<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
+<li><p><strong>离散化后的特征对异常数据有很强的鲁棒性，模型更加稳定。</strong>比如年龄&gt;70岁为一个分箱，异常数据如年龄为300岁同样会划分到该箱，不会给模型造成很大的干扰；比如将20岁-30岁划分为一个区间，不会因为年龄增长一岁就变成一个完全不同的人。而对于处于区间相邻处的样本会刚好相反，因此如何划分区间也很重要。</p>
+</li>
+<li><p>对于如逻辑回归的广义线性模型，表达能力受限，单变量离散化为$N$个变量后，每个变量有单独的权重，相当于为模型引入了非线性，能够提升模型表达能力，加大拟合。（？）</p>
+</li>
+<li><p>离散化后可以进行特征交叉，进一步<strong>引入非线性，提升模型表达能力</strong>。</p>
+</li>
+<li><p>可以将缺失值作为独立的箱代入变量。</p>
+</li>
+<li><p>可以将所有变量转换到相似的尺度上（不需要进行归一化）。</p>
+</li>
+</ol>
+<h2 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h2><h3 id="无监督分箱"><a href="#无监督分箱" class="headerlink" title="无监督分箱"></a>无监督分箱</h3><h4 id="等频分箱"><a href="#等频分箱" class="headerlink" title="等频分箱"></a>等频分箱</h4><p>每个箱包含大致相等的样本数量，可以根据分位数进行划分，如四分位数等。</p>
+<h4 id="等距分箱"><a href="#等距分箱" class="headerlink" title="等距分箱"></a>等距分箱</h4><p>从变量的最小值到最大值之间均等分为$N$等份。若$m$和$M$分别代表最小值和最大值，则每个区间的长度为$w=\frac{M-m}{N}$，区间的边界值为$m+w,m+2w,…,m+(N-1)w$。这里只考虑边界，每个等份的样本数量一般不等。</p>
+<h3 id="有监督分箱"><a href="#有监督分箱" class="headerlink" title="有监督分箱"></a>有监督分箱</h3><h4 id="卡方分箱"><a href="#卡方分箱" class="headerlink" title="卡方分箱"></a>卡方分箱</h4><ul>
+<li><p><strong>初始化</strong></p>
+<ul>
+<li><p>根据连续变量值的大小进行排序。</p>
+</li>
+<li><p>把每一个单独的值视为一个箱体，构建最初的离散化。目的是想从每个单独的箱体开始逐渐合并。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>合并</strong>：在初始化构建完毕后，该步就是不断地进行自底向上的合并，直到满足停止条件。</p>
+<ul>
+<li><p><strong>计算所有相邻分箱的卡方值</strong>。比如有1,2,3,4这4个分箱，绑定相邻的两个分箱，一共有3组：12,23,34，然后分别计算三个绑定组的卡方值。卡方值的计算公式为</p>
+<script type="math/tex; mode=display">
+\chi^2=\sum_{i=1}^{m}\sum_{j=1}^{k}\frac{(A_{ij}-E_{ij})^2}{E_{ij}}</script><p>其中，$m$表示要合并相邻分箱的数目（$m=2$表示对两个箱进行合并），$k$表示目标变量的类别数（两分类或多分类），$A_{ij}$表示实际频数（即第$i$个分箱第$j$类别的频数），$E_{ij}$表示期望频数，计算公式如下（可根据公式$P(AB)=P(A)P(B)$推导出来）</p>
+<script type="math/tex; mode=display">
+E_{ij}=\frac{R_i*C_j}{N}</script><p>其中$R_i$和$C_j$分别是实际频数整行和整列的加和，$N$为总样本量。</p>
+</li>
+<li><p><strong>从计算的卡方值中找出最小的一个，并把这两个分箱合并</strong>。比如23是卡方值最小的一个，那么就将2和3合并，经过本轮的计算后分箱就变为1,23,4。</p>
+<p>从合并的方法可以看出，卡方分箱的基本思想是，<strong>如果两个相邻的区间具有非常类似的类分布（即低卡方值，低卡方值表明它们具有类似的类分布），那么这两个区间可以合并，否则应该分开</strong>。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>停止条件</strong>：以上仅是每一轮需要计算的内容，若不设置停止条件，算法会一直运行。一般从以下两个方面设置停止条件：</p>
+<ul>
+<li>卡方停止的阈值</li>
+<li>分箱数目的限制</li>
+</ul>
+<p>即当所有分箱对的卡方值均大于阈值，且分箱数大于分箱数时，计算就会继续，直到不满足。</p>
+<p>以上两个阈值一般根据经验来定义，来作为分箱函数的参数进行设置，一般使用0.90,0.95,0.99的置信度，分箱数一般可以设置为5。</p>
+</li>
+</ul>
+<p><em>例如：</em></p>
+<p>对于某两个箱（分箱1和分箱2），实际频数如下表</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>类别1</th>
+<th>类别2</th>
+<th>行频数和</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>分箱1</strong></td>
+<td>$A_{11}$</td>
+<td>$A_{12}$</td>
+<td>$R_1$</td>
+</tr>
+<tr>
+<td><strong>分箱2</strong></td>
+<td>$A_{21}$</td>
+<td>$A_{22}$</td>
+<td>$R_2$</td>
+</tr>
+<tr>
+<td><strong>列频数和</strong></td>
+<td>$C_1$</td>
+<td>$C_2$</td>
+<td>$N$</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>期望频数如下表</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>类别1</th>
+<th>类别2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>分箱1</strong></td>
+<td>$E_{11}=\frac{R_1*C_1}{N}$</td>
+<td>$E_{12}=\frac{R_1*C_2}{N}$</td>
+</tr>
+<tr>
+<td><strong>分箱2</strong></td>
+<td>$E_{21}=\frac{R_2*C_1}{N}$</td>
+<td>$E_{22}=\frac{R_2*C_2}{N}$</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>代入卡方公式求解，过程如下：</p>
+<script type="math/tex; mode=display">
+\chi^2=\sum_{i=1}^{m}\sum_{j=1}^{k}\frac{(A_{ij}-E_{ij})^2}{E_{ij}}=[\frac{(A_{11}-E_{11})^2}{E_{11}}+\frac{(A_{12}-E_{12})^2}{E_{12}}]+[\frac{(A_{21}-E_{21})^2}{E_{21}}+\frac{(A_{22}-E_{22})^2}{E_{22}}]</script><p>如果计算结果是所有卡方值中最小的，说明这两个分箱具有最相似的类分布，因此把它们合并。</p>
+<p>（参考 <a href="https://cloud.tencent.com/developer/article/1418720" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1418720</a> ）</p>
+<h1 id="单机python实现"><a href="#单机python实现" class="headerlink" title="单机python实现"></a>单机python实现</h1><h2 id="无监督分箱-1"><a href="#无监督分箱-1" class="headerlink" title="无监督分箱"></a>无监督分箱</h2><ul>
+<li>UnsupervisedSplitBin函数：对数值型变量进行分组，分组的依据有等频和等距，最后返回划分点列表</li>
+</ul>
+<pre class="line-numbers language-lang-python"><code class="language-lang-python">def UnsupervisedSplitBin(df,col,numOfSplit=5,method='equalFreq'):
+    '''
+    该函数用于对数值型变量进行划分，最后返回划分点组成的列表
+    :param df: 数据集
+    :param col: 需要分箱的变量。仅限数值型变量
+    :param numOfSplit: 需要分箱个数，默认是5
+    :param method: 分箱方法，'equalFreq'：默认是等频，否则是等距
+    :return: 返回划分点组成的列表
+    '''
+    if method == 'equalFreq':
+        # 等频分箱
+        frequency_cutoff = [np.percentile(df[col], 100/numOfSplit*i) for i in range(1,numOfSplit)]
+        splitPoint = sorted(list(set(frequency_cutoff)))
+        return splitPoint
+    elif method == 'equalDis':
+        # 等距分箱
+        var_max, var_min = max(df[col]), min(df[col])
+        interval_len = (var_max-var_min)/numOfSplit
+        splitPoint = [var_min+i*interval_len for i in range(1,numOfSplit)]
+        return splitPoint
+    else:
+        return 'Sorry, no such method'
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="有监督分箱：卡方分箱"><a href="#有监督分箱：卡方分箱" class="headerlink" title="有监督分箱：卡方分箱"></a>有监督分箱：卡方分箱</h2><ul>
+<li><p>SplitData函数：用于对某变量进行划分，根据划分的组数，返回划分点数值组成的列表</p>
+</li>
+<li><p>Chi2函数：用于计算卡方值，返回卡方值（按照卡方检验的原理进行计算）</p>
+</li>
+<li><p>BinBadRate函数：按某变量进行分组，计算分组后每组的坏样本率，返回的有，字典形式，数据框，总体坏样本率（可选）</p>
+</li>
+<li><p>AssignGroup函数：根据分组后的划分点列表，给某个需分箱的变量的每个取值进行分箱前的匹配，形成对应箱的映射</p>
+</li>
+<li><p>AssignBin函数：将某列的每个取值进行分箱编号</p>
+</li>
+<li><p>ChiMerge函数：卡方分箱的主体函数，其中调用了前面五个基础函数，返回的是最终的满足所有限制条件的划分点列表</p>
+<ul>
+<li><p>其中需要满足：</p>
+<p>（1）最后分裂出的分箱数 &lt;= 预设的最大分箱数</p>
+<p>（2）每个箱体必须同时包含好坏样本</p>
+<p>（3）每个箱体的占比不低于预设值（可选）</p>
+<p>（4）如果有特殊的属性值，则最终的分箱数 = 预设的最大分箱数 - 特殊值个数</p>
+</li>
+</ul>
+</li>
+</ul>
+<pre class="line-numbers language-lang-python"><code class="language-lang-python">def SplitData(df,col,numOfSplit,special_attribute=[]):
+    '''
+    该函数用于获得数据切分时对应位置的数值
+    :param df: pandas.DataFrame
+    :param col: str 选择数据集中的某列进行操作
+    :param numOfSplit: int 划分的组数
+    :param special_attribute: 用于过滤掉一些特殊的值，不参与数据划分（可选，默认不过滤）
+    :return: 返回划分点位置对应的数值组成的列表
+    '''
+    df2 = df.copy()
+    if special_attribute != []:
+        df2 = df2.loc[~df2[col].isin(special_attribute)]  # 排除有特殊值的样本行
+    N = len(df2) # 样本总数
+    n = int(N/numOfSplit) # 每组包含的样本量
+    SplitPointIndex = [i*n for i in range(1,numOfSplit)] # 不包含numOfSplit
+    # 如总样本N=20，numofsplit为5组，则每组包含4个元素(n=4)
+    # 则最后得到的SplitPointIndex=[4,8,12,16]，即切分点位置，各组样本为0-3/4-7/8-11/12-15
+    rawValues = sorted(list(df[col])) # sorted返回一个新的排列后的列表
+    SplitPoint = [rawValues[i] for i in SplitPointIndex] # 返回位置索引上对应的数值
+    # 为了以防万一，去重再排序
+    SplitPoint = sorted(list(set(SplitPoint)))
+    return SplitPoint 
+
+
+def AssignGroup(x,bin):
+    '''
+    该函数用于：根据分组后的划分点列表（bin)，给某个需要分箱的变量进行分箱前的匹配，形成对应箱的映射，以便后期分箱操作，将值划分到不同箱体
+    :param x: 某个变量的某个取值
+    :param bin: 上述变量分组后（通过SplitData函数）对应的划分位置的数值组成的列表
+    :return: x在分箱结果下的映射 
+    ''' 
+    N = len(bin)            # 划分点的长度
+    if x<=min(bin):         # 如果某个取值小于等于最小划分点，则返回最小划分点
+        return min(bin)
+    elif x>max(bin):        # 如果某个取值大于最小划分点，则返回10e10
+        return 10e10
+    else:                   # 除此之外，返回其他对应的划分点
+        for i in range(N-1):
+            if bin[i] < x <= bin[i+1]:
+                return bin[i+1]
+
+
+def BinBadRate(df,col,target,grantRateIndicator=False):
+    '''
+    该函数用于对变量按照取值（每个取值都是唯一的）进行分组，获得每箱的坏样本率，后期基于该值判断是否需要合并操作
+    :param df: pandas.DataFrame 需要计算好坏比率的数据集
+    :param col: str 需要计算好坏比率的特征
+    :param target: str 好坏标签
+    :param grantRateIndicator: bool True返回总体的坏样本率，False不返回（可选，默认不返回）
+    :return: 每箱的坏样本率，以及总体的坏样本率（当grantRateIndicator==True时）
+    '''
+    total = df.groupby([col])[target].count()
+    total = pd.DataFrame({'total': total})
+    bad = df.groupby([col])[target].sum()
+    bad = pd.DataFrame({'bad': bad})
+
+    regroup = total.merge(bad, left_index=True, right_index=True, how='left') # 每箱的坏样本数，总样本数
+    regroup.reset_index(level=0, inplace=True)
+
+    regroup['bad_rate'] = regroup.apply(lambda x: x.bad / x.total, axis=1) # 加上一列坏样本率
+    dicts = dict(zip(regroup[col],regroup['bad_rate'])) # 每箱对应的坏样本率组成的字典
+
+    if not grantRateIndicator:
+        return (dicts, regroup)
+    else:
+        N = sum(regroup['total'])
+        B = sum(regroup['bad'])
+        overallRate = B / N
+        return (dicts, regroup, overallRate)
+
+
+def Chi2(df,totalCol,badCol):
+    '''
+    该函数用于获得卡方值
+    :param df: pandas.DataFrame 包含了每个分组下的样本总数和坏样本数
+    :param totalCol: str 列名，元素由各个分组下的样本总数构成
+    :param badCol: str 列名，元素由各个分组下的坏样本数构成
+    :return: 卡方值
+    '''
+    df2 = df.copy()
+
+    # 计算该特征各个分组下的好样本数
+    df2['good'] = df2.apply(lambda x: x[totalCol]-x[badCol], axis = 1)
+
+    # 求出期望值E
+    # 1.求出总体的坏样本率和好样本率
+    badRate = sum(df2[badCol]) / sum(df2[totalCol])
+    goodRate = sum(df2['good']) / sum(df2[totalCol])
+    # 特殊情况：当全部样本只有好或者坏样本时，卡方值为0
+    if badRate in [0,1]:
+        return 0
+
+    # 2.根据总体的好坏样本率算出期望的好坏样本数，计算公式为：
+    # 期望坏（好）样本个数 ＝ 全部样本个数 * 总体的坏（好）样本率
+    df2['badExpected'] = df2[totalCol].apply(lambda x: x*badRate)
+    df2['goodExpected'] = df2[totalCol].apply(lambda x: x*goodRate)
+
+    badCombined = zip(df2['badExpected'], df2[badCol])
+    goodCombined = zip(df2['goodExpected'], df2['good'])
+
+    # 按照卡方计算的公式计算卡方值：  ∑ (O - E)^2 / E, O代表实际值，E代表期望值     
+    badChi = [(i[0]-i[1])**2/i[1] if i[1]!=0 else 0 for i in badCombined]
+    goodChi = [(i[0]-i[1])**2/i[1] if i[1]!=0 else 0 for i in goodCombined]
+    chi2 = sum(badChi) + sum(goodChi)
+    return chi2
+
+
+def AssignBin(x,cutOffPoints,special_attribute=[]):
+    '''
+    该函数用于对某个列的某个取值进行分箱编号（编码）
+    :param x: 某个变量的某个取值
+    :param cutOffPoints: 上述变量的分组结果，用切分点表示，列表形式
+    :param special_attribute: 不参与分箱的特殊取值（可选）
+    :return: 分箱后的对应的第几个箱，从0开始
+    比如，若cutOffPoints=[10,20,30]，当x=7，返回0；当x=35，返回3
+    '''
+    numBin = len(cutOffPoints) + 1 + len(special_attribute)
+    if x in special_attribute:
+        i = special_attribute.index(x)+1
+        return (0-i)
+    if x <= cutOffPoints[0]:
+        return 0
+    elif x > cutOffPoints[-1]:
+        return (numBin-1)
+    else:
+        for i in range(0,numBin-1):
+            if cutOffPoints[i] < x <= cutOffPoints[i+1]:
+                return (i+1)
+
+
+def ChiMerge(df,col,target,max_interval=5,special_attribute=[],minBinPcnt=0):
+    '''
+    该函数用于实际的卡方分箱算法操作，最后返回有实际的划分点组成的列表
+    :param df: pandas.DataFrame 包含目标变量与需要分箱变量的数据集
+    :param col: str 需要分箱的属性
+    :param target: str 目标变量，取值0或1
+    :param max_interval: int 最大分箱数（默认5）。如果原始属性的取值个数低于该参数，不执行这段函数
+    :param special_attribute: list 不参与分箱的属性取值（可选）
+    :param minBinPcnt：最小箱的占比（默认0），如果不满足最小分箱占比继续进行组别合并
+    :return: 分箱结果
+    '''
+    colLevels = sorted(list(set(df[col])))  # 某列的不重复值
+    N_distinct = len(colLevels)             # 某列的不重复值计数
+
+    if N_distinct <= max_interval:  #如果原始属性的取值个数低于max_interval，不执行这段函数（不参与分箱）
+        print ("The number of original levels for '{col}' is {dis_cnt}, which is less than or equal to max intervals".format(col=col, dis_cnt=N_distinct))
+        return colLevels[:-1]
+    else:
+        if len(special_attribute)>=1:
+            df2 = df.loc[~df[col].isin(special_attribute)] # 去掉special_attribute后的df
+            N_distinct = len(list(set(df2[col])))  # 去掉special_attribute后的非重复值计数
+        else:
+            df2 = df.copy()
+
+        # 步骤一: 通过col对数据进行分组，求出每组的总样本数和坏样本数
+        if N_distinct > 100:
+            split_x = SplitData(df2,col,100) # 若非重复值计数超过100组，均将其转化成100组，将多余样本都划分到最后一个箱中
+            df2['temp_cutoff'] = df2[col].map(lambda x: AssignGroup(x,split_x))
+            # Assgingroup函数：每一行的数值和切分点做对比，返回原值在切分后的映射，
+            # 经过map以后，生成该特征的值对象的"分箱"后的值        
+        else:
+            df2['temp_cutoff'] = df2[col] # 不重复值计数不超过100时，不需要进行上述步骤
+
+        # 通过上述过程，我们现在可以将该列进行BadRate计算，用来计算每个箱体的坏样本率 以及总体的坏样本率      
+        (binBadRate, regroup, overallRate) = BinBadRate(df2, 'temp_cutoff', target, grantRateIndicator=True)
+
+        # 在此，我们将每个单独的属性值分成单独一组
+        # 对属性值进行去重排序，然后两两组别进行合并，用于后续的卡方值计算
+        colLevels = sorted(list(set(df2['temp_cutoff'])))
+        groupIntervals = [[i] for i in colLevels] # 把每个箱的值打包成[[],[]]的形式
+
+        # 步骤二：通过循环的方式，不断的合并相邻的两个组别，直到：
+        # （1）最后分裂出的分箱数 <= 预设的最大分箱数
+        # （2）每个箱体必须同时包含好坏样本
+        # （3）每个箱体的占比不低于预设值（可选）
+        # （4）如果有特殊的属性值，则最终的分箱数 = 预设的最大分箱数 - 特殊值个数
+        split_intervals = max_interval - len(special_attribute)
+
+        # 每次循环时, 计算合并相邻组别后的卡方值。当组别数大于预设的分箱数时，持续选择最小卡方值的组合并
+        while len(groupIntervals)>split_intervals:
+            chisqList = []
+            for k in range(len(groupIntervals)-1):
+                temp_group = groupIntervals[k] + groupIntervals[k+1]  # 返回的是，这两个值组成的列表
+                # 因此，可以通过temp_group，每次只选相邻的两组进行相关操作
+                df2b = regroup.loc[regroup['temp_cutoff'].isin(temp_group)]
+                # 计算相邻两组的卡方值(通过调用Chi2函数)
+                chisq = Chi2(df2b,'total','bad')
+                chisqList.append(chisq)
+            best_comnbined = chisqList.index(min(chisqList)) # 检索最小卡方值所在的索引    
+            # 把groupIntervals的值改成类似的值改成类似从[[1],[2],[3]]到[[1,2],[3]]
+            groupIntervals[best_comnbined] = groupIntervals[best_comnbined] + groupIntervals[best_comnbined+1]
+            groupIntervals.remove(groupIntervals[best_comnbined+1])
+
+        # 上述循环结束后，即可获得预设的分箱数，并且可以得到各分箱的划分点
+        groupIntervals = [sorted(i) for i in groupIntervals]
+        cutOffPoints = [max(i) for i in groupIntervals[:-1]] 
+
+        # 然后，我们将某列进行分箱编号
+        groupedvalues = df2['temp_cutoff'].apply(lambda x: AssignBin(x, cutOffPoints))
+        df2['temp_Bin'] = groupedvalues
+        # AssignBin函数：每一行的数值和切分点做对比，返回原值所在的分箱编号（形成新列）    
+
+        # 进一步，我们想要保证每个箱体都有好坏样本数
+        # 检查是否有箱没有好或者坏样本。如果有，需要跟相邻的箱进行合并，直到每箱同时包含好坏样本
+        (binBadRate,regroup) = BinBadRate(df2, 'temp_Bin', target)    # 返回每箱坏样本率字典，和包含'分箱号、总样本数、坏样本数、坏样本率的数据框'）
+        minBadRate, maxBadRate = min(binBadRate.values()), max(binBadRate.values())
+        while minBadRate ==0 or maxBadRate == 1:
+            # 找出全部为好／坏样本的箱
+            indexForBad01 = regroup[regroup['bad_rate'].isin([0,1])].temp_Bin.tolist()    
+            bin = indexForBad01[0]
+            # 如果是最后一箱，则需要和上一个箱进行合并，也就意味着分裂点cutOffPoints中的最后一个划分点需要移除
+            if bin == max(regroup.temp_Bin):
+                cutOffPoints = cutOffPoints[:-1]
+            # 如果是第一箱，则需要和下一个箱进行合并，也就意味着分裂点cutOffPoints中的第一个需要移除
+            elif bin == min(regroup.temp_Bin):
+                cutOffPoints = cutOffPoints[1:]
+            # 如果是中间的某一箱，则需要和前后中的一个箱体进行合并，具体选择哪个箱体，要依据前后箱体哪个卡方值较小
+            else:
+                # 和前一箱进行合并，并且计算卡方值
+                currentIndex = list(regroup.temp_Bin).index(bin)
+                prevIndex = list(regroup.temp_Bin)[currentIndex - 1]
+                df3 = df2.loc[df2['temp_Bin'].isin([prevIndex, bin])]
+                (binBadRate, df2b) = BinBadRate(df3, 'temp_Bin', target)
+                chisq1 = Chi2(df2b, 'total', 'bad')
+                # 和后一箱进行合并，并且计算卡方值
+                laterIndex = list(regroup.temp_Bin)[currentIndex + 1]
+                df3b = df2.loc[df2['temp_Bin'].isin([laterIndex, bin])]
+                (binBadRate, df2b) = BinBadRate(df3b, 'temp_Bin', target)
+                chisq2 = Chi2(df2b, 'total', 'bad')
+                if chisq1 < chisq2:
+                    cutOffPoints.remove(cutOffPoints[currentIndex - 1])
+                else:
+                    cutOffPoints.remove(cutOffPoints[currentIndex])
+
+            # 完成此项合并后，需要再次计算，在新的分箱准则下，每箱是否同时包含好坏样本，
+            # 如何仍然出现不能同时包含好坏样本的箱体，继续循坏，直到好坏样本同时出现在每个箱体后，跳出
+            groupedvalues = df2['temp'].apply(lambda x: AssignBin(x, cutOffPoints))
+            df2['temp_Bin'] = groupedvalues
+            (binBadRate, regroup) = BinBadRate(df2, 'temp_Bin', target)
+            [minBadRate, maxBadRate] = [min(binBadRate.values()), max(binBadRate.values())]
+
+        # 最后，我们来检查分箱后的最小占比
+        if minBinPcnt > 0: # 如果函数调用初期给的minBinPct不是零，则进一步对箱体进行合并
+            groupedvalues = df2['temp'].apply(lambda x: AssignBin(x, cutOffPoints))
+            df2['temp_Bin'] = groupedvalues
+            valueCounts = groupedvalues.value_counts().to_frame()
+            valueCounts['pcnt'] = valueCounts['temp'].apply(lambda x: x / sum(valueCounts['temp']))
+            valueCounts = valueCounts.sort_index()
+            minPcnt = min(valueCounts['pcnt']) # 得到箱体的最小占比
+
+            # 如果箱体最小占比小于给定的分箱占比阈值 且 划分点大于2，进入合并循环中
+            while minPcnt < minBinPcnt and len(cutOffPoints) > 2: 
+                # 找出占比最小的箱
+                indexForMinPcnt = valueCounts[valueCounts['pcnt'] == minPcnt].index.tolist()[0]
+                # 如果占比最小的箱是最后一箱，则需要和上一个箱进行合并，也就意味着分裂点cutOffPoints中的最后一个需要移除
+                if indexForMinPcnt == max(valueCounts.index):
+                    cutOffPoints = cutOffPoints[:-1]
+                # 如果占比最小的箱是第一箱，则需要和下一个箱进行合并，也就意味着分裂点cutOffPoints中的第一个需要移除
+                elif indexForMinPcnt == min(valueCounts.index):
+                    cutOffPoints = cutOffPoints[1:]
+                # 如果占比最小的箱是中间的某一箱，则需要和前后中的一个箱进行合并，合并依据是较小的卡方值
+                else:
+                    # 和前一箱进行合并，并且计算卡方值
+                    currentIndex = list(valueCounts.index).index(indexForMinPcnt)
+                    prevIndex = list(valueCounts.index)[currentIndex - 1]
+                    df3 = df2.loc[df2['temp_Bin'].isin([prevIndex, indexForMinPcnt])]
+                    (binBadRate, df2b) = BinBadRate(df3, 'temp_Bin', target)
+                    chisq1 = Chi2(df2b, 'total', 'bad')
+                    # 和后一箱进行合并，并且计算卡方值
+                    laterIndex = list(valueCounts.index)[currentIndex + 1]
+                    df3b = df2.loc[df2['temp_Bin'].isin([laterIndex, indexForMinPcnt])]
+                    (binBadRate, df2b) = BinBadRate(df3b, 'temp_Bin', target)
+                    chisq2 = Chi2(df2b, 'total', 'bad')
+                    if chisq1 < chisq2:
+                        cutOffPoints.remove(cutOffPoints[currentIndex - 1])
+                    else:
+                        cutOffPoints.remove(cutOffPoints[currentIndex])        
+                groupedvalues = df2['temp'].apply(lambda x: AssignBin(x, cutOffPoints))
+                df2['temp_Bin'] = groupedvalues
+                valueCounts = groupedvalues.value_counts().to_frame()
+                valueCounts['pcnt'] = valueCounts['temp'].apply(lambda x: x * 1.0 / sum(valueCounts['temp']))
+                valueCounts = valueCounts.sort_index()
+                minPcnt = min(valueCounts['pcnt'])
+
+        cutOffPoints = special_attribute + cutOffPoints
+        return cutOffPoints
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>(参考 <a href="https://blog.csdn.net/LuLuYao9494/article/details/92083755" target="_blank" rel="noopener">https://blog.csdn.net/LuLuYao9494/article/details/92083755</a> )</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><pre class="line-numbers language-lang-python"><code class="language-lang-python">import pandas as pd
+import numpy as np
+
+# 使用sklearn的乳腺癌数据集作为例子
+from sklearn.datasets import load_breast_cancer
+cancer = load_breast_cancer()
+df = pd.DataFrame(cancer.data, columns = cancer.feature_names)
+df['label'] = pd.DataFrame(cancer.target)
+
+# 设置分箱参数
+bins = 5 # 分箱数
+col = 'mean radius' # 分箱字段名
+target = 'label' # 标签字段名
+
+# 等频分箱
+frequency_cutoff = UnsupervisedSplitBin(df,col,numOfSplit=5,method='equalFreq')
+# [11.366, 12.726, 14.058000000000002, 17.067999999999998]
+
+# 等距分箱
+distance_cutoff = UnsupervisedSplitBin(df,col,numOfSplit=5,method='equalDis')
+# [11.2068, 15.432599999999999, 19.6584, 23.8842]
+
+# 卡方分箱
+chiMerge_cutoff = ChiMerge(df,col,target,max_interval=5,special_attribute=[],minBinPcnt=0)
+# [12.46, 13.38, 15.0, 16.84]
+
+#以等频分箱为例在数据集上进行编码
+df_cut = df.copy()
+for col in df_cut.columns[:-1]:
+    # 得到切分点（获取切分点的方法可替换）
+    cutoff = UnsupervisedSplitBin(df,col,numOfSplit=5,method='equalFreq')
+    # 进行编码
+    df_cut[col] = df_cut[col].apply(lambda x: AssignBin(x, cutoff))
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="集群pyspark实现"><a href="#集群pyspark实现" class="headerlink" title="集群pyspark实现"></a>集群pyspark实现</h1><p>pyspark.ml.feature提供等频分箱的API可以直接调用</p>
+<p><em>class</em> <code>pyspark.ml.feature.QuantileDiscretizer</code>(<em>numBuckets=2</em>, <em>inputCol=None</em>, <em>outputCol=None</em>, <em>relativeError=0.001</em>, <em>handleInvalid=’error’</em>)<a href="http://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.QuantileDiscretizer" target="_blank" rel="noopener"><a href="http://spark.apache.org/docs/latest/api/python/_modules/pyspark/ml/feature.html#QuantileDiscretizer" target="_blank" rel="noopener">source\</a></a></p>
+<p>参数：</p>
+<ol>
+<li>numBuckets：分箱数，但若样本数据只有3个取值，但numBuckets=4，则仍只划分为3个箱</li>
+<li>relativeError：用于控制近似的精度，取值范围为[0,1]，当设置为0时会计算精确的分位数（计算代价较高）</li>
+<li>handleInvalid：选择处理空值的方式，有三种选项：’keep’将空值放入专门的箱中，例如如果使用4个箱，则将非空数据放入箱0-3中，将空值放入特殊的箱4中；’skip’：过滤掉含有空值的行；’error’报错。（？实验了一下这三种选项并没有区别？？？结果没有处理缺失值仍输出空值，也没有报错……？？）</li>
+<li>inputCol：输入要分箱的列名，outputCol：输出分箱后新特征的列名</li>
+</ol>
+<pre class="line-numbers language-lang-python"><code class="language-lang-python">from pyspark.ml.feature import QuantileDiscretizer
+# 导入数据集
+df = spark.sql("select * from test.sklearn_dataset_iris")
+col = 'sepal length (cm)' # 对该列进行等频分箱
+
+qd = QuantileDiscretizer(numBuckets=5, inputCol=col, outputCol=col+'_bin')
+qd_model = qd.fit(df)
+print (qd_model.getSplits()) # 打印分箱的节点
+df_new = qd_model.transform(df)
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+            </div>
+            <hr/>
+
+            
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/特征工程/">
+                                    <span class="chip bg-color">特征工程</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="wechat,qq,weibo" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2020/01/27/woe-yu-iv/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="WOE与IV">
+                        
+                        <span class="card-title">WOE与IV</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            理论WOE定义全称：Weight of Evidence
+前提：计算之前需要是离散化后的连续变量or离散变量。
+对于变量第$i$个取值的$WOE_i$的计算公式为
+
+WOE_i = ln(\frac{py_i} {pn_i})=ln(\fr
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-27
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/FeatureEngineering/" class="post-category">
+                                    FeatureEngineering
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/特征工程/">
+                        <span class="chip bg-color">特征工程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/11/14/svm/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="SVM">
+                        
+                        <span class="card-title">SVM</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            SVM是一种二类分类模型。它的基本模型是在特征空间中寻找间隔最大化的分离超平面的线性分类器。（间隔最大是它有别于感知机）
+训练样本线性可分时，通过硬间隔最大化，学习一个线性分类器，即线性可分支持向量机；
+训练数据近似线性可分时，引入松弛变量
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-11-14
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            xjw924
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+    
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="http://yoursite.com" target="_blank">xjw924</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">32.3k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+
+
+    <a href="mailto:xjw924@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span>
+            <input type="search" id="searchInput" name="s" placeholder="Please enter a search keyword"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

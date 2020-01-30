@@ -1,0 +1,929 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Ensemble, 小徐小徐不断学习">
+    <meta name="description" content="概念集成学习的目的是通过结合多个基学习器的预测结果，来改善基学习器的泛化能力和鲁棒性。 
+RF, GBDT, XGBoost, LightGBM都属于集成学习。
+根据基学习器的生成方式，目前的集成学习方法大致分为两大类：
+
+基学习器之间存在">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Ensemble | 小徐小徐不断学习</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper head-container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">小徐小徐不断学习</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>联系</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">小徐小徐不断学习</div>
+        <div class="logo-desc">
+            
+            统计|数据分析|机器学习|大数据
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			联系
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Ensemble</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/MachineLearning/">
+                                <span class="chip bg-color">MachineLearning</span>
+                            </a>
+                        
+                            <a href="/tags/Ensemble/">
+                                <span class="chip bg-color">Ensemble</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/MachineLearning/" class="post-category">
+                                MachineLearning
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    2019-10-18
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
+                    2019-10-18
+                </div>
+                
+
+                
+
+                
+				
+                
+            </div>
+            
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>集成学习的目的是通过结合多个基学习器的预测结果，来改善基学习器的泛化能力和鲁棒性。 </p>
+<p>RF, GBDT, XGBoost, LightGBM都属于集成学习。</p>
+<p>根据基学习器的生成方式，目前的集成学习方法大致分为两大类：</p>
+<ol>
+<li><p><strong>基学习器之间存在强依赖关系、必须串行生成的序列化方法</strong>（代表是Boosting）</p>
+<p>从偏差-方差分解的角度看，Boosting主要关注降低偏差（即降低错误率，偏差反映学习算法的拟合能力），因此Boosting能基于泛化性能相当弱的学习器构建出很强的集成。</p>
+</li>
+<li><p><strong>基学习器间不存在强依赖关系、可同时生成的并行化方法</strong>（代表是Bagging和RF）</p>
+<p>从偏差-方差分解的角度看，Bagging主要关注降低方差（方差度量同样大小的数据集的变动所导致的学习性能的变化）。当基学习器不稳定（large variance）时，Bagging带来的性能提升尤为明显。因此它在不剪枝决策树、神经网络等<strong>易受样本扰动的学习器</strong>上效用更为明显。</p>
+</li>
+</ol>
+<h2 id="Boosting与Bagging的不同"><a href="#Boosting与Bagging的不同" class="headerlink" title="Boosting与Bagging的不同"></a>Boosting与Bagging的不同</h2><ol>
+<li><strong>方差与偏差</strong>：Bagging是减少方差（因此在易受样本扰动的学习器上效用很明显），而Boosting是减少偏差（因此能基于相当弱的基学习器构建出强学习器）。</li>
+<li><strong>并行与串行</strong>：Bagging的各个预测函数可以并行生成，而Boosting的只能顺序生成。</li>
+<li><strong>预测精度</strong>：Bagging的训练集是随机的，以独立同分布选取的训练样本子集训练弱分类器；而Boosting训练集的选择不是独立的，每一次选择的训练集都依赖于上一次学习的结果，根据错误率取样。因此<strong>Boosting的分类精度在大多数数据集中要优于Bagging</strong>，但是在有些数据集中，由于过拟合的原因，Boosting的精度会退化。 </li>
+<li><strong>权重</strong>：Bagging的每个预测函数没有权重，而Boosting根据每一次训练的训练误差得到该次预测函数的权重</li>
+</ol>
+<h2 id="结合策略（模型融合）"><a href="#结合策略（模型融合）" class="headerlink" title="结合策略（模型融合）"></a>结合策略（模型融合）</h2><p>好处：</p>
+<ol>
+<li>减小泛化误差</li>
+<li>降低陷入局部极小点的风险</li>
+<li>假设空间有所扩大，可能学到更好的近似</li>
+</ol>
+<ul>
+<li><p><strong>平均法</strong>（简单平均、加权平均）</p>
+<pre><code>适用范围：
+</code></pre><ol>
+<li>规模大的集成，学习的权重较多，加权平均法易导致过拟合</li>
+<li>个体学习器性能相差较大时宜使用加权平均法，相近用简单平均法。 </li>
+</ol>
+</li>
+<li><p><strong>投票法</strong>（绝对多数、相对多数、加权投票）</p>
+<ol>
+<li><p>绝对多数投票法：某标记超过半数则预测为该标记，否则<strong>拒绝预测</strong>（在可靠性要求较高的学习任务中是一个很好的机制，若必须提供预测结果则退化为相对多数投票法）</p>
+</li>
+<li><p>相对多数投票法：预测为得票最多的标记，若同时有多个标记的票最高，则从中随机选取一个</p>
+</li>
+<li><p>加权投票法：与加权平均法类似，是对<strong>预测分布概率</strong>进行加权求和，再取其中概率最大类</p>
+<ul>
+<li><p>类标记：使用类标记的投票亦称“硬投票”（hard voting）</p>
+</li>
+<li><p>类概率：使用类概率的投票亦称“软投票”（soft voting）</p>
+</li>
+</ul>
+<p><strong>硬投票与软投票不能混用，</strong>若基学习器产生分类置信度，例如支持向量机的分类间隔值，需使用一些技术如Platt缩放、等分回归、等进行校准后才能作为类概率使用。若基学习器的类型不同，则其类概率值不能直接进行比较，可将类概率输出转化为类标记输出然后再投票。</p>
+</li>
+</ol>
+</li>
+<li><p><strong>学习法</strong></p>
+<p>典型代表<strong>Stacking</strong>：先从初始数据集中训练出<strong>初级学习器</strong>，然后生成一个新数据集用于训练<strong>次级学习器</strong>，在新数据集中，初级学习器的输出被当做样例输入特征，而初始样本的标记仍被当作样例标记</p>
+</li>
+</ul>
+<p><strong>Stacking注意事项</strong></p>
+<p><strong>在训练阶段，次级训练集是利用初级学习器产生的，若直接用初级学习器的训练集来产生次级训练集，则过拟合风险会比较大。一般通过使用交叉验证或留一法这样的方式，用训练初级学习器未使用的样本来产生次级学习器的训练样本。</strong>以k折交叉验证为例（如下图所示），对训练集划分为5份（5折）；对每一折Dk为测试集，D-Dk为训练集，训练第一种初级学习器5次，将5次的结果拼接起来即可得到一个N×1的矩阵，以此往复训练5种初级学习器，得到5个N×1矩阵，将其横向拼接，即可得到N×5矩阵，将其作为次级学习器的训练集来训练次级学习器。</p>
+<p> <img src="http://image.mamicode.com/info/201901/20190108231708049828.png" alt="技术分享图片"> </p>
+<h3 id="Stacking详细举例说明："><a href="#Stacking详细举例说明：" class="headerlink" title="Stacking详细举例说明："></a><strong>Stacking详细举例说明：</strong></h3><p><strong>假设是五折的stacking，我们有一个train数据集和一个test数据集，那么一个基本的stacking框架会进行如下几个操作：</strong></p>
+<ol>
+<li><p>选择基模型。我们可以有xgboost，lightGBM，RandomForest，SVM，ANN，KNN，LR等等你能想到的各种基本算法模型。</p>
+</li>
+<li><p>把训练集分为不交叉的五份。我们标记为train1到train5。</p>
+</li>
+<li><p>从train1开始作为预测集，使用train2到train5建模，然后预测train1，并保留结果；然后，以train2作为预测集，使用train1，train3到train5建模，预测train2，并保留结果；如此进行下去，直到把train1到train5各预测一遍；</p>
+</li>
+<li><p>把预测的结果按照train1到trian5的位置对应填补上，得到对train整个数据集在第一个基模型的一个stacking转换。</p>
+</li>
+<li><p>在上述建立的五个模型过程中，每个模型分别对test数据集进行预测，并最终保留这五列结果，然后对这五列取平均，作为第一个基模型对test数据的一个stacking转换。</p>
+</li>
+<li><p>选择第二个基模型，重复以上2-5操作，再次得到train整个数据集在第二个基模型的一个stacking转换。</p>
+</li>
+<li><p>以此类推。<strong>有几个基模型，就会对整个train数据集生成几列新的特征表达。同样，也会对test有几列新的特征表达。</strong></p>
+</li>
+<li><p><strong>一般使用LR作为第二层的模型进行建模预测。</strong></p>
+</li>
+</ol>
+<h2 id="多样性"><a href="#多样性" class="headerlink" title="多样性"></a>多样性</h2><p>欲构建泛化能力强的集成，个体学习器应“好而不同”。</p>
+<p><strong>根据误差-分歧分解：个体学习器准确性越高、多样性越大，则集成越好（证明见西瓜书）。</strong></p>
+<h3 id="如何度量个体分类器的多样性？"><a href="#如何度量个体分类器的多样性？" class="headerlink" title="如何度量个体分类器的多样性？"></a>如何度量个体分类器的多样性？</h3><p>典型做法是考虑个体分类器的两两相似/不相似性。 </p>
+
+            </div>
+            <hr/>
+
+            
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/MachineLearning/">
+                                    <span class="chip bg-color">MachineLearning</span>
+                                </a>
+                            
+                                <a href="/tags/Ensemble/">
+                                    <span class="chip bg-color">Ensemble</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="wechat,qq,weibo" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2019/11/13/decisiontree/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="DecisionTree">
+                        
+                        <span class="card-title">DecisionTree</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。
+信息熵表示随机变量不确定性的度量
+
+H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}其中$p_i$指样本集合$D$中第i类样本所
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-11-13
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/MachineLearning/" class="post-category">
+                                    MachineLearning
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MachineLearning/">
+                        <span class="chip bg-color">MachineLearning</span>
+                    </a>
+                    
+                    <a href="/tags/Classification/">
+                        <span class="chip bg-color">Classification</span>
+                    </a>
+                    
+                    <a href="/tags/DecisionTree/">
+                        <span class="chip bg-color">DecisionTree</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/10/18/xgboost/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="XGBoost">
+                        
+                        <span class="card-title">XGBoost</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            xgboost的原理XGBoost与GBDT的区别损失函数的改变：（导数和正则项的认识）
+
+正则项：XGBoost显式地加入了正则项来控制模型的复杂度，有利于防止过拟合，从而提高模型的泛化能力。正则项里包含树的叶子节点个数、每个叶子节点上输
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-18
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/MachineLearning/" class="post-category">
+                                    MachineLearning
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MachineLearning/">
+                        <span class="chip bg-color">MachineLearning</span>
+                    </a>
+                    
+                    <a href="/tags/Ensemble/">
+                        <span class="chip bg-color">Ensemble</span>
+                    </a>
+                    
+                    <a href="/tags/Classification/">
+                        <span class="chip bg-color">Classification</span>
+                    </a>
+                    
+                    <a href="/tags/XGBoost/">
+                        <span class="chip bg-color">XGBoost</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+    
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="http://yoursite.com" target="_blank">xjw924</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">32.3k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+
+
+    <a href="mailto:xjw924@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span>
+            <input type="search" id="searchInput" name="s" placeholder="Please enter a search keyword"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,982 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="DecisionTree, 小徐小徐不断学习">
+    <meta name="description" content="递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。
+信息熵表示随机变量不确定性的度量
+
+H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}其中$p_i$指样本集合$D$中第i类样本所">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>DecisionTree | 小徐小徐不断学习</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper head-container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">小徐小徐不断学习</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>联系</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">小徐小徐不断学习</div>
+        <div class="logo-desc">
+            
+            统计|数据分析|机器学习|大数据
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			联系
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">DecisionTree</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/MachineLearning/">
+                                <span class="chip bg-color">MachineLearning</span>
+                            </a>
+                        
+                            <a href="/tags/Classification/">
+                                <span class="chip bg-color">Classification</span>
+                            </a>
+                        
+                            <a href="/tags/DecisionTree/">
+                                <span class="chip bg-color">DecisionTree</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/MachineLearning/" class="post-category">
+                                MachineLearning
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    2019-11-13
+                </div>
+                
+
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>Update Date:&nbsp;&nbsp;
+                    2019-11-13
+                </div>
+                
+
+                
+
+                
+				
+                
+            </div>
+            
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p>递归地选择最优特征，并根据该特征对训练数据进行分割，使得各个子数据集有一个最好的分类的过程。</p>
+<h1 id="信息熵"><a href="#信息熵" class="headerlink" title="信息熵"></a>信息熵</h1><p>表示随机变量不确定性的度量</p>
+<script type="math/tex; mode=display">
+H(D)=-\sum_{i=1}^{n}{p_ilog_2p_i}</script><p>其中$p_i$指样本集合$D$中第i类样本所占比例</p>
+<p>描述样本集合$D$携带的信息量。 信息量越大（值变化越多），则越不确定，越不容易被预测。</p>
+<p><strong>信息熵特点</strong>： </p>
+<p>　　a) 不同类别的概率分布越均匀，信息熵越大；</p>
+<p>　　b) 类别个数越多，信息熵越大；</p>
+<p>　　c) 信息熵越大，越不容易被预测；（变化个数多，变化之间区分小，则越不容易被预测）（对于确定性问题，信息熵为0；p=1; E=p*logp=0）</p>
+<h1 id="决策树的生成"><a href="#决策树的生成" class="headerlink" title="决策树的生成"></a>决策树的生成</h1><p>其实不同的决策树学习算法只是它们<strong>选择特征的依据不同</strong>，决策树的生成过程都是一样的</p>
+<p><strong>特征选择</strong>：从训练数据中众多的特征中选择一个特征作为当前节点的分裂标准，如何选择特征有着很多不同评估标准，从而衍生出不同的决策树算法。</p>
+<p>特征选择的关键是如何选择最优特征对数据集进行划分，随着划分过程的进行，希望决策树的分支结点所包含的样本尽可能属于同一类别，即节点的纯度越来越高。</p>
+<p><strong>决策树生成</strong>：根据选择的特征评估标准，从上至下递归地生成子节点，直到数据集不可分此时决策树停止生长。</p>
+<p>有三种选择最优特征的标准：信息增益、增益率和基尼指数，分别对应了三种决策树算法：ID3，C4.5，CART</p>
+<p>信息增益越大，意味着使用某个特征进行划分所获得的纯度提升越大，所以每次选择信息增益最大的特征进行划分。ID3就是使用信息增益作为标准进行划分的。但信息增益准则对可取值数目较多的特征有偏好（因为信息增益反映的是给定条件后不确定性减少的程度，特征取值越多意味着确定性更高，即条件熵越小，信息增益越大）</p>
+<p>C4.5算法在信息增益的基础上做了一些改进，使用增益率来选择最优划分特征。不过增益率对可取值数目较少的特征有偏好，所以<strong>实际中C4.5算法并不是直接选择增益率最大的特征，而是先从候选划分特征中找出信息增益高于平均水平的特征，再从中选择增益率最高的</strong>。</p>
+<p>基尼指数也是度量数据集纯度的指标，基尼指数越小代表数据集的纯度越高，CART是使用基尼指数来选择最优特征的。</p>
+<h2 id="ID3算法"><a href="#ID3算法" class="headerlink" title="ID3算法"></a>ID3算法</h2><p>核心是在决策树各个节点上应用信息增益准则选择特征，每一次都选择使得<strong>信息增益最大</strong>的特征进行分裂，递归地构建决策树。</p>
+<h3 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h3><p>由于特征A使D的分类不确定性减少的程度</p>
+<script type="math/tex; mode=display">
+g(D,A)=H(D)-H(D|A)</script><p>根据信息增益准则的特征选择方法：计算每个特征的信息增益，并比较它们的大小，选择信息增益最大的特征。</p>
+<p>缺点：选择取值较多的特征往往会具有较大的信息增益（取值越多意味着确定性更高，条件熵越小，信息增益越大），所以<strong>ID3偏向于选择取值较多的特征</strong>。</p>
+<p> 仅支持分类不支持回归，不支持连续型变量，只有树的生成没有剪枝（容易过拟合），没有缺失值处理方法</p>
+<h2 id="C4-5算法"><a href="#C4-5算法" class="headerlink" title="C4.5算法"></a>C4.5算法</h2><p>针对ID3算法的不足，C4.5算法根据信息增益比来选择特征</p>
+<h3 id="信息增益比"><a href="#信息增益比" class="headerlink" title="信息增益比"></a>信息增益比</h3><p>以信息增益作为划分训练数据集的特征，存在偏向于选择取值较多的特征的问题。使用信息增益比可以对这一问题进行校正。</p>
+<p>定义为信息增益<strong>g(D,A)</strong>与训练数据集D关于特征A的值的熵$H_A(D)$之比</p>
+<script type="math/tex; mode=display">
+g_R(D,A)=\frac{g(D,A)}{H_A(D)}</script><p> 其中$H_A(D)=-\sum_{i=1}^{n}\frac{|D_i|}{|D|}log_2\frac{|D_i|}{|D|}$，其中$n$是特征A取值的个数</p>
+<p>特征数越多的特征对应的特征熵越大，它作为分母，一定程度上对取值较多的特征进行惩罚，避免ID3出现过拟合的特性，提升泛化能力 </p>
+<p>但增益率准则<strong>对可取值数目较少</strong>的特征有所偏好，因此C4.5算法不是直接选取增益率最大的候选划分特征，而是使用了一个启发式算法：先从候选特征中找出信息增益高于平均水平的特征，再从中选择增益率最高的。</p>
+<p><strong>过拟合策略：C4.5引入了正则化系数进行剪枝</strong></p>
+<h2 id="CART"><a href="#CART" class="headerlink" title="CART"></a>CART</h2><p>由以下两步组成：</p>
+<p>（1）决策树生成：基于训练数据集生成决策树，生成的决策树要尽量大</p>
+<p>（2）决策树剪枝：用验证数据集对已生成的树进行剪枝并选择最优子树，使用损失函数最小作为剪枝标准</p>
+<p>特征选择</p>
+<p>​    回归树：平方误差最小化准则</p>
+<p>​    分类树：基尼指数最小化准则</p>
+<h3 id="基尼指数"><a href="#基尼指数" class="headerlink" title="基尼指数"></a>基尼指数</h3><p>假设有K个类</p>
+<script type="math/tex; mode=display">
+Gini(D)=1-\sum_{k=1}^{K}p_k^2</script><p>代表集合D的不确定性</p>
+<p>特征A的基尼指数为</p>
+<script type="math/tex; mode=display">
+Gini(D,A)=\sum_{k=1}^{K}\frac{|D_k|}{|D|}Gini(D^k)</script><p>表示经过特征A分割之后集合D的不确定性</p>
+<p>选<strong>基尼指数最小</strong>的特征的作为最优划分特征。</p>
+<h1 id="决策树的剪枝"><a href="#决策树的剪枝" class="headerlink" title="决策树的剪枝"></a>决策树的剪枝</h1><p>为缓解决策树过拟合，需要对决策树进行剪枝。分为预剪枝和后剪枝</p>
+<p>往往通过极小化决策树整体的损失函数或代价函数来实现</p>
+<p>决策树生成学习局部的模型，而决策树剪枝学习整体的模型</p>
+<h2 id="预剪枝"><a href="#预剪枝" class="headerlink" title="预剪枝"></a>预剪枝</h2><p>在生成决策树的过程中提前停止树的增长。核心思想是在树中节点进行扩展之前，先计算当前的划分是否能带来模型泛化性能的提升，如果不能则不再继续生成子树。</p>
+<p>前剪枝停止决策树生长的几种方法：</p>
+<p>(1) 当树达到一定深度时停止生长。</p>
+<p>(2) 当到达当前节点的样本数量小于某个阈值时停止生长。</p>
+<p>(3) 计算每次分类对测试集的准确率提升，当小于某个阈值时停止生长。</p>
+<p>前剪枝的优缺点：</p>
+<p>优点：简单高效，适合解决大规模问题。</p>
+<p>缺点：</p>
+<p>(1) 深度和阈值这些值很难准确估计，针对不同问题会有很大差别。</p>
+<p>(2) 前剪枝存在一定局限性，有<strong>欠拟合的风险</strong>，虽然当前的划分会导致测试集准确率下降，可能在后面会有显著上升。</p>
+<h2 id="后剪枝"><a href="#后剪枝" class="headerlink" title="后剪枝"></a>后剪枝</h2><p>在已生成的过拟合决策树上进行剪枝。核心思想是让算法生成一棵完全生长的决策树，然后从底层向上计算是否剪枝。(剪枝是将子树删除，用一个叶子节点代替，节点类别按多数投票)如果剪枝之后准确率有提升，则剪枝。</p>
+<p>后剪枝的优缺点：</p>
+<p>优点：通常可以得到泛化能力更强的决策树。</p>
+<p>缺点：<strong>时间开销大。</strong></p>
+<h1 id="ID3-C4-5-CART-对比"><a href="#ID3-C4-5-CART-对比" class="headerlink" title="ID3/C4.5/CART 对比"></a>ID3/C4.5/CART 对比</h1><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>支持模型</th>
+<th>树结构</th>
+<th>特征选择</th>
+<th>连续值处理</th>
+<th>缺失值</th>
+<th>剪枝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ID3</td>
+<td>分类</td>
+<td>多叉树</td>
+<td>信息增益</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>C4.5</td>
+<td>分类</td>
+<td>多叉树</td>
+<td>信息增益比</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>CART</td>
+<td>分类，回归</td>
+<td>二叉树</td>
+<td>基尼指数，均方误差</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>CART指的是分类回归树，它既可以用来分类，又可以被用来进行回归。</p>
+<p>回归树：用平方误差最小化作为选择特征的准则</p>
+<p>分类树：采用基尼指数最小化原则进行特征选择，递归地生成二叉树。</p>
+<p>也提供了优化的剪枝策略</p>
+<p><strong>从样本类型的角度：</strong></p>
+<p>ID3只能处理离散型变量，而C4.5和CART都可以处理连续型变量。</p>
+<p>C4.5会排序找到切分点，将连续变量转换为多个取值区间的离散型变量；</p>
+<p>CART每次会对特征进行二值划分，适用于连续变量。</p>
+<p><strong>从应用角度：</strong></p>
+<p>ID3和C4.5只能用于分类，CART树可以用于分类和回归。</p>
+<p><strong>从细节、优化过程角度：</strong></p>
+<p>ID3对样本特征缺失值比较敏感，而C4.5和CART树都可以对缺失值进行不同方式的处理。</p>
+<p>ID3和C4.5可以产生多叉分支，且每个特征在层级之间不会复用。CART树是二叉树，<strong>每个特征可以被重复利用</strong>。</p>
+<p>ID3和C4.5通过剪枝来权衡树的准确性和泛化性能，CART树枝节利用全部数据发现所有可能的树结构进行对比。</p>
+<h1 id="Sklearn中树模型输出的特征重要程度"><a href="#Sklearn中树模型输出的特征重要程度" class="headerlink" title="Sklearn中树模型输出的特征重要程度"></a>Sklearn中树模型输出的特征重要程度</h1><p>决策树中节点分裂不纯度的改变量的归一化值</p>
+<h1 id="决策树优缺点"><a href="#决策树优缺点" class="headerlink" title="决策树优缺点"></a>决策树优缺点</h1><p>优点：</p>
+<p>易于理解和解释，可视化分析，容易提取出规则</p>
+<p>可同时处理分类型和数值型变量</p>
+<p>缺点：</p>
+<p>容易过拟合</p>
+<p>通常情况下精确度不如其他算法好</p>
+
+            </div>
+            <hr/>
+
+            
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/MachineLearning/">
+                                    <span class="chip bg-color">MachineLearning</span>
+                                </a>
+                            
+                                <a href="/tags/Classification/">
+                                    <span class="chip bg-color">Classification</span>
+                                </a>
+                            
+                                <a href="/tags/DecisionTree/">
+                                    <span class="chip bg-color">DecisionTree</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="wechat,qq,weibo" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2019/11/13/gbdt/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="GBDT">
+                        
+                        <span class="card-title">GBDT</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            原理GBDT是集成学习Boosting家族的成员，是对提升树的改进。
+使用的决策树通常为CART回归树（使用回归树的原因是因为：GBDT每次迭代要拟合的是梯度值，是连续值所以要用回归树）
+在每一轮的迭代中，首先计算当前模型在所有样本上的负梯
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-11-13
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/MachineLearning/" class="post-category">
+                                    MachineLearning
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MachineLearning/">
+                        <span class="chip bg-color">MachineLearning</span>
+                    </a>
+                    
+                    <a href="/tags/Ensemble/">
+                        <span class="chip bg-color">Ensemble</span>
+                    </a>
+                    
+                    <a href="/tags/Classification/">
+                        <span class="chip bg-color">Classification</span>
+                    </a>
+                    
+                    <a href="/tags/GBDT/">
+                        <span class="chip bg-color">GBDT</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/10/18/ensemble/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="Ensemble">
+                        
+                        <span class="card-title">Ensemble</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            概念集成学习的目的是通过结合多个基学习器的预测结果，来改善基学习器的泛化能力和鲁棒性。 
+RF, GBDT, XGBoost, LightGBM都属于集成学习。
+根据基学习器的生成方式，目前的集成学习方法大致分为两大类：
+
+基学习器之间存在
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-18
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/MachineLearning/" class="post-category">
+                                    MachineLearning
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MachineLearning/">
+                        <span class="chip bg-color">MachineLearning</span>
+                    </a>
+                    
+                    <a href="/tags/Ensemble/">
+                        <span class="chip bg-color">Ensemble</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+    
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="http://yoursite.com" target="_blank">xjw924</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">32.3k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+
+
+    <a href="mailto:xjw924@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span>
+            <input type="search" id="searchInput" name="s" placeholder="Please enter a search keyword"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
