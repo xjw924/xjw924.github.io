@@ -15,7 +15,7 @@
 
 
 
-<title>小徐小徐不断学习</title>
+<title>Logistic Regression 逻辑回归 | 小徐小徐不断学习</title>
 
 
 
@@ -42,6 +42,44 @@
 
     
     
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
         
     
 
@@ -178,7 +216,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">Logistic Regression 逻辑回归</h1>
             
         </header>
 
@@ -247,7 +285,7 @@ J(\theta)=-\frac{1}{m}l(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i))
 <script type="math/tex; mode=display">
 L_\theta(x)=\prod_{i=1}^{m}h_\theta(x^i;\theta)^{y^i}*(1-h_\theta(x^i;\theta))^{1-y^i}</script><p>损失函数：</p>
 <script type="math/tex; mode=display">
-J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h_\theta(x^i;\theta))]</script><p>除以m这一因子并不改变最终求导极值结果，通过除以m可以得到<strong>平均损失值</strong>，避免<strong>样本数量对于损失值的影响</strong></p>
+J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h_\theta(x^i;\theta))]</script><p>除以m并不改变最终求导极值结果，通过除以m可以得到<strong>平均损失值</strong>，避免<strong>样本数量对于损失值的影响</strong></p>
 <blockquote>
 <p><strong>Q：为什么要用极大似然函数作为损失函数？</strong></p>
 <p>损失函数一般有四种：平方损失函数，对数损失函数，HingeLoss损失函数，绝对值损失函数。</p>
@@ -255,11 +293,11 @@ J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h
 <p><strong>在逻辑回归这个模型下，对数损失函数的训练求解参数的速度是比较快的。</strong></p>
 <p>梯度更新公式：</p>
 <script type="math/tex; mode=display">
-θ_j=θ_j−(y^i−h_θ(x^i;θ))∗x^i_j</script><p>这个式子的更新速度只和$x^i_j$和$y^i$相关，和sigmod函数本身的梯度是无关的。这样更新的速度是可以自始至终都比较的稳定。 </p>
+θ_j=θ_j−(y^i−h_θ(x^i;θ))∗x^i_j</script><p>这个式子的更新速度只和$x^i_j$和$y^i$相关，和sigmoid函数本身的梯度是无关的。这样更新的速度是可以自始至终都比较的稳定。 </p>
 <p><strong>Q：为什么不选平方损失函数？</strong></p>
-<p>其一是因为如果你使用平方损失函数，你会发现梯度更新的速度和sigmod函数本身的梯度是很相关的。</p>
+<p>其一是因为如果你使用平方损失函数，你会发现梯度更新的速度和sigmoid函数本身的梯度是很相关的。</p>
 <script type="math/tex; mode=display">
-θ_j=θ_j-2(sigmod(x)*(1-sigmod(x)))x^i_j</script><p>sigmod函数在它在定义域内的梯度都不大于0.25。这样训练会非常的慢。</p>
+θ_j=θ_j-2(sigmoid(x)*(1-sigmoid(x)))x^i_j</script><p>sigmoid函数在它在定义域内的梯度都不大于0.25。这样训练会非常的慢。</p>
 <p>实际上也可以用最小二乘，但是最小二乘得到的权重效果比较差。</p>
 <p>如果用最小二乘法，目标函数就是差值的平方和，<strong>是非凸的，不容易求解，很容易陷入到局部最优</strong>。</p>
 <p>如果用极大似然估计，目标函数就是对数似然函数，是关于$(w,b)$的高阶<strong>连续可导凸函数</strong>，可以方便通过一些凸优化算法求解，比如梯度下降法、牛顿法等。</p>
@@ -399,6 +437,14 @@ J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h
                 <span>Tag(s):</span>
                 <span class="tag">
                     
+                    
+                        <a href="/tags/MachineLearning/"># MachineLearning</a>
+                    
+                        <a href="/tags/Classification/"># Classification</a>
+                    
+                        <a href="/tags/LogisticRegression/"># LogisticRegression</a>
+                    
+                        
                 </span>
             </div>
             <div>
@@ -409,8 +455,10 @@ J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}[y^ilog(h_\theta(x^i;\theta))+(1-y^i)log(1-h
         </section>
         <section class="post-nav">
             
+                <a class="prev" rel="prev" href="/2019/10/18/randomforest/">Random Forest 随机森林</a>
             
-            <a class="next" rel="next" href="/2020/01/27/woe-yu-iv/">WOE与IV</a>
+            
+            <a class="next" rel="next" href="/2019/10/18/tong-ji-si-kao/">统计思考</a>
             
         </section>
 
