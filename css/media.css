@@ -146,8 +146,6 @@
   }
 }
 /* post toc Style */
-@media screen and (max-width: 1279px) {
-  .post-toc {
-    display: none;
-  }
-}
+/*@media screen and (max-width: 1399px) // 最大宽度1279px时应用这条规则。（最大宽度小于1279px返回false，屏蔽规则。）
+  .post-toc
+    display none*/

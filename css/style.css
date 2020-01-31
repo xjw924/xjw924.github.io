@@ -1055,7 +1055,7 @@ header label {
 .post-toc {
   position: fixed;
   top: 95px;
-  right: 2em;
+  right: -2em;
   width: 15rem;
   font-size: 0.75rem;
 }
@@ -1245,11 +1245,6 @@ header label {
 }
 @media screen and (min-width: 1024px) {
   .navbar-mobile {
-    display: none;
-  }
-}
-@media screen and (max-width: 1279px) {
-  .post-toc {
     display: none;
   }
 }
