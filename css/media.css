@@ -146,7 +146,7 @@
   }
 }
 /* post toc Style */
-@media screen and (max-width: 1279px) {
+@media screen and (max-width: 1079px) {
   .post-toc {
     display: none;
   }

@@ -736,6 +736,7 @@ header label {
 }
 .post-content {
   padding-top: 2rem;
+  padding-left: -10rem;
   text-align: left;
 }
 .post-content h2,
@@ -1055,7 +1056,7 @@ header label {
 .post-toc {
   position: fixed;
   top: 95px;
-  left: 0em;
+  right: 1em;
   width: 15rem;
   font-size: 0.75rem;
 }
@@ -1248,7 +1249,7 @@ header label {
     display: none;
   }
 }
-@media screen and (max-width: 1279px) {
+@media screen and (max-width: 1079px) {
   .post-toc {
     display: none;
   }
