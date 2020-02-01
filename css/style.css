@@ -1248,6 +1248,11 @@ header label {
     display: none;
   }
 }
+@media screen and (max-width: 1279px) {
+  .post-toc {
+    display: none;
+  }
+}
 .post-content figure.highlight {
   margin: 2em 0;
   background: #f7f7f7;
