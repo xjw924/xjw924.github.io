@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>白板推导系列4——线性分类专题 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">白板推导系列4——线性分类专题</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 4, 2020&nbsp;&nbsp;10:50:25</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Notes/">Notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>对线性回归的条件逐一打破，从而引申到其它模型：</p>
+<ul>
+<li><p>线性：</p>
+<ul>
+<li>属性非线性：特征转换（多项式回归）</li>
+<li>全局非线性（激活函数是非线性，如逻辑回归）</li>
+<li>系数非线性：神经网络，感知机</li>
+</ul>
+</li>
+<li><p>全局性：线性样条回归、决策树</p>
+</li>
+<li>数据未加工：PCA，流形</li>
+</ul>
+<p>线性回归通过激活函数进行降维，达到线性分类。</p>
+<script type="math/tex; mode=display">
+y=f(w^Tx+b),x\in \R^p</script><p>$f$是激活函数（activation function），$f^{-1}$是链接函数（link function）。</p>
+<p>激活函数$f$将数据的线性组合作为输入，映射到{0,1}或[0,1]区间上；</p>
+<p>链接函数$f^{-1}$将{0,1}或[0,1]区间映射到线性组合上。</p>
+<p>线性分类分为两大类：</p>
+<ol>
+<li>硬分类：$y\in \{0,1\}$，代表模型有线性判别分析(Fisher判别分析)、感知机</li>
+<li>软分类：$y\in [0,1]$，分为生成式模型和判别式模型。判别式直接对$P(Y|X)$进行求解，如逻辑回归；生成式不直接求解$P(Y|X)$，而是通过贝叶斯定理，即通过式$P(Y|X)=\frac{P(X|Y)P(Y)}{P(X)}$进行求解，如高斯判别分析(GDA)（假设数据本身是连续的），朴素贝叶斯（假设数据本身是离散的）。</li>
+</ol>
+<h1 id="感知机-Perceptron"><a href="#感知机-Perceptron" class="headerlink" title="感知机(Perceptron)"></a>感知机(Perceptron)</h1><p>思想：错误驱动——不断向正确分类的方向移动</p>
+<p>模型</p>
+<script type="math/tex; mode=display">
+f(x)=sign(w^Tx),x\in R^p,w\in R^p\\</script><p>前提：假定模型是线性可分的（若不满足可使用pocket algorithm）</p>
+<p>策略：假设样本集$\{(x_i,y_i)\}_{i=1}^{N}$，将损失函数定义为</p>
+<script type="math/tex; mode=display">
+L(w)=\sum_{i=1}^{N}I\{y_iw^Tx_i\lt 0\}</script><p>但该损失函数不可导不连续，难以求解</p>
+<p>因此采用新的损失函数</p>
+<script type="math/tex; mode=display">
+L(w)=\sum_{x_i\in D}-y_iw^Tx_i</script><p>是连续函数且可导，对其进行求导$\triangledown_wL=\sum_{x_i\in D}-y_ix_i$，可采用算法SGD（随机梯度下降）求解</p>
+<script type="math/tex; mode=display">
+w^{t+1}\leftarrow w^t-\lambda\triangledown_wL=w^t+\lambda y_ix_i</script><h1 id="线性判别分析"><a href="#线性判别分析" class="headerlink" title="线性判别分析"></a>线性判别分析</h1><p><strong>思想：类内小，类间大。</strong>（高类聚，低耦合）</p>
+<p>将点投影到一维的坐标轴上，每个点都对应该坐标轴上的一个值，并设定一个阈值，根据值与阈值大小进行分类。</p>
+<p>重点：找到一个合适的投影方向，使得类内方差小，类间方差大</p>
+<h2 id="目标函数推导"><a href="#目标函数推导" class="headerlink" title="目标函数推导"></a>目标函数推导</h2><p>给定样本$X=(x_1,x_2,…,x_N)^T,Y=(y_1,y_2,…,y_N)^T,\{(x_i,y_i)\}_{i=1}^{N},x_i\in R^p,y_i\in \{+1,-1\}$</p>
+<p>定义样本集合$x_{c_1}=\{x_i|y_i=+1\},x_{c_2}=\{x_i|y_i=-1\}$</p>
+<p>令$x_i$在$w$方向上的投影为$z_i=w^Tx_i$(假设$||w||=1)$</p>
+<script type="math/tex; mode=display">
+\begin{align} 
+\bar{z}&=\frac{1}{N}\sum_{i=1}^{N}z_i=\frac{1}{N}\sum_{i=1}^{N}w^Tx_i\\
+S_z  &=\frac{1}{N}\sum_{i=1}^{N}(z_i-\bar{z})(z_i-\bar{z})^T
+     =\frac{1}{N}\sum_{i=1}^{N}(w^Tx_i-\bar{z})(w^Tx_i-\bar{z})^T\\
+c_1: \bar{z}_1&=\frac{1}{N_1}\sum_{i=1}^{N_1}z_i=\frac{1}{N_1}\sum_{i=1}^{N_1}w^Tx_i\\
+S_1  &=\frac{1}{N_1}\sum_{i=1}^{N_1}(z_i-\bar{z}_1)(z_i-\bar{z}_1)^T
+     =\frac{1}{N_1}\sum_{i=1}^{N_1}(w^Tx_i-\bar{z}_1)(w^Tx_i-\bar{z}_1)^T\\
+     c_2: \bar{z}_2&=\frac{1}{N_2}\sum_{i=1}^{N_2}z_i=\frac{1}{N_2}\sum_{i=1}^{N_2}w^Tx_i\\
+S_2  &=\frac{1}{N_2}\sum_{i=1}^{N_2}(z_i-\bar{z}_2)(z_i-\bar{z}_2)^T
+     =\frac{1}{N_2}\sum_{i=1}^{N_2}(w^Tx_i-\bar{z}_2)(w^Tx_i-\bar{z}_2)^T
+\end{align}</script><p>则类间用$(\bar{z}_1-\bar{z}_2)^2$来表达，类内用$S_1+S_2$来表达</p>
+<p>目标函数为</p>
+<script type="math/tex; mode=display">
+J(w)=\frac{(\bar{z_1}-\bar{z_2})^2}{S_1+S_2}\\
+\hat{w}=\mathop{\arg\max}\limits_{w} J(w)</script><p>则分子部分为</p>
+<script type="math/tex; mode=display">
+(\bar{z_1}-\bar{z_2})^2=(\frac{1}{N_1}\sum_{i=1}^{N_1}w^Tx_i-\frac{1}{N_2}\sum_{i=1}^{N_2}w^Tx_i)^2=(w^T(\bar{x}_{c_1}-\bar{x}_{c_2}))^2=w^T(\bar{x}_{c_1}-\bar{x}_{c_2})(\bar{x}_{c_1}-\bar{x}_{c_2})^Tw</script><p>由于$S_1$可表达为</p>
+<script type="math/tex; mode=display">
+\begin{align}
+S_1 &=\frac{1}{N_1}\sum_{i=1}^{N_1}(w^Tx_i-\bar{z}_1)(w^Tx_i-\bar{z}_1)^T\\
+&=w^T[\frac{1}{N_1}\sum_{i=1}^{N_1}(x_i-\bar{x}_{c_1})(x_i-\bar{x}_{c_2})^T]w\\
+&=w^T*S_{c_1}*w
+\end{align}</script><p>则分母部分为</p>
+<script type="math/tex; mode=display">
+S_1+S_2=w^TS_{c_1}w+w^TS_{c_2}w=w^T(S_{c_1}+S_{c_2})w</script><p>因此</p>
+<script type="math/tex; mode=display">
+\begin{align}
+J(w) &=\frac{w^T(\bar{x}_{c_1}-\bar{x}_{c_2})(\bar{x}_{c_1}-\bar{x}_{c_2})^Tw}{w^T(S_{c_1}+S_{c_2})w}\\
+     &=\frac{w^TS_bw}{w^TS_ww}=w^TS_bw(w^TS_ww)^{-1}
+\end{align}</script><p>其中$S_b=(\bar{x}_{c_1}-\bar{x}_{c_2})(\bar{x}_{c_1}-\bar{x}_{c_2})^T$为类间方差（between-class），$S_w=S_{c_1}+S_{c_2}$为类内方差（within-class），再对$w$求偏导</p>
+<script type="math/tex; mode=display">
+\frac{\partial J(w)}{\partial w}=2S_bw(w^TS_ww)^{-1}+w^TS_bw(-1)(w^TS_ww)^{-2}2S_ww=0\\
+S_bw(w^TS_ww)=(w^TS_bw)S_ww\\
+S_ww=\frac{w^TS_ww}{w^TS_bw}S_bw</script><p>只需要求$w$的方向不需要求大小，因此常数不影响，因此</p>
+<script type="math/tex; mode=display">
+\begin{align}
+w=\frac{w^TS_ww}{w^TS_bw}{S_w}^{-1}S_bw & \propto{S_w}^{-1}S_bw={S_w}^{-1}(\bar{x}_{c_1}-\bar{x}_{c_2})[(\bar{x}_{c_1}-\bar{x}_{c_2})^Tw]\\
+&\propto{S_w}^{-1}(\bar{x}_{c_1}-\bar{x}_{c_2})
+\end{align}</script><p>若$S_w^{-1}$是对角矩阵，且各向同性，则$S_w^{-1}\propto I$，那么</p>
+<script type="math/tex; mode=display">
+w\propto(\bar{x}_{c_1}-\bar{x}_{c_2})</script><h1 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h1><p>是判别式模型，直接对$P(Y|X)$进行建模，采用极大似然估计求解参数。</p>
+<p>sigmoid函数：</p>
+<script type="math/tex; mode=display">
+\sigma(z)=\frac{1}{1+e^{-z}}\\
+\sigma:R \longmapsto (0,1)\\
+w^Tx \longmapsto Probability</script><p><img src="http://q4ws08qse.bkt.clouddn.com/blog/20200130/hMNRkXsKheJ9.png" alt="mark" style="zoom:67%;"></p>
+<script type="math/tex; mode=display">
+\begin{align}
+p_1&:P(y=1|x)=\sigma(w^Tx)=\frac{1}{1+e^{-w^Tx}},y=1\\
+p_0&:P(y=0|x)=1-P(y=1|x)=\frac{e^{-w^Tx}}{1+e^{-w^Tx}},y=0\\
+\end{align}</script><script type="math/tex; mode=display">
+\Rightarrow P(y|x)=p_1^yp_0^{1-y}</script><p>给定样本$\{(x_i,y_i)\}_{i=1}^{N},x_i\in R^p,y_i\in \{0,1\}$</p>
+<p>MLE:</p>
+<script type="math/tex; mode=display">
+\begin{align} 
+\hat{w}&=\mathop{\arg\max}\limits_{w} \log P(Y|X)\\
+&=\mathop{\arg\max}\limits_{w} \log \prod_{i=1}^{N}P(y_i|x_i) \\
+&=\mathop{\arg\max}\limits_{w} \sum_{i=1}^{N}\log P(y_i|x_i)\\
+&=\mathop{\arg\max}\limits_{w} \sum_{i=1}^{N}(y_i\log p_i+(1-y_i)\log p_0)\\
+&=\mathop{\arg\max}\limits_{w} \sum_{i=1}^{N}(y_i\log \psi(x_i;w)+(1-y_i)\log (1-\psi(x_i;w)))
+\end{align}</script><p>MLE是最大化问题，可以导出一个Loss function，转化为最小化问题，等价于最小化cross entropy</p>
+<h1 id="高斯判别分析"><a href="#高斯判别分析" class="headerlink" title="高斯判别分析"></a>高斯判别分析</h1><h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>给定样本$\{(x_i,y_i)\}_{i=1}^{N},x_i\in R^p,y_i\in \{0,1\}$</p>
+<p>高斯判别分析是生成式模型，<strong>生成式模型并不是求取$P(Y|X)$，而是利用贝叶斯定理，比较$P(y=0|x)$与$P(y=1|x)$的大小，选择较大者作为预测的类</strong>。</p>
+<p>由贝叶斯定理</p>
+<script type="math/tex; mode=display">
+P(y|x)=\frac{P(x|y)P(y)}{P(x)}\propto P(x|y)P(y)</script><p>由于$P(x|y)P(y)=P(x,y)$，因此我们主要是对于联合概率进行建模。</p>
+<p>其中$P(y)$是先验（prior），$p(x|y)$是似然（likelihood），$P(y|x)$是后验（posterior），因此求解可以表达为</p>
+<script type="math/tex; mode=display">
+\hat{y}=\mathop{\arg\max}\limits_{y\in \{0,1\}} P(y|x)=\mathop{\arg\max}\limits_{y\in \{0,1\}} P(y)P(x|y)</script><p><strong>假设$y$服从伯努利分布$Bernoulli(\phi)$，$x|y$服从高斯分布</strong></p>
+<script type="math/tex; mode=display">
+\begin{align}
+&x|y=1 \sim N(\mu_1,\Sigma)\\
+&x|y=0 \sim N(\mu_2,\Sigma)\\
+\Rightarrow &x|y \sim N(\mu_1,\Sigma)^y*N(\mu_2,\Sigma)^{1-y}
+\end{align}</script><p>令参数部分</p>
+<script type="math/tex; mode=display">
+\theta = (\mu_1,\mu_2,\Sigma,\phi)\\
+\hat{\theta}=\mathop{\arg\max}\limits_{\theta} l(\theta)</script><p>定义对数似然函数为</p>
+<script type="math/tex; mode=display">
+\begin{align}
+l(\theta)&=\log \prod_{i=1}^{N}p(x_i,y_i)\\
+&=\sum_{i=1}^{N}\log(P(x_i|y_i)P(y_i))\\
+&=\sum_{i=1}^{N}[\log P(x_i|y_i)+\log P(y_i)]\\
+&=\sum_{i=1}^{N}[\log N(\mu_1,\Sigma)^{y_i}*N(\mu_2,\Sigma)^{1-y_i}+\log \phi^{y_i}(1-\phi)^{1-y_i}]\\
+&=\sum_{i=1}^{N}[\log N(\mu_1,\Sigma)^{y_i}+\log N(\mu_2,\Sigma)^{1-y_i}+\log \phi^{y_i}(1-\phi)^{1-y_i}]\\
+
+\end{align}</script><h2 id="参数求解"><a href="#参数求解" class="headerlink" title="参数求解"></a>参数求解</h2><p>将上式分为三个部分①+②+③，且有$N_1$个样本标签为1，有$N_2$个样本标签为0（$N_1+N_2=N$）</p>
+<p>求$\phi$：</p>
+<script type="math/tex; mode=display">
+③=\sum_{i=1}^{N}[y_i\log \phi+(1-y_i)\log(1-\phi)]\\
+\frac{\partial ③}{\partial \phi}=\sum_{i=1}^{N}[\frac{y_i}{\phi}-\frac{1-y_i}{1-\phi}]=0\\
+\phi=\frac{1}{N}\sum_{i=1}^{N}y_i=\frac{N_1}{N}</script><p>求$\mu_1$：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+①&=\sum_{i=1}^{N}\log N(\mu_1,\Sigma)^{y_i}\\
+&=\sum_{i=1}^{N}y_i\log\frac{1}{(2\pi)^\frac{p}{2}|\Sigma|^\frac{1}{2}}\exp[-\frac{1}{2}(x_i-\mu_1)^T\Sigma^{-1}(x_i-\mu_1)]
+\end{align}</script><p>去除与$\mu_1$无关的常数</p>
+<script type="math/tex; mode=display">
+\hat{\mu}_1=\mathop{\arg\max}\limits_{\mu_1} ①=\mathop{\arg\max}\limits_{\mu_1}\sum_{i=1}^{N}y_i[-\frac{1}{2}(x_i-\mu_1)^T\Sigma^{-1}(x_i-\mu_1)]\\
+-\frac{1}{2}\sum_{i=1}^{N}y_i[(x_i-\mu_1)^T\Sigma^{-1}(x_i-\mu_1)]=-\frac{1}{2}\sum_{i=1}^{N}y_i[x_i^T\Sigma^{-1}x_i-2\mu_1^T\Sigma^{-1}x_i+\mu_1^T\Sigma^{-1}\mu_1=\bigtriangleup\\
+\frac{\partial \bigtriangleup}{\partial \mu_1}=\sum_{i=1}^{N}y_i(\Sigma^{-1}x_i-\Sigma^{-1}\mu_1)=0\\
+\hat{\mu}_1=\frac{\sum_{i=1}^{N}y_ix_i}{\sum_{i=1}^{N}y_i}=\frac{\sum_{i=1}^{N}y_ix_i}{N_1}</script><p>求$\Sigma$：</p>
+<p>首先令</p>
+<script type="math/tex; mode=display">
+C_1=\{x_i|y_i=1,i=1,…,N\}\\
+C_2=\{x_i|y_i=0,i=1,…,N\}\\
+|C_1|=N_1,|C_2|=N_2,N_1+N_2=N</script><p>则</p>
+<script type="math/tex; mode=display">
+\hat{\Sigma}_1=\mathop{\arg\max}\limits_{\Sigma}(①+②)\\
+①+②=\sum_{x_i\in C_1}\log N(\mu_1,\Sigma)+\sum_{x_i\in C_2}\log N(\mu_2,\Sigma)\\
+\begin{align}
+\log N(\mu,\Sigma)
+&=\sum_{i=1}^{N}\log\frac{1}{(2\pi)^\frac{p}{2}|\Sigma|^\frac{1}{2}}\exp[-\frac{1}{2}(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)]\\
+&=\sum_{i=1}^{N}[\log\frac{1}{(2\pi)^\frac{p}{2}}+\log{|\Sigma|^\frac{1}{2}}-\frac{1}{2}(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)]\\
+&=\sum_{i=1}^{N}[C-\frac{1}{2}\log|\Sigma|-\frac{1}{2}(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)]\\
+&=C-\frac{N}{2}\log|\Sigma|-\frac{1}{2}\sum_{i=1}^{N}(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)\\
+&=C-\frac{N}{2}\log|\Sigma|-\frac{1}{2}\sum_{i=1}^{N}tr[(x_i-\mu)^T\Sigma^{-1}(x_i-\mu)]\\
+&=C-\frac{N}{2}\log|\Sigma|-\frac{1}{2}tr[\sum_{i=1}^{N}(x_i-\mu)(x_i-\mu)^T\Sigma^{-1}]\\
+&=C-\frac{N}{2}\log|\Sigma|-\frac{1}{2}Ntr(S\Sigma^{-1})\\
+\end{align}</script><p>其中$S=\frac{1}{N}\sum_{i=1}^{N}(x_i-\mu)(x_i-\mu)^T$为样本方差</p>
+<p>则</p>
+<script type="math/tex; mode=display">
+\begin{align}
+①+②
+&=-\frac{N_1}{2}\log|\Sigma|-\frac{1}{2}N_1tr(S_1\Sigma^{-1})-\frac{N_2}{2}\log|\Sigma|-\frac{1}{2}N_2tr(S_2\Sigma^{-1})+C\\
+&=-\frac{1}{2}[N\log|\Sigma|+N_1tr(S_1\Sigma^{-1})+N_2tr(S_2\Sigma^{-1})]+C\\
+\frac{\partial (①+②)}{\partial \Sigma}
+&=-\frac{1}{2}(N\Sigma^{-1}-N_1S_1\Sigma^{-2}-N_2S_2\Sigma^{-2})=0\\
+\end{align}</script><script type="math/tex; mode=display">
+N\Sigma-N_1S_1-N_2S_2=0\\
+ \Sigma=\frac{1}{N}(N_1S_1+N_2S_2)</script><p>其中用到求导$\frac{tr(\Sigma^{-1}S)}{\partial \Sigma}=S^T(-1)\Sigma^{-2}$</p>
+<h1 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h1><h2 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h2><p>朴素贝叶斯假设：条件独立性假设</p>
+<script type="math/tex; mode=display">
+x_i \perp x_j | y(i\neq j)\\
+P(x|y)=\prod_{j=1}^{p}P(x_j|y)</script><p>最简单的概率图（有向图）模型</p>
+<p>动机：简化运算</p>
+<script type="math/tex; mode=display">
+\hat{y}=\mathop{\arg\max}\limits_{y\in \{0,1\}} P(y|x)=\mathop{\arg\max}\limits_{y\in \{0,1\}} P(y)P(x|y)</script><p>若$x$离散，则认为$x_j$服从伯努利分布/多项分布</p>
+<p>若$x$连续，则认为$x_j$服从正态分布$x_j\sim N(\mu_j,\sigma^2_j)$</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/02/04/bai-ban-tui-dao-xi-lie-4-xian-xing-fen-lei/">http://xjw924.github.io/2020/02/04/bai-ban-tui-dao-xi-lie-4-xian-xing-fen-lei/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/MachineLearning-Classification-Notes/"># MachineLearning, Classification, Notes</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/02/02/logistic-regression-suan-fa-ji-qi-ying-yong/">Logistic Regression 算法基础及实现</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
