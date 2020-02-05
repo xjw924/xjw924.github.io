@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>白板推导系列5——降维 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">白板推导系列5——降维</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 5, 2020&nbsp;&nbsp;11:49:04</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>ML中相比训练误差，更加关注的是泛化误差。过拟合问题就是造成泛化误差大的一个原因。</p>
+<p>解决过拟合的方法：</p>
+<ul>
+<li><p>增加样本数量</p>
+</li>
+<li><p>正则化（Ridge/Lasso）</p>
+</li>
+<li><p>降维</p>
+<ul>
+<li>直接降维——特征选择<em>（不是本节的关注点，本节关注线性和非线性降维）</em></li>
+<li>线性降维——PCA，MDS（多维空间缩放）</li>
+<li>非线性降维——流形（Isomap，LLE）</li>
+</ul>
+<blockquote>
+<p>特征维度高往往会造成<strong>维度灾难( Curse of Dimensionality )</strong></p>
+<ul>
+<li>从数学角度来看，每增加一个特征（属性），为了布满它所有的样本空间，所需要的样本数量呈指数级增长（例如对于一个二值变量，则至少需要$2^n$个样本数）</li>
+<li>从几何角度来看，比如对于一个体积为1的超立方体，内接一个超球体，$V_{超球体}=C(0.5)^d$，其中$d$为维度，当$d\rightarrow\infty $时，超球体的体积无限趋于0，那么会造成<strong>数据的稀疏性</strong>，且大部分集中在一起，很难进行分类。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h1 id="概率相关知识"><a href="#概率相关知识" class="headerlink" title="概率相关知识"></a>概率相关知识</h1><p>Data：$X=(x_1,x_2,…,x_N)^T_{N*P}$，$N$个样本，每个样本是$P$维的</p>
+<p>样本均值和样本方差的矩阵表示：</p>
+<script type="math/tex; mode=display">
+\bar{x}=\frac{1}{N}\sum_{i=1}^{N}x_i=\frac{1}{N}(x_1,x_2,…,x_N)1_N=\frac{1}{N}X^T1_N\\
+\begin{align}
+S_{p*p}
+&=\frac{1}{N}\sum_{i=1}^{N}(x_i-\bar{x})(x_i-\bar{x})^T\\
+&=\frac{1}{N}(X^T-\bar{x}1_N^T)(X^T-\bar{x}1_N^T)^T\\
+&=\frac{1}{N}(X^T-\frac{1}{N}X^T1_N1_N^T)(X^T-\frac{1}{N}X^T1_N1_N^T)^T\\
+&=\frac{1}{N}X^T(I_N-\frac{1}{N}1_N1_N^T)(I_N-\frac{1}{N}1_N1_N^T)^TX\\
+&=\frac{1}{N}X^THH^TX\\
+&=\frac{1}{N}X^THX
+\end{align}</script><p>其中$H=I_N-\frac{1}{N}1_N1_N^T$，且具有性质$H^T=H,H^n=H$，称为中心矩阵( centering matrix )</p>
+<h1 id="主成分分析PCA"><a href="#主成分分析PCA" class="headerlink" title="主成分分析PCA"></a>主成分分析PCA</h1><ul>
+<li><p>一个中心：<strong>原始特征空间的重构</strong>（将一组可能<strong>线性相关</strong>的变量通过正交变换，变换成<strong>线性无关</strong>的变量）</p>
+</li>
+<li><p>两个基本点（两个角度是一个方法）：<strong>最大投影方差，最小重构距离</strong>（在该方向上投影的方差最大，把投影上的点重构回去的代价最小）</p>
+</li>
+</ul>
+<h2 id="最大投影方差"><a href="#最大投影方差" class="headerlink" title="最大投影方差"></a>最大投影方差</h2><ol>
+<li><p>中心化（将中心平移到原点，即减去均值$x_i-\bar{x}$）</p>
+</li>
+<li><p>令被投影的向量的模为1，$||u_1||=1$</p>
+</li>
+<li><p>投影方差为（向量$a$在向量$b$上的投影为$a^Tb$）</p>
+<script type="math/tex; mode=display">
+J=\frac{1}{N}\sum_{i=1}^{N}((x_i-\bar{x})^Tu_1)^2
+=u_1^T[\frac{1}{N}\sum_{i=1}^{N}(x_i-\bar{x})(x_i-\bar{x})^T]u_1=u_1^TSu_1</script><p>从而求解目标为</p>
+<script type="math/tex; mode=display">
+\hat{u}_1=\mathop{\arg\max}\limits_{u_1} u_1^TSu_1\\
+s.t. u_1^Tu_1=1</script><p>使用拉格朗日乘子法</p>
+<script type="math/tex; mode=display">
+L(u_1,\lambda)=u_1^TSu_1+\lambda(1-u_1^Tu_1)\\
+\frac{\partial L}{\partial u_1}=2Su_1-\lambda2u_1=0\\
+Su_1=\lambda u_1</script><p>从而$\lambda$是特征值，$u_1$是特征向量（主成分）</p>
+</li>
+</ol>
+<h2 id="最小重构距离"><a href="#最小重构距离" class="headerlink" title="最小重构距离"></a>最小重构距离</h2><p>PCA可以视为以下两个部分：</p>
+<ul>
+<li>先进行特征空间的重构，得到$\{u_1,u_2,…,u_p\}$共$p$个特征向量</li>
+<li>再对这$p$个特征向量进行筛选，选出前$q$个特征向量，从而实现降维</li>
+</ul>
+<p>原先样本为（用新的坐标轴去重构，并认为$x_i$已经是中心化后的）</p>
+<script type="math/tex; mode=display">
+x_i=\sum_{k=1}^{p}(x_i^Tu_k)u_k</script><p>重构回来的样本为</p>
+<script type="math/tex; mode=display">
+\hat{x}_i=\sum_{k=1}^{q}(x_i^Tu_k)u_k</script><p>重构代价为（目标是希望重构代价最小）</p>
+<script type="math/tex; mode=display">
+\begin{align}
+J
+&=\frac{1}{N}\sum_{i=1}^{N}||x_i-\hat{x}_i||^2\\
+&=\frac{1}{N}\sum_{i=1}^{N}||\sum_{k=q+1}^{p}(x_i^Tu_k)u_k||^2\\
+&=\frac{1}{N}\sum_{i=1}^{N}\sum_{k=q+1}^{p}(x_i^Tu_k)^2\\
+&=\frac{1}{N}\sum_{i=1}^{N}\sum_{k=q+1}^{p}((x_i-\bar{x})^Tu_k)^2\\
+&=\sum_{k=q+1}^{p}[\sum_{i=1}^{N}\frac{1}{N}((x_i-\bar{x})^Tu_k)^2]\\
+&=\sum_{k=q+1}^{p}u_k^T·S·u_k
+\end{align}</script><p>其中坐标轴为$u_{q+1},…,u_{p}$，坐标为$x_i^Tu_{q+1},…,x_i^Tu_{p}$，对向量求模的平方即对各个坐标轴下的坐标求平方和</p>
+<p>因此目标函数为</p>
+<script type="math/tex; mode=display">
+\hat{u}_k=\mathop{\arg\max}\limits_{u_k} u_k^TSu_k\\
+s.t. u_k^Tu_k=1</script><h2 id="从SVD角度看PCA"><a href="#从SVD角度看PCA" class="headerlink" title="从SVD角度看PCA"></a>从SVD角度看PCA</h2><p>奇异值分解SVD：</p>
+<script type="math/tex; mode=display">
+S=GKG^T\\
+G^TG=I</script><p>$K$为由特征值从大到小排列构成的对角矩阵</p>
+<p>对中心化后的数据矩阵（原数据矩阵$X_{N·p}$）进行奇异值分解（任何实数矩阵可以进行奇异值分解）</p>
+<script type="math/tex; mode=display">
+HX=U\Sigma V^T</script><p>样本方差矩阵为（忽略$\frac{1}{N}$）</p>
+<script type="math/tex; mode=display">
+S=X^THX=X^TH^THX=V\Sigma U ^TU\Sigma V^T</script><p>由于SVD的性质</p>
+<script type="math/tex; mode=display">
+U^TU=I\\
+V^TV=VV^T=I</script><p>且$\Sigma$为对角矩阵</p>
+<p>则可以转换为</p>
+<script type="math/tex; mode=display">
+S=V\Sigma U ^TU\Sigma V^T=V\Sigma ^2 V^T</script><p>因此不需要求样本方差矩阵$S$，可以对中心化后的数据矩阵$HX$进行奇异值分解，同样可以求得$V$和$\Sigma$，从而得到特征向量和特征值。</p>
+<p>定义矩阵</p>
+<script type="math/tex; mode=display">
+T=HXX^TH=U\Sigma V^TV\Sigma U^T=U\Sigma^2 U^T</script><p>因此$T$和$S$有相同的特征值（$\Sigma^2$）</p>
+<ul>
+<li><p>对$S$做特征分解，得到方向（主成分）$V$，然后通过将数据矩阵乘以方向$V$</p>
+<script type="math/tex; mode=display">
+HX·V=U\Sigma V^TV=U\Sigma</script><p>从而得到在新的方向下的坐标矩阵$U\Sigma$</p>
+</li>
+<li><p>对$T$做特征分解（<strong>主坐标分析</strong>，Principle Coordinate Analysis，PCoA），可以直接得到坐标</p>
+<script type="math/tex; mode=display">
+T=U\Sigma^2 U^T\\
+TU\Sigma=U\Sigma^2 U^TU\Sigma=U\Sigma^3=U\Sigma\Sigma^2</script><p>得到特征向量组成的矩阵$U\Sigma$和特征值组成的矩阵$\Sigma^2$</p>
+</li>
+</ul>
+<blockquote>
+<p>Q：为什么$U\Sigma$是$T$的特征向量组成的矩阵？$T$的特征向量组成的矩阵不应该直接是$U$吗？ </p>
+<p>$U\Sigma$是将$T$的每个特征向量依据$HX$的相应特征值大小做缩放之后的矩阵 </p>
+<p><strong>？？？……没懂</strong></p>
+<p>PCA的目的是求出在新的投影方向上的坐标。PCA先通过SVD找到主成分（方向）$u_1$ ，然后对于样本点$x_i$来说，先进行中心化再乘上主成分$(x_i-\bar{x})u_i=z_i$，从而得到该样本点在新坐标轴$u_1$上的坐标$z_i$。即先求的是方向，再对样本进行投影才能得到坐标。</p>
+<p>PCoA没有通过求方向再进行投影得到坐标的方式，而是通过对矩阵$T$进行分解，直接求出坐标</p>
+</blockquote>
+<p>PCoA好处：</p>
+<p>维度方面：$S_{p<em>p},T_{N</em>N}$，当维度高时可以简化运算</p>
+<h1 id="概率角度P-PCA"><a href="#概率角度P-PCA" class="headerlink" title="概率角度P-PCA"></a>概率角度P-PCA</h1><p>原始样本$x\in R^p$(observed data)，降维后的样本$z\in R^q$(latent data)，且$q&lt;p$</p>
+<p>令</p>
+<script type="math/tex; mode=display">
+z \sim N(0_q,I_q)\\
+x=w_{p*q}z+\mu+\varepsilon\\
+\varepsilon \sim N(0,\sigma^2I_p)</script><p>是线性高斯模型(Linear Gaussian Model)，$\sigma^2I_p$矩阵各向同性。</p>
+<p>P-PCA关注两个问题：</p>
+<ul>
+<li>Inference：$P(z|x)$</li>
+<li>Learning：$w,\mu,\sigma^2$——可使用EM算法求解，较复杂，此处省略</li>
+</ul>
+<p>条件：</p>
+<script type="math/tex; mode=display">
+z \sim N(0,I)\\
+x=wz+\mu+\varepsilon\\
+\varepsilon \sim N(0,\sigma^2I)，\varepsilon \perp x\\
+E[x|z]=E[wz+\mu+\varepsilon|z]=wz+\mu\\
+Var[x|z]=Var[wz+\mu+\varepsilon|z]=\sigma^2I \\
+\Rightarrow x|z \sim N(wz+\mu,\sigma^2I)</script><p>则</p>
+<script type="math/tex; mode=display">
+E[x]=E[wz+\mu+\varepsilon]=E[wz+\mu]+E[\varepsilon]=\mu\\
+Var[x]=Var[wz+\mu+\varepsilon]=Var[wz]+Var[\varepsilon]=ww^T+\sigma^2I\\
+\Rightarrow x \sim N(\mu,ww^T+\sigma^2I)</script><p>构造$x$和$z$的联合概率：</p>
+<script type="math/tex; mode=display">
+Cov(x,z)=E[(x-\mu)z^T]=E[(wz+\varepsilon)z^T]=wE[zz^T]+E[\varepsilon]E[z^T]=w</script><p>则</p>
+<script type="math/tex; mode=display">
+\begin{pmatrix} x  \\ z  \end{pmatrix}\sim N
+\begin{pmatrix} ww^T+\sigma^2I & w \\ w & I \end{pmatrix}</script><p>再由公式$x_b|x_a \sim N(\mu_b+\Sigma_{ba}\Sigma_{aa}^{-1}(x_a-\mu_a),\Sigma_{bb·a})$，从而得到$z|x$的条件概率分布</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/02/05/bai-ban-tui-dao-xi-lie-5-jiang-wei/">http://xjw924.github.io/2020/02/05/bai-ban-tui-dao-xi-lie-5-jiang-wei/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/02/05/linux-chang-yong-cao-zuo-ming-ling/">Linux常用操作命令</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -15,7 +15,7 @@
 
 
 
-<title>白板推导系列4——线性分类专题 | 小徐小徐不断学习</title>
+<title>白板推导系列4——线性分类 | 小徐小徐不断学习</title>
 
 
 
@@ -216,7 +216,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">白板推导系列4——线性分类专题</h1>
+            <h1 class="post-title">白板推导系列4——线性分类</h1>
             
                 <div class="post-meta">
                     
@@ -241,7 +241,11 @@
         </header>
 
         <div class="post-content">
-            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>对线性回归的条件逐一打破，从而引申到其它模型：</p>
+            <blockquote>
+<p>b站up主： <strong>shuhuai008</strong> </p>
+<p><a href="https://www.bilibili.com/video/av70839977" target="_blank" rel="noopener">机器学习-白板推导系列-合集</a> 学习笔记</p>
+</blockquote>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>对线性回归的条件逐一打破，从而引申到其它模型：</p>
 <ul>
 <li><p>线性：</p>
 <ul>
@@ -250,7 +254,7 @@
 <li>系数非线性：神经网络，感知机</li>
 </ul>
 </li>
-<li><p>全局性：线性样条回归、决策树</p>
+<li><p>全局性（全部是由一条线拟合）：线性样条回归、决策树</p>
 </li>
 <li>数据未加工：PCA，流形</li>
 </ul>
@@ -295,7 +299,7 @@ S_2  &=\frac{1}{N_2}\sum_{i=1}^{N_2}(z_i-\bar{z}_2)(z_i-\bar{z}_2)^T
 \end{align}</script><p>则类间用$(\bar{z}_1-\bar{z}_2)^2$来表达，类内用$S_1+S_2$来表达</p>
 <p>目标函数为</p>
 <script type="math/tex; mode=display">
-J(w)=\frac{(\bar{z_1}-\bar{z_2})^2}{S_1+S_2}\\
+J(w)=\frac{(\bar{z}_1-\bar{z}_2)^2}{S_1+S_2}\\
 \hat{w}=\mathop{\arg\max}\limits_{w} J(w)</script><p>则分子部分为</p>
 <script type="math/tex; mode=display">
 (\bar{z_1}-\bar{z_2})^2=(\frac{1}{N_1}\sum_{i=1}^{N_1}w^Tx_i-\frac{1}{N_2}\sum_{i=1}^{N_2}w^Tx_i)^2=(w^T(\bar{x}_{c_1}-\bar{x}_{c_2}))^2=w^T(\bar{x}_{c_1}-\bar{x}_{c_2})(\bar{x}_{c_1}-\bar{x}_{c_2})^Tw</script><p>由于$S_1$可表达为</p>
@@ -471,6 +475,8 @@ P(x|y)=\prod_{j=1}^{p}P(x_j|y)</script><p>最简单的概率图（有向图）�
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/02/05/linux-chang-yong-cao-zuo-ming-ling/">Linux常用操作命令</a>
             
             
             <a class="next" rel="next" href="/2020/02/02/logistic-regression-suan-fa-ji-qi-ying-yong/">Logistic Regression 算法基础及实现</a>
