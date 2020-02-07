@@ -150,6 +150,68 @@
             <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
 
     
     <article class="post-wrap">
@@ -179,7 +241,28 @@
         </header>
 
         <div class="post-content">
-            
+            <ul>
+<li>最小二乘法（矩阵表达，几何意义）</li>
+<li>概率角度：最小二乘法$\Leftrightarrow$noise为Gaussian MLE</li>
+<li>正则化（L1:Lasso；L2：Ridge）</li>
+</ul>
+<h1 id="最小二乘法"><a href="#最小二乘法" class="headerlink" title="最小二乘法"></a>最小二乘法</h1><p>Data：$\{(x_i,y_i)\}_{i=1}^{N},x_i\in R^p,y_i\in R,i=1,\cdots,N$</p>
+<p>$X_{N<em>p}=(x_1,x_2,…,x_N)^T,Y_{N</em>1}=(y_1,y_2,…,y_N)^T$</p>
+<p>定义最小二乘法的损失函数</p>
+<script type="math/tex; mode=display">
+\begin{align}
+L(w)&=\sum_{i=1}^{N}(w^Tx_i-y_i)^2\\
+&=(w^Tx_1-y_1,\cdots,w^Tx_N-y_N)(w^Tx_1-y_1,\cdots,w^Tx_N-y_N)^T\\
+&=[w^T(x_1,\cdots,x_N)-(y_1,\cdots,y_N)][w^T(x_1,\cdots,x_N)-(y_1,\cdots,y_N)]^T\\
+&=(w^TX^T-Y^T)(Xw-Y)\\
+&=w^TX^TXw-w^TX^TY-Y^TXw+Y^TY\\
+&=w^TX^TXw-2w^TX^TY+Y^TY
+\end{align}</script><p>求解参数$w$</p>
+<script type="math/tex; mode=display">
+\hat{w}=\arg\min L(w)\\
+\frac{\partial L(w)}{\partial w}=2X^TXw-2X^TY=0\\
+\Rightarrow w=(X^TX)^{-1}X^TY</script><p>几何意义：拟合直线与实际点的</p>
+
         </div>
 
         
