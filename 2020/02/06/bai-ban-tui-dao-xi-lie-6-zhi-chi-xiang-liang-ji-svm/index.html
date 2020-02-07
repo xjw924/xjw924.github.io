@@ -478,7 +478,7 @@ s.t. \forall i=1,\cdots,M, m_i(\hat{x})<0</script><p>其中reliant为relative in
 <p>凸二次规划：目标函数$f$是凸函数，限制条件$m_i$是仿射函数（线性函数一定是仿射函数），$n_j$是仿射函数。</p>
 <p><strong>SVM是凸二次规划问题，满足强对偶条件，因此可以使用KKT条件直接求解。</strong></p>
 <h2 id="KKT条件-1"><a href="#KKT条件-1" class="headerlink" title="KKT条件"></a>KKT条件</h2><ul>
-<li><strong>可行条件</strong>：$m_i(x^<em>)\le0, n_j(x^</em>)=0, \lambda^* \ge0$</li>
+<li><strong>可行条件</strong>：$m_i(x^{<em>})\le0, n_j(x^{</em>})=0, \lambda^{*} \ge0$</li>
 <li><strong>互补松弛条件</strong>：$\lambda^*_im_i=0, \forall i=1,\cdots,M$</li>
 </ul>
 <script type="math/tex; mode=display">
@@ -494,7 +494,7 @@ d^*
 \sum_{i}\lambda^*_im_i=0\\
 \Rightarrow \lambda^*_im_i=0, \forall i=1,\cdots,M</script><p>（若存在有一个$\lambda^*_im_i&lt;0$，由于不存在小于0的部分，无法抵消，和无法等于0）</p>
 <ul>
-<li><p><strong>梯度为0</strong>：$\frac{\partial L(x,\lambda^<em>,\eta^</em>)}{\partial x}|_{x=x^*}=0$</p>
+<li><p><strong>梯度为0</strong>：$\frac{\partial L(x,\lambda^{<em>},\eta^{</em>})}{\partial x}|_{x=x^{*}}=0$</p>
 <p>由(43)可得</p>
 <script type="math/tex; mode=display">
 \min\limits_{x}L(x,\lambda^*,\eta^*)=L(x^*,\lambda^*,\eta^*)</script><p>因此</p>
