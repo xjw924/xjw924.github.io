@@ -526,7 +526,8 @@
 <h2 id="清除表中数据"><a href="#清除表中数据" class="headerlink" title="清除表中数据"></a>清除表中数据</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">truncate</span> <span class="keyword">table</span> student;</span><br></pre></td></tr></table></figure>
 <p>注意：Truncate只能删除管理表，不能删除外部表中数据</p>
 <blockquote>
-<h3 id="DROP、TRUNCATE和DELETE的区别"><a href="#DROP、TRUNCATE和DELETE的区别" class="headerlink" title="DROP、TRUNCATE和DELETE的区别"></a>DROP、TRUNCATE和DELETE的区别</h3><ol>
+<p><strong>DROP、TRUNCATE和DELETE的区别</strong></p>
+<ol>
 <li><p>TRUNCATE和DELETE只删除数据，DROP则删除整个表（结构和数据）。</p>
 </li>
 <li><p>表和索引所占空间。当表被TRUNCATE后，这个表和索引所占用的空间会恢复到初始大小；DELETE操作不会减少表或索引所占用的空间；DROP语句将表所占用的空间全释放掉。</p>
@@ -535,7 +536,7 @@
 </li>
 <li><p>在没有备份情况下，谨慎使用DROP与TRUNCATE。删除部分数据行采用DELETE时，要注意结合where来约束影响范围。删除整个表用DROP。若想保留表而将表中数据删除，用TRUNCATE即可实现。</p>
 </li>
-<li><p><code>TRUNCATE TABLE 表名</code>速度快，而且效率高，因为TRUNCATE TABLE在功能上与不带 WHERE 子句的 DELETE 语句相同：二者均删除表中的全部行。但 TRUNCATE TABLE比 DELETE 速度快，且使用的系统和事务日志资源少。DELETE 语句每次删除一行，并在事务日志中为所删除的每行记录一项。TRUNCATE TABLE 通过释放存储表数据所用的数据页来删除数据，并且只在事务日志中记录页的释放。 </p>
+<li><p>TRUNCATE TABLE 表名速度快，而且效率高，因为TRUNCATE TABLE在功能上与不带 WHERE 子句的 DELETE 语句相同：二者均删除表中的全部行。但 TRUNCATE TABLE比 DELETE 速度快，且使用的系统和事务日志资源少。DELETE 语句每次删除一行，并在事务日志中为所删除的每行记录一项。TRUNCATE TABLE 通过释放存储表数据所用的数据页来删除数据，并且只在事务日志中记录页的释放。 </p>
 </li>
 </ol>
 </blockquote>
