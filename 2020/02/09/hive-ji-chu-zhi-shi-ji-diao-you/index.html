@@ -996,7 +996,11 @@
 <h3 id="MapJoin"><a href="#MapJoin" class="headerlink" title="MapJoin"></a>MapJoin</h3><p>如果不指定MapJoin或者不符合MapJoin的条件，那么Hive解析器会将Join操作转换成Common Join，即：在Reduce阶段完成join。容易发生数据倾斜。<strong>可以用MapJoin把小表全部加载到内存在map端进行join</strong>，避免reducer处理。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 设置自动选择Mapjoin</span></span><br><span class="line"><span class="keyword">set</span> hive.auto.convert.join = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 大表小表的阈值设置（默认25M一下认为是小表）</span></span><br><span class="line"><span class="keyword">set</span> hive.mapjoin.smalltable.filesize=<span class="number">25000000</span>;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>MapJoin工作机制</p>
+<p><strong>MapJoin工作机制</strong></p>
+<p>Hive的Join连接总是按照<strong>从前到后</strong>的顺序执行的。</p>
+<p>当Hive执行Join时，需要选择哪个表被流式传输(steam)，哪个表被缓存(cache)。Hive将Join语句中最后一个表用于流式传输，因此我们需要确保这个流表在两者之间是最大的。</p>
+<p>如果要在不同的key上Join更多的表，那么对于每个Join集，只需在on条件右侧指定较大的表。</p>
+<p>将小表放在左边，大表放到join的右边，这样可以提高性能。更准确的说法：把重复关联键少的表放在join前面，做关联可以提高join的效率。写在关联左侧的表每有1条重复的关联键时底层就会多1次运算处理。</p>
 </blockquote>
 <h3 id="Group-By"><a href="#Group-By" class="headerlink" title="Group By"></a>Group By</h3><p>默认情况下，Map阶段同一Key数据分发给一个reduce，当一个key数据过大时就倾斜了。</p>
 <p>并不是所有的聚合操作都需要在Reduce端完成，<strong>很多聚合操作都可以先在Map端进行部分聚合</strong>，最后在Reduce端得出最终结果。</p>
