@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>白板推导系列8——指数族分布 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">白板推导系列8——指数族分布</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 11, 2020&nbsp;&nbsp;21:51:19</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Notes/">Notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>指数族分布包括：</p>
+<p>正态分布、伯努利分布、二项分布、泊松分布、Beta分布、Gamma分布等</p>
+<h2 id="形式"><a href="#形式" class="headerlink" title="形式"></a>形式</h2><script type="math/tex; mode=display">
+P(x|\eta)=h(x)\exp(\eta^T\phi(x)-A(\eta))</script><p>其中，包含以下部分：</p>
+<ul>
+<li><p>$\eta$：参数向量</p>
+</li>
+<li><p>$A(\eta)$：对数配分函数log partition function</p>
+<blockquote>
+<p>partition function：配分函数</p>
+<p>如$P(x|\theta)=\frac{1}{z}\hat{P}(x|\theta)$，其中分母$z=\int \hat{P}(x|\theta)dx$是归一化因子，也称配分函数</p>
+<p>此处$P(x|\eta)=h(x)\exp(\eta^T\phi(x)-A(\eta))=\frac{1}{\exp(A(\eta))}[h(x)\exp(\eta^T\phi(x))]$</p>
+<p>可以认为$z=\exp(A(\eta))$，从而$A(\eta)=\log z$，从而称为对数配分函数</p>
+</blockquote>
+</li>
+<li><p>$\phi(x)$：充分统计量</p>
+<blockquote>
+<p>充分统计量：对样本的加工。数学形式上，就是关于样本的一个函数，包括均值，方差等</p>
+<p>该统计量可以完整地包含样本所包含的信息，可以起到压缩数据的作用。</p>
+<p>比如对于正态分布来说，样本均值和样本方差所组成的向量即为充分统计量。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li><p>充分统计量</p>
+</li>
+<li><p>共轭</p>
+<p>对于$P(z|x)\propto P(x|z)P(z)$，先验$P(z)$与后验$P(z|x)$有相同的形式（如：同是Beta分布但参数不同）</p>
+<p>好处在于：避免通过式$P(z|x)=\frac{P(x|z)P(z)}{\int_z{P(x|z)P(z)}}$去复杂地求分母</p>
+</li>
+<li><p>最大熵：因为先验分布未知，因此通过令熵最大的原则，假定等可能</p>
+<p>如何确定先验$P(z)$：</p>
+<ol>
+<li>共轭（计算上的方便）</li>
+<li>最大熵（无信息先验）</li>
+<li>Jeffreys prior</li>
+</ol>
+</li>
+</ul>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h3 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h3><ul>
+<li>线性组合：$w^Tx$</li>
+<li>link function：$(激活函数)^{-1}$</li>
+<li>指数族分布：$y|x\sim 指数族分布$<ul>
+<li>线性回归：$y|x\sim N(\mu,\Sigma)$</li>
+<li>二分类模型：$y|x\sim  Bernoulli $</li>
+<li>泊松回归：$y|x\sim Poisson$</li>
+</ul>
+</li>
+</ul>
+<h3 id="概率图模型"><a href="#概率图模型" class="headerlink" title="概率图模型"></a>概率图模型</h3><ul>
+<li>无向图</li>
+</ul>
+<h3 id="变分推断"><a href="#变分推断" class="headerlink" title="变分推断"></a>变分推断</h3><p>……</p>
+<h1 id="高斯分布的指数族形式"><a href="#高斯分布的指数族形式" class="headerlink" title="高斯分布的指数族形式"></a>高斯分布的指数族形式</h1><p>一维高斯分布</p>
+<script type="math/tex; mode=display">
+\begin{align}
+P(x|\theta)
+&=\frac{1}{\sqrt{2\pi}\sigma}\exp \{-\frac{(x-\mu)^2}{2\sigma^2}\}\\
+&=\exp \{\log(2\pi\sigma^2)^{-\frac{1}{2}}\}·\exp\{-\frac{1}{2\sigma^2}(x^2-2\mu x)-\frac{\mu^2}{2\sigma^2}\}\\
+&=\exp\{\begin{pmatrix} \frac{\mu}{\sigma^2} & -\frac{1}{2\sigma^2} \end{pmatrix}\begin{pmatrix} x \\ x^2 \end{pmatrix}-[\frac{\mu^2}{2\sigma^2}+\frac{1}{2}\log(2\pi\sigma^2)]\}\\
+&=\exp(\eta^T\phi(x)-A(\eta))
+\end{align}</script><p>因此</p>
+<script type="math/tex; mode=display">
+\eta=\begin{pmatrix} \eta_1 \\ \eta_2\end{pmatrix}=\begin{pmatrix} \frac{\mu}{\sigma^2} \\ -\frac{1}{2\sigma^2} \end{pmatrix} 
+\quad 
+\phi(x)=\begin{pmatrix} x \\ x^2\end{pmatrix}</script><p>从而</p>
+<script type="math/tex; mode=display">
+\left\{ 
+\begin{array}{**rcl**}
+\mu&=\sigma^2\eta_1\\
+\sigma^2&=-\frac{1}{2\eta_2}
+\end{array}
+\right.</script><script type="math/tex; mode=display">
+A(\eta)=-\frac{\eta_1^2}{4\eta_2^2}+\frac{1}{2}\log(-\frac{\pi}{\eta_2})</script><h1 id="对数配分函数与充分统计量的关系"><a href="#对数配分函数与充分统计量的关系" class="headerlink" title="对数配分函数与充分统计量的关系"></a>对数配分函数与充分统计量的关系</h1><script type="math/tex; mode=display">
+P(x|\eta)
+=h(x)\exp(\eta^T\phi(x)-A(\eta))\\
+=\frac{1}{\exp(A(\eta))}h(x)\exp(\eta^T\phi(x))</script><p>由于对于概率密度函数，对整个概率空间进行积分值为1，因此</p>
+<script type="math/tex; mode=display">
+\exp(A(\eta))=\int h(x)\exp(\eta^T\phi(x))dx</script><p>两边同时对$\eta$进行求导，得到</p>
+<script type="math/tex; mode=display">
+\exp(A(\eta))A'(\eta)=\int h(x)\exp(\eta^T\phi(x))\phi(x)dx\\
+\begin{align}
+A'(\eta)
+&=\frac{\int h(x)\exp(\eta^T\phi(x))\phi(x)dx}{\exp(A(\eta))}\\
+&=\int h(x)\exp(\eta^T\phi(x)-A(\eta))\phi(x)dx\\
+&=\int P(x|\eta)\phi(x)dx\\
+&=E_{P(x|\eta)}[\phi(x)]
+\end{align}</script><p>同理可得</p>
+<script type="math/tex; mode=display">
+A''(\eta)=Var[\phi(x)]</script><p>由于$A’’(\eta)$大于0，因此$A(\eta)$是凸函数</p>
+<blockquote>
+<p>简单验证：</p>
+<script type="math/tex; mode=display">
+E[\phi(x)]=\begin{pmatrix} E(x) \\ E(x^2)\end{pmatrix}</script><p>求$\frac{\partial A(\eta)}{\partial \eta_1}$验证其是否等于$\mu$：</p>
+<script type="math/tex; mode=display">
+\frac{\partial A(\eta)}{\partial \eta_1}=-\frac{2\eta_1}{4\eta_2}=-\frac{\eta_1}{2\eta_2}=-\frac{\frac{\mu}{\sigma^2}}{-2\frac{1}{2\sigma^2}}=\mu</script><p>得证。</p>
+</blockquote>
+<h1 id="极大似然估计与充分统计量"><a href="#极大似然估计与充分统计量" class="headerlink" title="极大似然估计与充分统计量"></a>极大似然估计与充分统计量</h1><p>样本$D=\{x_1,x_2.\cdots,x_N\}$，参数$\eta$的极大似然估计为</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\eta_{MLE}
+&=\arg\max\log P(D|\eta)\\
+&=\arg\max\log \prod_{i=1}^{N}P(x_i|\eta)\\
+&=\arg\max\sum_{i=1}^{N}[\log h(x_i)+\eta^T\phi(x_i)-A(\eta)]\\
+&=\arg\max\sum_{i=1}^{N}[\eta^T\phi(x_i)-A(\eta)]
+\end{align}</script><p>为了求最大值，对其进行求导</p>
+<script type="math/tex; mode=display">
+\frac{\partial}{\partial\eta}\sum_{i=1}^{N}[\eta^T\phi(x_i)-A(\eta)]=\sum_{i=1}^{N}[\phi(x_i)-A'(\eta)]=\sum_{i=1}^{N}\phi(x_i)-NA'(\eta)=0\\
+A'(\eta_{MLE})=\frac{1}{N}\sum_{i=1}^{N}\phi(x_i)</script><p>因此，已知$A(\eta)$，可以对其求导得到$A’(\eta)$，从而得到$\eta_{MLE}=A^{(-1)}{‘}(\eta)$</p>
+<p>可以看出：不需要整个样本，只需要$\phi(x_i)$（充分统计量）就能得到$\eta_{MLE}$</p>
+<h1 id="最大熵角度"><a href="#最大熵角度" class="headerlink" title="最大熵角度"></a>最大熵角度</h1><p>信息量：$-\log(p)$，与概率$p$成反比</p>
+<p>熵：$E_{p(x)}[-\log(p)]=\int -p(x)\log p(x)dx=-\sum_{x}p(x)\log p(x)$</p>
+<p>最大熵$\Longleftrightarrow$等可能（定量地表达等可能的概念）</p>
+<p>假设$x$是离散的，熵$H(P)=-\sum_{x}p(x)\log p(x)$</p>
+<p>若取值分布是未知的（没有任何已知的情况下），使熵取最大的求解问题为</p>
+<script type="math/tex; mode=display">
+\max H(P)=\min\sum_{i=1}^{K}p_i\log p_i\\
+s.t. \sum_{i=1}^{K}p_i=1</script><script type="math/tex; mode=display">
+\hat{p}_i=\arg\max H(P)=\arg\min\sum_{i=1}^{K}p_i\log p_i</script><p>定义拉格朗日函数</p>
+<script type="math/tex; mode=display">
+L(p,\lambda)=\sum_{i=1}^{K}p_i\log p_i+\lambda(1-\sum_{i=1}^{K}p_i)\\
+\frac{\part L}{\part p_i}=\log p_i+p_i\frac{1}{p_i}-\lambda=0\\
+\hat{p}_i=\exp(\lambda-1)</script><p>因此$\hat{p}_i$为常数，$\hat{p}_1=\hat{p}_2=\cdots=\hat{p}_K=\frac{1}{K}$，$p(x)$是均匀分布。即在没有任何已知的情况下，均匀分布可以使熵达到最大。</p>
+<h2 id="最大熵原理"><a href="#最大熵原理" class="headerlink" title="最大熵原理"></a>最大熵原理</h2><p>样本$D=\{x_1,x_2.\cdots,x_N\}$</p>
+<p>最大熵原理：在满足已知事实（约束）的情况下，使熵达到最大</p>
+<p>经验分布：</p>
+<script type="math/tex; mode=display">
+\hat{P}(X=x)=\hat{P}(x)=\frac{count(x)}{N}</script><p>（相当于频率视为概率？）</p>
+<p>满足已知事实（即数据），但仅有数据难以形成约束，而经验分布又是对于数据的描述</p>
+<script type="math/tex; mode=display">
+E_{\hat{p}}[f(x)]=\Delta</script><p>其中$f(x)$是任意关于$x$的函数向量，$f(x)=(f_1,f_2,\cdots,f_Q)^T$，因此满足已知事实可以转化为满足上式约束（为了定量地描述已知事实），求解可以表达为</p>
+<script type="math/tex; mode=display">
+\min \sum_{x}p(x)\log p(x)\\
+s.t. \sum_{x}p(x)=1, E_{p}[f(x)]=E_{\hat{p}}[f(x)]=\Delta</script><p>拉格朗日函数定义为</p>
+<script type="math/tex; mode=display">
+L(p,\lambda_0,\lambda)=\sum_{x}p(x)\log p(x)+\lambda_0(1-\sum_{x}p(x))+\lambda^T(\Delta-E_{p}[f(x)])</script><script type="math/tex; mode=display">
+\frac{\part L}{\part p(x)}=\sum_{x}[\log p(x)+1]-\sum_{x}\lambda_0-\sum_{x}\lambda^Tf(x)=0\\
+\log p(x)+1-\lambda_0-\lambda^Tf(x)=0\\
+\log p(x)=\lambda^Tf(x)+\lambda_0-1\\
+p(x)=\exp\{\lambda^Tf(x)-(1-\lambda_0)\}=\exp\{\eta^T\phi(x)-A(\eta)\}</script><p>其中$\lambda=\eta,f(x)=\phi(x),A(\eta)=1-\lambda_0$</p>
+<p>因此$p(x)$满足指数族分布</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/02/11/bai-ban-tui-dao-xi-lie-8-zhi-shu-zu-fen-bu/">http://xjw924.github.io/2020/02/11/bai-ban-tui-dao-xi-lie-8-zhi-shu-zu-fen-bu/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/02/10/pyspark-chang-yong-cao-zuo/">PySpark常用操作</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
