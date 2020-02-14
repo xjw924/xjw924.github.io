@@ -20,7 +20,9 @@
       
         <tags>
             
-            <tag> Coding, Python </tag>
+            <tag> Coding </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -70,7 +72,11 @@
       
         <tags>
             
-            <tag> Hadoop,Hive,Notes </tag>
+            <tag> Notes </tag>
+            
+            <tag> Hadoop </tag>
+            
+            <tag> Hive </tag>
             
         </tags>
       
@@ -95,7 +101,11 @@
       
         <tags>
             
-            <tag> MachineLearning, Regression, Notes </tag>
+            <tag> MachineLearning </tag>
+            
+            <tag> Regression </tag>
+            
+            <tag> Notes </tag>
             
         </tags>
       
@@ -120,7 +130,11 @@
       
         <tags>
             
-            <tag> MachineLearning, Classification, Notes </tag>
+            <tag> MachineLearning </tag>
+            
+            <tag> Classification </tag>
+            
+            <tag> Notes </tag>
             
         </tags>
       
@@ -174,7 +188,9 @@
       
         <tags>
             
-            <tag> MachineLearning, Notes </tag>
+            <tag> MachineLearning </tag>
+            
+            <tag> Notes </tag>
             
         </tags>
       
@@ -199,7 +215,11 @@
       
         <tags>
             
-            <tag> MachineLearning, Classification, Notes </tag>
+            <tag> MachineLearning </tag>
+            
+            <tag> Classification </tag>
+            
+            <tag> Notes </tag>
             
         </tags>
       
