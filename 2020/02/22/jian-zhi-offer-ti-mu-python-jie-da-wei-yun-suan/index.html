@@ -15,7 +15,7 @@
 
 
 
-<title>剑指offer题目Python解答——栈和队列 | 小徐小徐不断学习</title>
+<title>剑指offer题目Python解答——位运算 | 小徐小徐不断学习</title>
 
 
 
@@ -178,7 +178,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">剑指offer题目Python解答——栈和队列</h1>
+            <h1 class="post-title">剑指offer题目Python解答——位运算</h1>
             
                 <div class="post-meta">
                     
@@ -187,7 +187,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">February 19, 2020&nbsp;&nbsp;23:23:53</a>
+                        Date: <a href="#">February 22, 2020&nbsp;&nbsp;12:25:29</a>
                         </span>
                     
                     
@@ -203,14 +203,11 @@
         </header>
 
         <div class="post-content">
-            <h1 id="用两个栈实现队列"><a href="#用两个栈实现队列" class="headerlink" title="用两个栈实现队列"></a>用两个栈实现队列</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。</p>
-<h2 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h2><ul>
-<li>栈A用来作入队列</li>
-<li>栈B用来出队列，当栈B为空时，栈A全部出栈到栈B，栈B再出栈（即出队列）</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.stackA = []</span><br><span class="line">        self.stackB = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span><span class="params">(self, node)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        self.stackA.append(node)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="comment"># return xx</span></span><br><span class="line">        <span class="keyword">if</span> self.stackB: <span class="comment"># 如果栈B不为空</span></span><br><span class="line">            <span class="keyword">return</span> self.stackB.pop()</span><br><span class="line">        <span class="keyword">elif</span> <span class="keyword">not</span> self.stackA: <span class="comment"># 如果两个都是空的</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># 如果栈B为空，栈A不为空</span></span><br><span class="line">            <span class="keyword">while</span> self.stackA:</span><br><span class="line">                self.stackB.append(self.stackA.pop())</span><br><span class="line">            <span class="keyword">return</span> self.stackB.pop()</span><br></pre></td></tr></table></figure>
-<h1 id="滑动窗口的最大值"><a href="#滑动窗口的最大值" class="headerlink" title="滑动窗口的最大值"></a>滑动窗口的最大值</h1><h2 id="题目描述-1"><a href="#题目描述-1" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个数组和滑动窗口的大小，找出所有滑动窗口里数值的最大值。例如，如果输入数组{2,3,4,2,6,2,5,1}及滑动窗口的大小3，那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}； 针对数组{2,3,4,2,6,2,5,1}的滑动窗口有以下6个： {[2,3,4],2,6,2,5,1}， {2,[3,4,2],6,2,5,1}， {2,3,[4,2,6],2,5,1}， {2,3,4,[2,6,2],5,1}， {2,3,4,2,[6,2,5],1}， {2,3,4,2,6,[2,5,1]}。</p>
-<h2 id="解答-1"><a href="#解答-1" class="headerlink" title="解答"></a>解答</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maxInWindows</span><span class="params">(self, num, size)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        res, i = [], <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> size &gt; <span class="number">0</span> <span class="keyword">and</span> i + size - <span class="number">1</span> &lt; len(num):</span><br><span class="line">            res.append(max(num[i:i + size]))</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+            <h1 id="二进制中1的个数"><a href="#二进制中1的个数" class="headerlink" title="二进制中1的个数"></a>二进制中1的个数</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>如果一个整数不为0，那么这个整数至少有一位是1。如果我们把这个整数减1，那么原来处在整数最右边的1就会变为0，原来在1后面的所有的0都会变成1(如果最右边的1后面还有0的话)。其余所有位将不会受到影响。 </p>
+<p>举个例子：一个二进制数1100，从右边数起第三位是处于最右边的一个1。减去1后，第三位变成0，它后面的两位0变成了1，而前面的1保持不变，因此得到的结果是1011.我们发现减1的结果是把最右边的一个1开始的所有位都取反了。这个时候如果我们再把原来的整数和减去1之后的结果做与运算，从原来整数最右边一个1那一位开始所有位都会变成0。如1100&amp;1011=1000.也就是说，把一个整数减去1，再和原整数做与运算，会把该整数最右边一个1变成0.那么一个整数的二进制有多少个1，就可以进行多少次这样的操作。</p>
+<h2 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">NumberOf1</span><span class="params">(self, n)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> n &lt; <span class="number">0</span>:</span><br><span class="line">            n = n &amp; <span class="number">0xffffffff</span></span><br><span class="line">        <span class="keyword">while</span> n:</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">            n = (n - <span class="number">1</span>) &amp; n</span><br><span class="line">        <span class="keyword">return</span> count</span><br></pre></td></tr></table></figure>
+<p>【解释一下】n = n &amp; 0xffffffff，在Python中，数的大小是可以无限扩大的，所以对于一个负数而言，进行了这个操作，实际上是提取了负数的后32位（在计算机中以补码形式存在），前面的任意位呢，则变成了0，比如说 -1，一开始是 111…..(n个1)…11111111，进行与运算之后，得到，00….(n个0)….111111111（32个1），变成了含32个1的正数，然后就不用担心负数陷入死循环。 </p>
 
         </div>
 
@@ -225,7 +222,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://xjw924.github.io/2020/02/19/jian-zhi-offer-ti-mu-python-jie-da-zhan-he-dui-lie/">http://xjw924.github.io/2020/02/19/jian-zhi-offer-ti-mu-python-jie-da-zhan-he-dui-lie/</a></span>
+                        <span><a href="http://xjw924.github.io/2020/02/22/jian-zhi-offer-ti-mu-python-jie-da-wei-yun-suan/">http://xjw924.github.io/2020/02/22/jian-zhi-offer-ti-mu-python-jie-da-wei-yun-suan/</a></span>
                     </p>
                 
                 
@@ -264,10 +261,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/02/22/jian-zhi-offer-ti-mu-python-jie-da-cha-zhao-he-pai-xu/">剑指offer题目Python解答——查找和排序</a>
             
-            
-            <a class="next" rel="next" href="/2020/02/17/jian-zhi-offer-ti-mu-python-jie-da-shu/">剑指offer题目Python解答——树</a>
+            <a class="next" rel="next" href="/2020/02/22/jian-zhi-offer-ti-mu-python-jie-da-di-gui-he-xun-huan/">剑指offer题目Python解答——递归和循环</a>
             
         </section>
 
