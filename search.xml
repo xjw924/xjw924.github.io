@@ -4,6 +4,46 @@
   
     
     <entry>
+      <title>剑指offer题目Python解答——代码的鲁棒性</title>
+      <link href="/2020/02/24/jian-zhi-offer-ti-mu-python-jie-da-dai-ma-de-lu-bang-xing/"/>
+      <url>/2020/02/24/jian-zhi-offer-ti-mu-python-jie-da-dai-ma-de-lu-bang-xing/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>剑指offer题目Python解答——代码的完整性</title>
+      <link href="/2020/02/24/jian-zhi-offer-ti-mu-python-jie-da-dai-ma-de-wan-zheng-xing/"/>
+      <url>/2020/02/24/jian-zhi-offer-ti-mu-python-jie-da-dai-ma-de-wan-zheng-xing/</url>
+      
+        <content type="html"><![CDATA[<h1 id="数值的整数次方"><a href="#数值的整数次方" class="headerlink" title="数值的整数次方"></a>数值的整数次方</h1><h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。</p><p>保证base和exponent不同时为0</p><h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>优化求幂函数：<br>当n为偶数，$a^n =a^{\frac{n}{2}}<em>a^{\frac{n}{2}}$<br>当n为奇数，$a^n = a^{\frac{n-1}{2}}</em>a^{\frac{n-1}{2}}* a$</p><h2 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">Power</span><span class="params">(self, base, exponent)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        res = base</span><br><span class="line">        flag = <span class="number">1</span> <span class="comment"># 判断正负</span></span><br><span class="line">        <span class="keyword">if</span> exponent == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> exponent &lt; <span class="number">0</span>:</span><br><span class="line">            exponent *= <span class="number">-1</span> <span class="comment"># 将负数转化为正数</span></span><br><span class="line">            flag = <span class="number">-1</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> exponent == <span class="number">1</span>:</span><br><span class="line">                res *= base</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            res *= res</span><br><span class="line">            exponent = exponent // <span class="number">2</span> <span class="comment"># 整除</span></span><br><span class="line">        <span class="keyword">return</span> res <span class="keyword">if</span> flag == <span class="number">1</span> <span class="keyword">else</span> <span class="number">1</span> / res</span><br></pre></td></tr></table></figure><h1 id="调整数组顺序使奇数位于偶数前面"><a href="#调整数组顺序使奇数位于偶数前面" class="headerlink" title="调整数组顺序使奇数位于偶数前面"></a>调整数组顺序使奇数位于偶数前面</h1><h2 id="题目描述-1"><a href="#题目描述-1" class="headerlink" title="题目描述"></a>题目描述</h2><p>输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。</p><h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><p>方法1</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reOrderArray</span><span class="params">(self, array)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        odd, even = [], []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> array:</span><br><span class="line">            odd.append(i) <span class="keyword">if</span> i%<span class="number">2</span> == <span class="number">1</span> <span class="keyword">else</span> even.append(i)</span><br><span class="line">        <span class="keyword">return</span> odd + even</span><br></pre></td></tr></table></figure><p>方法2（lambda）</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reOrderArray</span><span class="params">(self, array)</span>:</span></span><br><span class="line">        <span class="comment"># write code here</span></span><br><span class="line">        <span class="keyword">return</span> sorted(array, key = <span class="keyword">lambda</span> c:c%<span class="number">2</span>, reverse=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Coding </tag>
+            
+            <tag> Python </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>剑指offer题目Python解答——位运算</title>
       <link href="/2020/02/22/jian-zhi-offer-ti-mu-python-jie-da-wei-yun-suan/"/>
       <url>/2020/02/22/jian-zhi-offer-ti-mu-python-jie-da-wei-yun-suan/</url>
