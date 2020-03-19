@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>电商数据分析与数据化运营Note——Part1:建立电商运营的“上帝视角” | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">电商数据分析与数据化运营Note——Part1:建立电商运营的“上帝视角”</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 18, 2020&nbsp;&nbsp;9:33:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Books/">Books</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <ul>
+<li><p>优秀的数据分析师</p>
+<p>有数据逻辑，结构化思维，商业认知能力，这是成为一个优秀数据分析师的必备技能。简单来说，就是对运营，数据，工具这三种能力的综合运用。</p>
+</li>
+<li><p>数据分析的价值在哪里？</p>
+<p>能够为企业的运营提供<strong>更合理</strong>的运营建议。数据分析不是万能的，从数学角度来讲，数据分析只是一种让人理性思考和决策的工具与方法。而商业经营并不是纯靠理性的博弈就能赢的。除了理性的数据支撑，还需要丰富的情感驱动。所以数据只能做到更合理，但不一定会更有效。</p>
+</li>
+</ul>
+<h1 id="Ch1-建立电商运营的“上帝视角”"><a href="#Ch1-建立电商运营的“上帝视角”" class="headerlink" title="Ch1 建立电商运营的“上帝视角”"></a>Ch1 建立电商运营的“上帝视角”</h1><h2 id="L1-服装与电商发展近史"><a href="#L1-服装与电商发展近史" class="headerlink" title="L1 服装与电商发展近史"></a>L1 服装与电商发展近史</h2><p>服装行业最重要的特点是周期——服装的生命周期、风格的生命周期，就连时尚趋势也是有生命周期的。</p>
+<p>国内服装电商的12年发展历程：</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wQoIf.md.png" alt="8wQoIf.md.png"></p>
+<ul>
+<li><p>第一阶段：2003年～2007年电商1.0时代[流量为王] </p>
+<p>电商处于C2C的时代，主要以草 根卖家为主，运营方式也以刷单、打爆款、砸推广这样简单粗暴的手段 为主。</p>
+</li>
+<li><p>第二阶段：2008年～2013年电商2.0时代[数据化运营] </p>
+<p>许多传统服装品牌在这一 阶段纷纷加入电商大军。受到“正规军”商家的正面影响，电商的运营逐渐趋向规范 化和体系化。平台与商家一致倡导“把控服装品质”“提高新品销售”“追求销售利润”等正面的零售理念。于是，“精细化运营”“数据化运营”的概念应运而生。数据分析师与数据分析技能便成为电商运营的重要拼图。</p>
+</li>
+<li><p>第三阶段：2014年～2016年电商3.0时代[内容营销]</p>
+<p>结合视频直播、VR技术、网红号召等多种形式，为电商卖家打开新的营销思路，以便在流量稳定的情况下，提升商家的成交转化率。内容营销给商家带来的一个普遍影响是：所有商家都更加重视电商店铺的视觉效果，商家们在页面结构布局、顾客访问路径优化等方面有了很大的提升。</p>
+</li>
+</ul>
+<h2 id="L2-数据分析不是“造火箭”"><a href="#L2-数据分析不是“造火箭”" class="headerlink" title="L2 数据分析不是“造火箭”"></a>L2 数据分析不是“造火箭”</h2><ul>
+<li><p><strong>什么是电商数据分析师？</strong></p>
+<p>数据分析师是把“运营、数据、工具”这三种能力综合运用，为电商店铺运营解决某一具体问题的职业。</p>
+<p>一名合格的数据分析师必须有这三方面的能力：懂运营业务、有 结构化思维、精通一两门数据工具。</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wllSe.md.png" alt="8wllSe.md.png"></p>
+</li>
+<li><p>数据报告加工流程</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wluFK.md.png" alt="8wluFK.md.png"></p>
+<ol>
+<li>明确目的：做任何数据分析之前，我们必须先了解<strong>本次数据分析的目的是什么</strong>。是诊断，还是预测，或者是总结？</li>
+<li>构思结构/逻辑：针对本次分析的目的，我们需要<strong>从哪些角度来构建数据分析逻辑</strong>？用线性式的因果逻辑，还是用分布式相关逻辑？</li>
+<li>开始分析：确定了报表的说服逻辑之后，本次分析需要用到<strong>哪些维度的数据</strong>？<strong>取值范围与口径</strong>是怎样的？这些数据能够得出什么样的<strong>结论</strong>？这些问题都需要在数据分析过程中考虑，最重要的是，对每次整理好的数据都要进行<strong>结论验证</strong>。</li>
+<li>制作/美化报告：对整理好的数据进行取舍，按报表的说服逻辑排序，并编写相关文字观点。适当的美化，<strong>让报告更具有可读性</strong>，是非常有必要的。</li>
+</ol>
+</li>
+</ul>
+<h2 id="L3-电商运营就是“开飞机”"><a href="#L3-电商运营就是“开飞机”" class="headerlink" title="L3 电商运营就是“开飞机”"></a>L3 电商运营就是“开飞机”</h2><ul>
+<li><p>什么是电商？</p>
+<p><strong>电商=零售，零售=成交。</strong></p>
+<p>所有的数据分析，都要以辅助运营、 提升业绩为目标。  </p>
+<p>公司所有部门、所有人都是围绕“成交”两个字在转。比如：网站的页面设计要尽量满足用户使用习惯，活动策划要戳中用户痛点或是利益点，广告投放要选择精准的用户群体，商品配发要符合用户需求，包括我们所做的数据分析报告，也要以提升销售为目标。</p>
+</li>
+<li><p>电商分析最基本的公式</p>
+<script type="math/tex; mode=display">
+\text{UV * 转化率 * 客单价 = 销售额}</script><p>UV：访客，转化率：买单人数与访客的比值。</p>
+<p>该公式的具体应用：</p>
+<ol>
+<li><p>监测店铺运营状态</p>
+<p>当我们突然发现店铺的指标值不正常时，便应该引起警惕并且尽快找出原因。需要掌握不同时期下店铺的UV、转化率、客单价这些基本数据。</p>
+</li>
+<li><p>制作年度运营目标</p>
+<p>UV、连带率、客单价三个因数，与销售额成正比。当三个因数中的每个因数都有细小的变化时，对销售额就会产生巨大的影响。这就是数学上的乘积效应。</p>
+<p>利用这个原理，我们便可以根据各项指标的增长（或负增长）趋势，来预测来年的销售额。然后与财务目标，以及公司的商品与推广策略去匹配，便能大致预测我们的销售增长是否符合公司预期。</p>
+<p>如果符合，我们的增长点体现在哪些指标上面？对应的这些指标是哪些业务部门在负责？他们在来年有哪些举措来确保这些指标的增长；如果不符合，又是哪些指标的增长达不到公司要求，是什么原因导致的？原因是否合理……</p>
+<p>这些需要在实际工作中持续地学习和总结以后，慢慢就会建立起自己的数据预测体系。</p>
+</li>
+</ol>
+</li>
+<li><p>飞机模型图（核心业务部门的分工）</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wQ5Zt.md.png" alt="8wQ5Zt.md.png"></p>
+<ul>
+<li>运营部是驾驶员，他们负责根据外部（电商平台）的气候变化情况与飞机自身 （企业内部）的健康状态进行匹配，选择最适合的飞行高度与飞机路线。</li>
+<li>商品部与市场部则是两个机翼，负责事业部在飞行过程中的方向选择。如果商品备货过重，则飞机会向右侧倾斜；如果市场推广费过高， 则飞机会向左侧倾斜；如果商品部与市场部都失去应有的作用，则飞机 失去双翼，就会变成滑翔机，只能随着机舱外风吹的方向前进。</li>
+<li>设计部是尾翼，负责飞机在飞行过程中的平衡，如果品牌的风格不稳定，品牌就会陷入左右摇摆、飘忽不定的局面。</li>
+<li>客服部负责在机舱内照顾好已经登机的客人。</li>
+<li>商业智能部是飞行指挥塔，负责随时监测飞机内部的各项飞行指标，同时还要对飞行途中的外部气候做出准确的监测与预判，然后随时与飞行驾驶员沟通，及时提供飞行警示信息。同样，商业智能部也要随时监测企业经营过程中的一切指标，包括商品、流量、销售额、利润等，并且还要监测外部的行业情报、竞争对手情报，然后针对这些数据进行分析，提交可供决策人员参考的运营分析报告。 </li>
+</ul>
+</li>
+</ul>
+<h2 id="L4-在正确的渠道卖正确的货"><a href="#L4-在正确的渠道卖正确的货" class="headerlink" title="L4 在正确的渠道卖正确的货"></a>L4 在正确的渠道卖正确的货</h2><ul>
+<li><p>什么是运营？</p>
+<p>“机关枪”的比喻：<strong>“平台属性”“品牌调性”“商品属性”</strong></p>
+<p>平台就像一把机关枪，嗒嗒、嗒嗒嗒、嗒嗒嗒嗒地不停向你们发射子弹，子弹就是流量。我们要做的不是躲避流量，而是要接住流量。那么你们能接住多少子弹呢？这就要求你们要了解机关枪的属性。它一个弹夹（一次销售高峰）有多少子弹？射程（访问深度）多少？射速（停留时间）多少？什么时候换弹（销售高峰什么时候结束）？<br>同时，还要了解品牌的调性。平台同时有很多把性能不一样的机关枪在发射子弹，那么根据我们品牌的调性与风格，我们去哪一把机关枪前接子弹的成功率最高？<br>最后，要了解商品的属性，用哪些商品才能接到更多的子弹？子弹就是流量，流量就是人，那么这把机关枪射击出来的子弹，它喜欢什么样的商品呢？价格高的，还是价格低的？开衫的还是不开衫的？雪纺的还是牛仔的？<br>只有理解了这三点，并且能找到正确的匹配，才是真正优秀的运营。</p>
+</li>
+</ul>
+<h3 id="根据渠道特性匹配商品属性"><a href="#根据渠道特性匹配商品属性" class="headerlink" title="根据渠道特性匹配商品属性"></a>根据渠道特性匹配商品属性</h3><ul>
+<li><p>天猫销售分析</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wQbRg.md.png" alt="8wQbRg.md.png"></p>
+<ol>
+<li>天猫的新旧商品销售为7:3，就是说天猫是一个以新品为主的销售渠道（就是刚才所说的机关枪的特性）。</li>
+<li>在新品中，天猫有一半（38%/71%）销售是以接近正价，也就是大于8折的价格销售出去的。证明这家店铺的新品很被消费者所接受，因此判断，<strong>品牌调性与平台属性契合度比较高</strong>。</li>
+<li>需要注意的是，这家店铺的新品销售中，退货率接近35%，这意味着这家店铺每卖10件新品，其中有4件可能被退回，个人感觉有点太高了。</li>
+</ol>
+</li>
+<li><p>京东销售分析</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wQqzQ.md.png" alt="8wQqzQ.md.png"></p>
+<ol>
+<li>京东的商品新旧比接近6∶4，也算是以新品为主的销售渠道。</li>
+<li>不过有些不同的是，京东的新品中，以6～7折商品销售为主，6 ～7折的商品应该是处于商品生命周期末端的产品。所以，这个数据说明对于服装正价新品的消费力，京东不如天猫，也就是说，天猫以正价新品为主，京东以打折新品为主。</li>
+<li>京东的退货率约在25%左右，这一点远远低于天猫的35%。证明在同一单成交记录中，京东的经营成本要小于天猫。因为每一笔退货都会给品牌商带来售后、物流上的经营成本。</li>
+</ol>
+</li>
+<li><p>唯品会销售分析</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8wQOMj.md.png" alt="8wQOMj.md.png"></p>
+<ol>
+<li>在唯品会中，新品的销售贡献不到10%，也就是说，唯品会是几乎完全以旧货为主的销售渠道。</li>
+<li>在旧货中，唯品会的主销折扣带在3～5折，几乎占了总销售额的一半。3～5折的商品几乎是以微利的方式清仓出货的。所以，唯品会为需要清仓的商品提供了一个较好的销售渠道。</li>
+<li>即使是清仓，品牌也不能不赚钱。所以，我们看到，在旧货中，还有40%的销售业绩来自于旧品6～7折的货。旧品卖到6～7折，自然可以给品牌提供足够的利润空间了。可是有个问题，这些货同样是旧品，为什么它们能够卖到6～7折呢？这是从旧品中精细挑选出来的比较应季的款式。</li>
+<li>用商品运营的专业术语来讲，6～7折是盈利款，而3～5折是走量款。盈利款与走量款的销售占比能够达到4∶5，这是品牌与唯品会平台之间达成共识的结果。简单来说，品牌方与唯品会平台的共同目标， 就是“唯品会既让品牌达到清仓甩货的目的，又能保证品牌赚钱”。这就是唯品会的属性。</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>总结：</p>
+<ul>
+<li>首先，天猫渠道是一个适合新品销售的渠道，并且它的正价新品消化能力也很不错，所以，我们可以将新品的商品重点向天猫渠道倾斜；</li>
+<li>其次，京东渠道就显得比较均衡了，它的新旧货占比接近5∶5，而且京东的新品销售集中在6折左右，说明京东平台的新品销售利润率并没有天猫渠道高，而且京东的旧品销售也可以占到50%的销售，说明京东同时也承担了一部分库存清理的功能；</li>
+<li>最后，唯品会的特征是最明显的，它本身就定位于一个专门做特卖的网站，所以我们往上面铺的货也几乎都是旧货，而且是超低折扣的旧货。</li>
+</ul>
+</blockquote>
+<h2 id="L5-图解渠道的运营节奏"><a href="#L5-图解渠道的运营节奏" class="headerlink" title="L5 图解渠道的运营节奏"></a>L5 图解渠道的运营节奏</h2><p>产品生命周期图：</p>
+<p><img src="https://s1.ax1x.com/2020/03/18/8w3bRO.md.png" alt="8w3bRO.md.png"></p>
+<p>任何一个产品在其销售过程中，都会经历“介入—成长—成熟—衰退”四个阶段。</p>
+<h3 id="天猫的运营节奏"><a href="#天猫的运营节奏" class="headerlink" title="天猫的运营节奏"></a>天猫的运营节奏</h3><p><img src="https://i.bmp.ovh/imgs/2020/03/2407cbbf046ecce5.png" alt></p>
+<p>把营销活动细致地规划到了每周的时间维度中，并且在每周应该做哪些品类的营销，以怎样的主题来营销都有了前瞻性的规划。</p>
+<p>天猫的活动分为四大级别：</p>
+<ol>
+<li><strong>SS级是指天猫平台方策划的最大型营销活动</strong>。这其中包括双11、双12等重磅活动，也包括“春上新”“春清仓”之类的服装生命周期相关的主题活动。实际上，<strong>SS级活动的名称，被称之为“服装节点”，也正是因为这些活动都是根据服装的生命周期规律来制定和策划的</strong>。从这个意义讲，双11、双12的核心本质就是秋冬大清仓。</li>
+<li><strong>S级是天猫平台特意留出来的一些可供品牌合作的空白活动档期</strong>，如××品牌日、品牌周年庆等活动。S级活动一般会配备品牌团资源，天猫也会从各个渠道优先将资源分配给正在做品牌合作的商家。</li>
+<li>A级活动是天猫平台方根据<strong>不同风格的品牌</strong>主动策划和包装的不同主题的活动。商家参加这些活动需要先报名，入围后天猫才会匹配相关资源、预估会场流量等。</li>
+<li>B级活动是天猫平台根据<strong>不同服装品类</strong>而主动策划和包装的一系列活动。如“连衣裙节”“T恤节”等。有些以某一品类为主打的服装品牌会对这一系列活动十分看重，比如有个品牌是以连衣裙或大衣为主打产 品，那么这个品牌一定会想方设法在连衣裙节或大衣节的活动中，拿到更好的会场资源。</li>
+</ol>
+<p>需要注意的是，这四大分级并不是绝对的。譬如某品牌为了在某个A类或者B类活动中完成冲击业绩的目标，此时往往会选择在做活动的同时，再叠加一个品牌团。此时，A类活动或者B类活动就会成为这个品牌的S级活动。</p>
+<p>“7减8清9上新”：7月是春夏装减价促销的月份，8月是清仓大促销的月份，9月便开始秋冬款的上新。这个规律贯穿了天猫整个年度营销活动的节奏之中。</p>
+<h3 id="京东的运营节奏"><a href="#京东的运营节奏" class="headerlink" title="京东的运营节奏"></a>京东的运营节奏</h3><p><img src="https://i.bmp.ovh/imgs/2020/03/255324ce6476ecdd.png" alt></p>
+<ul>
+<li>京东的活动分为三大级别，这个与天猫的四大级别的划分逻辑类似，这里就不再详细描述了。</li>
+<li>京东的营销活动有个特点，就是重要活动是呈现<strong>“一头一尾盆地状”</strong>策划的。比如“双11”之后，紧跟着会出现一个“双11返场”的活动， 而“圣诞活动”也是“双12”的返场活动。这样策划的结果，就会使商家呈现出“两头高，中间低”的盆地式销售趋势。而天猫则是“倒三角形”式的销售趋势。这个区别呈现出来的特征是，<strong>天猫的活动流量是有计划地爆发式分配给商家的；而京东的活动流量是按计划均分式分配给商家的</strong>。</li>
+<li>京东营销活动节奏的另一个特点是，没有像天猫一样，留给商家明显的“品牌合作”机会。天猫全年给所有商家留了13次品牌合作的机会，包括这13次品牌合作分布的时间节点都列得很清楚。而京东的营销运营中有关“品牌合作”的策划并没有体现出来，从侧面说明了，京东平台的营销活动策划可能没有天猫那么严谨。</li>
+</ul>
+<h2 id="L6-建立店铺的说服逻辑与购买路径"><a href="#L6-建立店铺的说服逻辑与购买路径" class="headerlink" title="L6 建立店铺的说服逻辑与购买路径"></a>L6 建立店铺的说服逻辑与购买路径</h2><h3 id="电商的说服逻辑"><a href="#电商的说服逻辑" class="headerlink" title="电商的说服逻辑"></a>电商的说服逻辑</h3><ul>
+<li><p><strong>什么是说服逻辑？</strong></p>
+<p>能够条理清晰、有效地说服他人的一套思维方式。</p>
+<p>“卖是表达、买是认同”：</p>
+<ul>
+<li>买是认同：用户之所以买了我 的产品，便是对我产生了认同。这份认同可能是对品牌、产品的认同，更可能是对价格、服务，甚至某一种情怀的认同。</li>
+<li>卖是表达：作为卖方，我们应该学会表达我们的品牌、产品、价格、服务，甚至是情怀。唯有这样，才能让用户找到“购买”的理由。</li>
+</ul>
+</li>
+<li><p><strong>电商店铺是怎样来说服用户成交？</strong></p>
+<ol>
+<li><p>电商靠的是视觉呈现：90%的图片+9%的文案+1%的咨询</p>
+</li>
+<li><p>视觉的呈现必须有条理、有结构</p>
+</li>
+</ol>
+</li>
+<li><p><strong>首页的作用：</strong></p>
+<ol>
+<li>增加用户信任感：突出品牌形象，建立用户对品牌的信任感；</li>
+<li>流量分配：做好流量梳理，让用户更精准地找到目标需求产品；</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>抓住用户利益点：抓住利益点，让用户找到留下来的理由。</li>
+</ol>
+<ul>
+<li><p><strong>首页的构成：</strong></p>
+<ol>
+<li><p><strong>店招</strong></p>
+<ul>
+<li><p>向用户展示品牌实力，是最容易让用户产生信任的手段。譬如“2012～2016年度天猫女装总冠军”。</p>
+</li>
+<li><p>向用户发名片：一键收藏店铺。</p>
+</li>
+<li><p>店内搜索框：大多数店铺都会把搜索框设计在店招中。因为店招有置顶的作用，这样可以避免某些用户因为在首页的目录导航中找不到想要的衣服，而直接跳失离店。</p>
+</li>
+</ul>
+<p>相关指标：</p>
+<ul>
+<li>店铺收藏总数：收藏数越多，说明此品牌的粉丝越多，店铺用户运营的基础越好，可断定此店铺转化率也不会太差。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>搜索栏点击数：搜索栏使用得越多（热力图可看出），说明搜索栏摆放位置更合理。但同时也说明店铺首页的页面逻辑和商品的主推逻辑相对不合理。如果搜索栏的点击量远远高于首页中的导航栏和入口图等其他位置，这时必须要检查店铺的首页逻辑是否合理。</li>
+</ul>
+<ol>
+<li><p><strong>导航栏</strong></p>
+<ul>
+<li>让想找不同类别或风格服装的用户能够快速找到相应的服装。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>根据不同季度的热销程度与店铺主推的优先级别，会将优先级高的类目尽量放在导航栏的前面，有些还会用红色、黄色等耀眼的颜色来显示。这是为了使主推商品尽可能吸引更多的点击。<ul>
+<li>流量分配的作用很多都是通过导航栏来实现的。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p><strong>POP</strong></p>
+<p>POP一般分静态和轮播两种形式。</p>
+<p>在店铺内有特大型促销活动（如双11、双12）时，一般会使用活动主题的POP静态呈现，这样可以尽量避免用户跳失；</p>
+<p>如果在平时，则会使用轮播的方式来呈现，一般是3～4张左右。多个POP应当达到不同的作用，否则既是一种空间浪费，也是一种信息的重复性骚扰。</p>
+</li>
+<li><p><strong>豆腐块（入口图）</strong></p>
+<p>豆腐块的作用是，将同一类主推单品集中在一起，并以同一个入口图的形式展现出来。一般的店铺会有6～8个豆腐块，这些豆腐块串联在一起，就是这个店铺所呈现给用户的商品运营逻辑。</p>
+</li>
+</ol>
+</li>
+<li><p>首页前三屏的流量会占首页整体流量的40%以上。 所以，对于首页的说服逻辑来说，前三屏是最重要的。而三屏之后，也就是在豆腐块后面的区域，可以看到都是以单品的展示为主。这种展现仅仅是为了提升店铺主推商品的曝光率，对于店铺的整体说服逻辑没有直接作用。</p>
+</li>
+</ul>
+<h3 id="电商的购买路径"><a href="#电商的购买路径" class="headerlink" title="电商的购买路径"></a>电商的购买路径</h3><p>我们需要熟知店铺内的几条主要的购买路径（一般有2～3条），并进行数据分析与研究。当发现店铺的整体购买转化率连续走低时，便可以从这些购买路径中找出原因， 并提出优化与测试方案。</p>
+<p><strong>用户流量路径</strong>：</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/8d47a83084a98ad1.png" alt></p>
+<p>“站内流量”：指电商平台本身的流量</p>
+<p>“站外流量”：是指用户是从电商平台之外的渠道进入店铺的。站外流量在店铺流量总和的占比中很少（一般不超过2%），所以不是研究的主要流量类型。</p>
+<p>免费流量与付费流量的路径有很大不同，这样的分类便于针对某一特定路径进行刻意的分析，然后进行优化。譬如，业界常见的做法之一是针对某个单品直通车的页面来源与去向进行数据分析，如某项数据指标不达标，便会考虑优化此单品的详情页。</p>
+<p>长期的数据跟踪结果显示， 流量第一次出现在店铺时，在首页登录的流量占到70%以上。因此，首页的“说服逻辑”是否有效便显得非常重要。首页、需要投放直通车的单品详情页、品牌团活动时想买人数多的单品详情页、大型活动时为活动准备的活动二级页，这些页面都是需要被重点监控的重要分析对象。</p>
+<p>“页面分析”工作的核心就是：抓住店铺内的主要购买路径，并分析路径中重要的页面，优化页面的说服逻辑。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/18/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part1/">http://xjw924.github.io/2020/03/18/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part1/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/DataAnalysis/"># DataAnalysis</a>
+                    
+                        <a href="/tags/Books/"># Books</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/19/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part2/">电商数据分析与数据化运营Note——Part2</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/17/jing-yi-shu-ju-fen-xi-note/">精益数据分析Note</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

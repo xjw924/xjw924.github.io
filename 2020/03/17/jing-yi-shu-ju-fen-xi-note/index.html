@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>精益数据分析Note | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">精益数据分析Note</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 17, 2020&nbsp;&nbsp;21:26:02</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Books/">Books</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="第一篇-别再欺骗自己了"><a href="#第一篇-别再欺骗自己了" class="headerlink" title="第一篇 别再欺骗自己了"></a>第一篇 别再欺骗自己了</h1><h2 id="第一章-我们都在说谎"><a href="#第一章-我们都在说谎" class="headerlink" title="第一章 我们都在说谎"></a>第一章 我们都在说谎</h2><ul>
+<li><p><strong>最小可行化产品</strong>（Minimum Viable Product；MVP）</p>
+<p>指足以向市场传达你所主张的价值的最小化产品。</p>
+</li>
+<li><p><strong>专人接待式最小可行化产品</strong></p>
+<p>如：正在考虑创建一种拼车服务，则可以试着用人工牵线搭桥这种原始方式将司机和乘客联系在一起，而并不是先考虑是否能开发出一款配对司机与乘客的应用软件。有时并不需要为了产品（即使是最小可行化产品）的开发浪费时间与金钱。</p>
+<p>优点：</p>
+<ol>
+<li>专人接待式最小可行化产品并不会大规模生产，但却可以<strong>在短时间内以最低的成本帮你尽快测试自己的想法</strong>。</li>
+<li>通过这种专人接待方法<strong>了解用户真正使用的产品，并优化自己的业务流程</strong>。</li>
+</ol>
+<p>启示：</p>
+<ul>
+<li>有时，增长来自于自己未曾想到的方面。在你认为找到了值得一试的想法时，思<strong>考如何以最小的投入快速完成测试</strong>，然后事先为成功下定义，并明确如果直觉准确的话下一步要如何走。</li>
+</ul>
+</li>
+<li><p><strong>精益分析思维</strong></p>
+<p>指提出正确的问题，并重点关注那项可达成期望结果的关键指标。</p>
+</li>
+</ul>
+<h2 id="第二章-创业的记分牌"><a href="#第二章-创业的记分牌" class="headerlink" title="第二章 创业的记分牌"></a>第二章 创业的记分牌</h2><h3 id="什么是好的数据指标"><a href="#什么是好的数据指标" class="headerlink" title="什么是好的数据指标"></a>什么是好的数据指标</h3><ul>
+<li><p>衡量数据指标好坏的一些重要准则：</p>
+<ol>
+<li>好的数据指标是<strong>比较性</strong>的。如果能比较某数据指标在<strong>不同的时间段、用户群体、竞争产品</strong>之间的表现，就能更好的洞察产品的实际走向。</li>
+<li>好的数据指标是<strong>简单易懂</strong>的。如果人不能很容易记住或讨论指标，那么通过改变它来改变公司的作为很困难。</li>
+<li>好的数据指标是一个<strong>比率</strong>。比率之所以是一个好的指标，有以下几个原因：<ol>
+<li>比率的可操作性强，是行动的向导（开车是速度可以告知状态以便调整确保按时抵达，而里程不可）</li>
+<li>比率是一个天生的比较性指标（可以比较当前速度和前一小时速度，判断是加速还是减速）</li>
+<li>比率还适用于各种因素间的相生和相克（正相关和负相关）</li>
+</ol>
+</li>
+<li>好的指标会<strong>改变行为</strong>。这是<strong>最重要</strong>的评判标准：随着指标的变化，你是否会采取相应的措施。<ol>
+<li>日销售额之类的“会计”指标，有助于进行更准确的财务预测</li>
+<li>“试验指标”，有助于优化产品、定价以及市场定位，会极大影响接下来的动作。需要在收集数据之前就确定好针对不同情况的应变措施。</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>另外，数据指标之间的<strong>耦合现象</strong>也值得注意，例如转化率是和购买所需时间相绑定的，二者结合可以的出很多关于现金流的信息。类似地，病毒传播系数（平均每个用户邀请来的新用户数）和病毒传播周期（用户完成一次邀请所需的时间）共同推动产品的普及率。</p>
+</li>
+</ul>
+<h3 id="定性指标与量化指标"><a href="#定性指标与量化指标" class="headerlink" title="定性指标与量化指标"></a>定性指标与量化指标</h3><p>定性指标：非结构化的、经验性的、揭示性的、难以归类的；</p>
+<p>量化指标：涉及很多数值和统计数据，提供可靠的量化结果，但缺乏直观的洞察。</p>
+<p>如果定量数据回答的是“什么”和“多少”这样的问题，那定性数据回答的就是“为什么”。</p>
+<p>定量数据排斥主观因素，定性数据吸纳主观因素。</p>
+<h3 id="虚荣指标与可付诸行动指标"><a href="#虚荣指标与可付诸行动指标" class="headerlink" title="虚荣指标与可付诸行动指标"></a>虚荣指标与可付诸行动指标</h3><p>虚荣指标表面上很美，但不能为公司带来丝毫的改变；如果有一个数据，却不知道如何根据它采取行动，该数据就仅仅是一个虚荣指标。每当看到一个指标，就应该下意识问自己：“依据这个指标，我如何改变当前的商业行为？”如果回答不了这个问题，那么就不用纠结这个指标了。</p>
+<p>可付诸行动指标：可以帮助选出一个行动方案，从而指导你的商业行为。关键在于：你是根据收集到的数据行动。</p>
+<p>例如，“总用户注册数”就是一个虚荣指标，这个数字只会随着时间增长。”总活跃用户数”稍微好些，但前提是对“活跃用户”定义正确，否则还是一个虚荣指标。</p>
+<p>真正应该关注的可付诸行动指标，是<strong>“活跃用户占总用户数的百分比”（活跃用户占比）</strong>。这个指标揭示了产品的用户参与度。另外一个值得关注的指标：<strong>“单位时间内新用户的数量”（新用户增速）</strong>，它对比较不同营销手段的优劣往往很有帮助。</p>
+<ul>
+<li><strong>8个需要提防的虚荣指标</strong><ol>
+<li>点击量</li>
+<li>页面浏览量（PV值）</li>
+<li>访问量</li>
+<li>独立访客数</li>
+<li>粉丝/好友/赞的数量</li>
+<li>网站停留时间/浏览页数</li>
+<li>收集到的用户邮件地址数量</li>
+<li>下载量</li>
+</ol>
+</li>
+</ul>
+<h3 id="探索性指标与报告性指标"><a href="#探索性指标与报告性指标" class="headerlink" title="探索性指标与报告性指标"></a>探索性指标与报告性指标</h3><p>探索性指标：是推测性的；</p>
+<p>报告性指标：时刻对公司的日常运营、管理性活动保持信息通畅、步调一致。</p>
+<blockquote>
+<p>唐纳德理论：世界上的事物可以分为这样几类：我们知道我们知道的，我们知道我们不知道的；我们不知道我们知道的，我们不知道我们不知道的。</p>
+<p>我们知道我们知道的：不确定的事实，要经过数据的检验</p>
+<p>我们知道我们不知道的：意味着某种度量行为。因为我们知道我们不知道这一类指标的具体值，所以要度量。这类指标可用于核算或衡量试验的结果。</p>
+<p>我们不知道我们知道的：直觉，需要评估并训练以提高效率</p>
+<p>我们不知道我们不知道的：是探索，蕴含着自身独特的优势。</p>
+</blockquote>
+<p>数据分析在唐纳德理论中的应用：</p>
+<p> 1）检验手头上的事实和假设，以确保不是在自欺欺人，计划是切实可行的；</p>
+<p> 2）验证我们的直觉，把假设变成证据；</p>
+<p> 3）为业务预测表、瀑布式开发流程图和董事会议提供数据；</p>
+<p> 4）帮助我们发现黄金机遇，大展宏图。</p>
+<p>案例分析：“妈妈圈”的成功之路</p>
+<p>在”朋友圈”拥有1000万用户时，发现一个问题：只有很少的用户在真正地使用这个产品</p>
+<p>解决：1、麦克探寻背后原因，首先搞清楚用户们做了什么，进行探索性分析，发现妈妈群体在其他群体活跃度较低的情况下，撑起整个产品的用户参与度。</p>
+<p>​      2、调整产品重心，做出关键转型，发布产品“妈妈圈”</p>
+<p>总结：1、“朋友圈”出现在正确的时间（FaceBook刚启动开放平台）和正确的地点（FaceBook站内应用），只是找错了市场。</p>
+<p>​      2、通过分析用户行为模式和理想行为的分布，发觉高活跃度用户的共同点，找到与自身相匹配的市场 。</p>
+<p>​      3、找准目标后，不遗余力聚焦，直至更改产品名称。</p>
+<p><strong>数据分析启示</strong></p>
+<p>想要让社区产品极速启动就需要相当高的用户参与度。不温不火的用户没办法让你的产品直冲云霄。</p>
+<p>更好的做法是：在一个更小的、更容易触及的目标市场中培养更多具有黏性的高活跃度用户。病毒式传播需要专注。</p>
+<p><strong>（4）先见性指标与**</strong>后见性<strong>**指标</strong></p>
+<p>先见性指标：用于预言未来；</p>
+<p>比如，透过“销售漏斗”中现有的潜在客户数，大致预测将来所能获得的新客户数。</p>
+<p>后见性指标：解释过去，能提示问题的所在。</p>
+<p>比如，用户流失（及某一时间段内离开某产品或服务的客户量）</p>
+<p>创业之初，所拥有的数据不足以预测未来，这时先关注后见性数据。如果要启用先见性数据，需要首先进行同期群分析并比较客户对照组在不同时间段的表现。</p>
+<p>有关账号注销和产品退货的数据是很重要的指标，只是比较滞后。用户流失量是很重要的数据指标。</p>
+<p>“指示剂”无处不在，在一个企业级软件公司，就销售业绩而言，季度订单量是一个后见性指标，而新增潜在客户量是一个先见性指标。任何一个在B2B销售领域工作过的人都会告诉你，除了培养有价值的潜在客户外，还需要对潜在客户转化率和销售周期有很好的把握。</p>
+<p>在一个公司中，某一团队的后见性指标有时是另一个团队的先见性指标。例如，季度订单量对于销售部门来说是一个后见性指标，对于财务部门来说，是一个可以指示营收预期的先见性指标。</p>
+<p><strong>（5）相关性指标与因果性指标</strong></p>
+<p>相关性指标：两个指标总是一同变化</p>
+<p>因果性指标：其中一个指标的变化会导致另一个指标的变化。</p>
+<p>关键绩效指标 KPI</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/17/jing-yi-shu-ju-fen-xi-note/">http://xjw924.github.io/2020/03/17/jing-yi-shu-ju-fen-xi-note/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/DataAnalysis/"># DataAnalysis</a>
+                    
+                        <a href="/tags/Books/"># Books</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/18/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part1/">电商数据分析与数据化运营Note——Part1:建立电商运营的“上帝视角”</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/17/lin-xuan-tian-ji-qi-xue-xi-ji-shi-bi-ji-part4/">林轩田《机器学习基石》笔记Part4</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

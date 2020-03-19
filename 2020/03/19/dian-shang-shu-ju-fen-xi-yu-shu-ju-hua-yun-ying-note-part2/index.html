@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>电商数据分析与数据化运营Note——Part2 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">电商数据分析与数据化运营Note——Part2</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 19, 2020&nbsp;&nbsp;9:38:10</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Books/">Books</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Ch2-像“堆积木”一样认识数据指标"><a href="#Ch2-像“堆积木”一样认识数据指标" class="headerlink" title="Ch2 像“堆积木”一样认识数据指标"></a>Ch2 像“堆积木”一样认识数据指标</h1><h2 id="L7-能够诊断业务的KOL数据指标"><a href="#L7-能够诊断业务的KOL数据指标" class="headerlink" title="L7 能够诊断业务的KOL数据指标"></a>L7 能够诊断业务的KOL数据指标</h2><h3 id="以运营为导向的业务框架"><a href="#以运营为导向的业务框架" class="headerlink" title="以运营为导向的业务框架"></a>以运营为导向的业务框架</h3><p><img src="https://i.bmp.ovh/imgs/2020/03/99e1350022a77389.png" alt></p>
+<p>在实际运营场景中，一次正常的运营闭环一般会经历以上的7个步骤：</p>
+<ol>
+<li>首先，运营者们会制订本次的销售目标、销售计划（包括促销方案）；在销售计划中，运营者需要着重提出，他们需要的商品资源与推广需求；</li>
+<li>然后，商品与市场推广的负责人会根据运营的需求，提供相应的解决方案，并协商达成一致；</li>
+<li>同时，视觉部门的同事会根据促销方案、活动主题、主推商品等设计店铺的活动二级页、详情页等。他们的页面设计直接影响到活动的促销效果；</li>
+<li>于是，进入下面的客服接待、订单处理、物流发货等环节。</li>
+<li>最后，财务对这一时期的销售业绩与平台对账，以便初步核算出期内业务达标率等财务指标。</li>
+</ol>
+<h3 id="能够诊断业务的KPI指标"><a href="#能够诊断业务的KPI指标" class="headerlink" title="能够诊断业务的KPI指标"></a>能够诊断业务的KPI指标</h3><p>运营导向的业务框架下各项重要数据指标：</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/85ac5d7106aeb816.png" style="zoom:150%;"></p>
+<ol>
+<li><p>运营模块</p>
+<ul>
+<li><p>重要职能：</p>
+<ul>
+<li><p>负责达成整个品牌的业绩目标</p>
+</li>
+<li><p>控制运营成本</p>
+</li>
+</ul>
+</li>
+<li><p>数据指标：</p>
+<ul>
+<li>从数据指标角度来评估运营能力时，需要<strong>避免使用单一指标来评估组织的运营能力</strong></li>
+<li>一般使用<strong>业绩达标率、业绩增长率、销售利润额</strong>三个指标来进行综合评估。</li>
+</ul>
+</li>
+<li><p>例如：</p>
+<ul>
+<li><p>运营团队A在2016Q1季度完成销售2000万，达标率110%，同增2%，净利率15%。 </p>
+</li>
+<li><p>运营团队B在2016Q1季度完成销售2000万，达标率95%，同增55%，净利率10%。 </p>
+</li>
+<li><p>在A、B两个运营团队中，</p>
+<ol>
+<li><p>如果我们只看“销售达标率”一个指标，无疑会认为运营团队A更优秀，因为它的达标率达到110%</p>
+</li>
+<li><p>如果我们看“销售达标率”“增长率”两个指标，就会认为团队B更优秀。因为虽然B团队达标率才95%，但增长迅速，证明团队采取了有效的运营手段来冲刺业绩；</p>
+</li>
+<li><p>如果我们同时看三个指标，团队A业绩爆标了，但增长率才2%，<strong>暴露了它增长乏力的事实</strong>，而它的净利润额却达到300万，远高于团队B的200万。我们能说团队A比团队B更优秀吗？</p>
+</li>
+<li><p>反之，团队B虽然没有达标，但达标率95%也已经达到业绩及格线，而且增长率达55%，说明此团队找到了业绩增长的钥匙。而它的利润额却才200万，<strong>证明此团队为了达成高业绩而牺牲了一部分利润</strong>。我们也不能简单地定义团队B比团队A更优秀。</p>
+</li>
+</ol>
+</li>
+<li><p>从实例中可以看出，如果我们使用单一指标来评判业绩好坏，在许多场景下，都会产生不合理的结论。甚至有时还会出现，即使同时使用了两三项指标也不能对业绩进行准确评估的情况，这时我们就要反思， 是分析方向不对，还是使用的指标精细度不够了。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>商品模块</p>
+<ul>
+<li><p>重要职能：</p>
+<ul>
+<li><p>商品企划</p>
+<p>商品企划是指提前将一个销售周期（一般是指一个季度）的商品需求进行品类、价格带、风格等结构性的规划，并制订有前瞻性的商品销售进度计划。</p>
+</li>
+<li><p>商品运营</p>
+<p>商品运营是指从商品入库、商品上架，到制定商品主推策划、商品流通规则、商品折损保护等一系列的运营动作。以“更高的利润，销售更多商品”为目的。</p>
+<p>既要保护品牌调性（不能过度频繁打折，不能过多爆款），又要帮助运营走量。</p>
+</li>
+</ul>
+</li>
+<li><p>数据指标：</p>
+<ul>
+<li>对商品企划而言，主要对当季库存率（量/额）负责。从更细致的角度而言，就是要随时跟踪<strong>品类与主推款的售罄率</strong>：各品类的销售进度是否与预期一致？主推款的销售进度是否与预期一致？如果超出预期，是否需要及时补货？如果不达预期，是否需要提前促销？</li>
+<li>对商品运营而言，<strong>商品的周转天数、新品动销率/售罄率、活动动销率/售罄率、销售折损</strong>都是非常重要的数据指标。周转天数越低，证明商品流动越快，则仓储成本更低、资金周转越灵活；销售折损越低，代表商品以更高的价格成交，销售利润就越高；动销率与售罄率则需要根据不同的商品生命周期与销售环境来考虑。 </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>市场模块</p>
+<ul>
+<li><p>重要职能：</p>
+<ul>
+<li><p>市场推广</p>
+<p>主要指通过天猫的直通车、钻展，京东的京东快车、京选展位，以及第三方工具百度推广、淘宝客、今日头条等渠道来实现产品或者品牌的推广，从而达到为产品或品牌引流的目的。</p>
+<p>尽管市场推广几乎都是以付费渠道与方式为主，付费的转化率也相对较高；但市场推广也存在免费方式，如百度贴吧、品牌微博等，一个注重品牌建设的公司，对这些渠道的数据分析也不能忽视。</p>
+</li>
+<li><p>会员维护</p>
+<p>凡是在店铺内购买过一次的用户，几乎都被称为会员。因为电商的优势在于凡购买过一次，都可以在店铺中留下用户的收货人名称与联系方式，可以凭借这两项信息建立用户档案，并进行客户维护。有效的用户运营可以降低品牌的市场推广费用。</p>
+</li>
+<li><p>活动策划</p>
+<p>商品部会从商品折损上维护品牌调性；而市场部则需要从品牌形象、品牌风格与定位上维护品牌调性。因此，但凡公司的重大促销活动，一般都会交由市场部进行活动主题的包装和策划。而且活动策划、包装得好，对活动的销售也会有较大的正面影响。</p>
+</li>
+</ul>
+</li>
+<li><p>数据指标：</p>
+<ul>
+<li><p><strong>ROI（投入产出比）、付费用户销售额、付费流量转化率三个指标</strong></p>
+</li>
+<li><p>许多公司可能会采用单一的ROI来考核市场推广能力，这并不是最合理的。因为当投入达到一定阶段时，ROI必然会下降，但此时投入所带来的产出却还是增加的。所以，如果单纯考核ROI，那么，有丰富经验的推广团队在把ROI做到理想值后，便会止步不前，为此就会浪费掉后续追加推广费用来带来的销售增量机会。</p>
+</li>
+<li><p>举个例子：</p>
+<p>  假设在推广某件产品时有两个推广方案可供选择：</p>
+<ol>
+<li><p>A方案：投入2万元推广费用时，预估能够带来4万元销售业绩，此时ROI为1:2。 </p>
+</li>
+<li><p>B方案：投入2.5万元推广费用时，预估能够带来4.5万元销售业绩， 此时ROI降为1:1.8。</p>
+<p>于是问题出现了，如果为了单纯追求高ROI值，推广团队必然会选择A方案投放；而如果选择B方案投放，则可以为该产品带来5千元的销售增量。假设这件产品件单价为500元，便是10件产品的额外销售收入；再假设这10件衣服分别由10位新客户购买，则又意味着该品牌损失了把10 位新客户转化为老客户的机会。这样推算下去，选择A方案的损失无疑是巨大的。</p>
+<p>所以不建议选择单一指标 （ROI）来考核，而应该结合ROI、付费用户销售额、付费流量转化率三个指标来看。</p>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>视觉编辑模块</p>
+<ul>
+<li><p>重要职能：视觉部的重要性体现在它对店铺转化漏斗的设计，以及能够显著提升详情页转化率上面。</p>
+<ul>
+<li><p>店铺视觉</p>
+</li>
+<li><p>详情页逻辑设计</p>
+<p>详情页的重要作用在于建立访客对于产品的信任，因此这种用户的信任力直接影响到详情页的转化率。好的详情页逻辑可以为店铺直接带来销售提升。</p>
+</li>
+<li><p>页面框架设计</p>
+<p>店铺的页面逻辑是否符合用户的浏览习惯，店铺的商品分类标签是否可供用户精准而及时地找到想要买的衣服，主推商品在店铺页面中是否被突出陈列……</p>
+</li>
+</ul>
+</li>
+<li><p>数据指标：</p>
+<p>由于访客在店铺的浏览行为是动态的、不断变化的，因此很难用某一个单一的指标来衡量其成效。因此，行业都会采用<strong>“流量漏斗”+“热力图”</strong>的方式来分析与诊断。</p>
+<ul>
+<li><p>流量漏斗需要根据制定好的流量浏览路径来分析，不同的分析场景可以制定不同的流量路径。</p>
+<p>比如，我们需要分析客户从详情页到支付购买之间的转化情况，此时首先要制定好一条类似于“详情页—加入购买车—生成订单—支付订单—交易完成界面”的用户浏览路径，然后把每一个关键页面的流量数统计出来，这样就可以制作出这条路径的流量漏斗图了：</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/0545da09b4202260.png" alt></p>
+</li>
+<li><p>热力图用于诊断具体的页面结构设计是否合理。譬如我们通过流量漏斗发现在某一个页面的流量跳失率特别高，需要判断这个页面的跳失原因时，一般会采用热力图的方式。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>客服、仓储、财务模块</p>
+<ul>
+<li><p>重要职能：从运营角度而言，客服、仓储、财务属于销售末端的支持部门。</p>
+<ul>
+<li><p>客服模块负责用户进店之后的咨询、成交引导，以及用户购买之后的售后服务。</p>
+</li>
+<li><p>仓储也是一个重要的支持部门， 商家未及时发货则会面临积分赔偿、用户投诉等各种风险；同时，仓储的另一个重要性也体现在需要尽快对仓库的大批量到货（包括用户的退货到货）进行入库，以便及时销售（或二次销售）。</p>
+</li>
+<li><p>财务模块比传统经营环境下的工作更复杂。由于电商行业的“退货滞后性”，导致同一时间内的营收收入始终不能等同于实 际财务收入。如果财务团队能够及时把上月的实际运营盈利情况告知运营团队，将会对运营产生非常大的帮助；财务的另一项职能是需要协助客户的售后人员进行退款操作。</p>
+</li>
+</ul>
+</li>
+<li><p>数据指标：</p>
+<ul>
+<li>对于客服而言，有三个重要指标：<ul>
+<li>一是<strong>咨询转化率</strong>，就是指在店铺咨询过的访客中，有多少人最终成交了；</li>
+<li>二是<strong>人效</strong>，是指经过咨询转化得到的业绩除以客服总人数的人均业绩，人效是体现客服团队贡献值的一个重要指标；</li>
+<li>三<strong>是服务质量得分</strong>，这是店铺DSR评分中的一项，主要受店铺好评数、差评数、投诉率等影响。</li>
+</ul>
+</li>
+<li>对于仓储与物流而言，有两大指标需要重点关注：<ul>
+<li>一是<strong>日均发货单数</strong>，在销售订单能够满足的前提，以满负荷的工作状态下，日均能够发出多少个订单是一项重要的能力。</li>
+<li>二是<strong>库存准确率</strong>，也就是盘点差异。所有实体零售行业的仓储都必须对盘点差异负责，这是仓储模块最基本的要求。</li>
+</ul>
+</li>
+<li>由于财务很少直接参与到电商的一线运营中，因此对于运营有直接影响的指标较少。行业中几乎所有公司都会把用户申请退货之后的退款工作安排给财务团队，所以<strong>退款及时率</strong>应该是唯一对运营有直接影响作用的一项指标，同时它也是属于店铺DSR评分中的一项。 </li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="L8-人、货、场下的数据指标库"><a href="#L8-人、货、场下的数据指标库" class="headerlink" title="L8 人、货、场下的数据指标库"></a>L8 人、货、场下的数据指标库</h2><h3 id="有关“人”的那些指标"><a href="#有关“人”的那些指标" class="headerlink" title="有关“人”的那些指标"></a>有关“人”的那些指标</h3><p><img src="https://i.bmp.ovh/imgs/2020/03/d0f760ef14746b1e.png" alt></p>
+<p>“人”可以分为“客服”与“用户”两类：</p>
+<ul>
+<li>“客服”是指客服团队，如售前、售后</li>
+<li>“用户”按照成交状态又可以细分为“流量”与“成交用户”。<ul>
+<li>用户：凡是在店铺内有过成交记录的；有ID与联系方式可以作为单个的“个体”被追溯和联络</li>
+<li>流量：只要登录过店铺的；流量的定义明显要高于用户；流量只能作为“群体”而被统计</li>
+</ul>
+</li>
+</ul>
+<p>相关指标：</p>
+<ol>
+<li><p>流量来源：</p>
+<p>流量来源分为自主、免费、付费、淘外、其他这五类。</p>
+<p>但是在实际数据分析中， 我们常常会发现，“淘外流量”与“其他流量”往往微乎其微，因此，一致的口径都是使用<strong>主动、免费、付费</strong>三个来源的数据来交流。</p>
+</li>
+<li><p>新客/老客：</p>
+<p>“新客户”是指在店铺内第一次成交的客户， 反之则称为“老客户”；</p>
+<p>“<strong>新老客户比</strong>”是衡量店铺用户质量的一个重要占比。新客占比过高，说明店铺在统计周期内获客能力不错，但老客回头率过低。</p>
+</li>
+<li><p>活跃/沉睡用户数：</p>
+<p>根据客户生命周期，可以将客户大致分为<strong>新客户、活跃客户、沉睡客户、流失客户</strong>四大类。</p>
+<p>活跃客户和沉睡客户是在做用户质量分析时需要重点关注的；<strong>活跃客户是指××天内有成交记录且购买次数&gt;N次的客户</strong>，活跃客户数量越大，店铺的主动和免费流量就越多；<strong>沉睡客户是指连续××天内没有购买记录的客户</strong>，用户运营团队需要定期执行沉睡客户的“唤醒计划”，因此，针对沉睡客户的监控显得非常有必要。</p>
+</li>
+</ol>
+<h3 id="有关“货”的那些指标"><a href="#有关“货”的那些指标" class="headerlink" title="有关“货”的那些指标"></a>有关“货”的那些指标</h3><p><img src="https://i.bmp.ovh/imgs/2020/03/dd2956179e757da4.png" alt></p>
+<p>商品分析分为四大类：库存分析、配货需求与有效性分析、销售分析、退货分析。</p>
+<ul>
+<li><p>实例1：商品整体库存分析</p>
+<p>某店铺Q1季度库存分析表：</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/c6b79dbddb00dcef.png" alt></p>
+<p>通过这份表，不仅可以看出此店铺的库存结构，并且可以判断每个品类的销售进度是否符合预期，以此来评估库存风险。所以，此表既是库存结构分析表，又可作为库存风险预警之用。</p>
+<blockquote>
+<p>SKU = Stock Keeping Unit（库存量单位）</p>
+<ol>
+<li>SKU是指一款商品，每款都有出现一个SKU，便于电商品牌识别商品。</li>
+<li>一款商品多色，则是有多个SKU。例如：iPhone X 64G 银色 则是一个SKU。</li>
+</ol>
+<p>SPU = Standard Product Unit （标准产品单位）SPU是商品信息聚合的最小单位，是一组可复用、易检索的标准化信息的集合，该集合描述了一个产品的特性。例如：iPhone X 可以确定一个产品即为一个SPU。</p>
+<p>库存占比=库存量/总产量</p>
+<p>动销率=店铺中有销量的商品数/全店所有商品数</p>
+</blockquote>
+</li>
+<li><p>实例2：商品销售分析表</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/4b39c894ede52b15.png" alt></p>
+<p>这份报表在电商店铺做大型促销活动时，非常有用。</p>
+<p>它通过转化率、加购数、目前库存数这三个核心指标来监控店铺内的所有商品，帮助店铺运营者对所有单品进行“爆旺平滞”的分类，然后制定不同的销售策略；同时，这份表也可以及时发现“潜在畅销”款，提前规避“超卖”风险。 </p>
+<p>如表中“支付转化率”一列中用黑体标注的，便是销售表现较差的款，不仅转化率低，而且库存相对较高。而“销售件数”一列中，用黑体标注的则是有“超卖”风险的。此款UV高达9万以上，售价相对较低， 单款销量上千件，但库存只余150件。以经验判断，此款应该是店铺某个“引流款”，长期投放直通车所致。因此，当通过数据发现此款后，便需要马上提醒商品人员进行库存补货，或者提醒推广人员暂停此款的直通车投放。否则便会有“超卖”风险。</p>
+</li>
+</ul>
+<h3 id="有关“场”的那些常用指标"><a href="#有关“场”的那些常用指标" class="headerlink" title="有关“场”的那些常用指标"></a>有关“场”的那些常用指标</h3><p><img src="https://i.bmp.ovh/imgs/2020/03/af1263f9d022ab5d.png" alt></p>
+<p>场，就是指卖场。 在电商中，场主要由‘页面’与‘促销活动’构成，并体现在‘销售业绩’上。 所以，有关‘场’的指标，可以分为‘销售’‘页面’‘促销’三类。</p>
+<ol>
+<li><p>关于销售额与净销售额</p>
+<p><strong>销售额</strong>是指统计周期内销售业绩的总和，<strong>净销售额</strong>是指统计周期内销售业绩<strong>减去期内退货额</strong>的业绩总和。</p>
+<p>但是在实际分析场景中，这两个指标如何取舍？</p>
+<ol>
+<li>公司制定的本月销售目标是600万，可是这是销售额，还是净销售额呢？</li>
+<li>在周销售报表中，销售额是70万，净销售额是-20万，净销售怎么会是负数呢？</li>
+<li>不是说行业退货率是20%～30%吗，怎么上月退货率高达65%呢？</li>
+</ol>
+<p>以上三个问题来自同一个原因：<strong>电商滞后15天的退货周期，以及普遍高达20%以上的退货率</strong>。</p>
+<p>问题1）：是数据统计口径的问题，一般在制定销售目标时，<strong>行业内都会使用“净销售额”</strong>，而在<strong>公众媒体上都会使用“销售额”</strong>。 </p>
+<p>问题2）：是由于本周收到了金额高达90万的退货而导致净销售额为负；<br>问题3）：同样是由于期内收到的退货额过高所致的。如6月份店铺做了多个品牌团活动，而7月是淡季一场品牌团都没做。于是便会出现6月的退货大量出现在7月，于是拉高了7月的退货率。</p>
+<blockquote>
+<p>针对这种现象，行业内有一种“订单to订单”退货率（又简称A to A退货率，取“Apple to Apple”的意思）的计算方法，是按订单号来统计退货的一种方式，即不管客户滞后多久退货，只是退货所关联的订单号是属于同一个月的，便将退货额统计出来，并除以此月内销售额。</p>
+</blockquote>
+</li>
+<li><p>关于业绩达标率</p>
+<p>业绩达标率=销售额/计划额×100%。</p>
+<p>往往需要衍生出更细致的分析维度，比如滚动达标率、YTD.%、 MTD.%等。</p>
+<p>例如，某品牌2016年3月销售简报：</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/b149793eb489bbb5.png" alt></p>
+<p>年度滚动达标率 = 1～3月销售额/1～3月销售目标 ×100%，体现了累积销售进度的滚动达成情况</p>
+<p>YTD.% = 1～3月销售额/全年销售目标×100% ，体现了累积销售额的年度达成情况</p>
+<p>以天猫渠道为例：</p>
+<ol>
+<li>天猫3月份销售额约为102万，达标率仅96%，将近达标；</li>
+<li>本月虽然没有达标，但得益于前两个月超额完成业绩目标，因此截至3月天猫渠道的滚动达标率为102%，说明前三个月，店铺的销售进度尚在预定进度之中；</li>
+<li>在2016年已经过去3个月的情况下，天猫YTD进度只完成18%， 但滚动达标率达102%。说明天猫渠道把较多的销售业绩目标“押宝”在了后面的几个月中。</li>
+</ol>
+</li>
+</ol>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>数据指标就像海量的积木零件，而优秀的数据分析师就像积木建筑师，需要从海量的积木零件中挑选出适用的，然后组装构造出一座理想的房子。</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/e3d2b83fa3b272a5.png" alt></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/19/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part2/">http://xjw924.github.io/2020/03/19/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part2/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/DataAnalysis/"># DataAnalysis</a>
+                    
+                        <a href="/tags/Books/"># Books</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/03/18/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part1/">电商数据分析与数据化运营Note——Part1:建立电商运营的“上帝视角”</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
