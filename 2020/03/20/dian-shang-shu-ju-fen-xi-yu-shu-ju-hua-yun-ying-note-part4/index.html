@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>电商数据分析与数据化运营Note——Part4：数据分析实战 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">电商数据分析与数据化运营Note——Part4：数据分析实战</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 20, 2020&nbsp;&nbsp;17:31:01</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Books/">Books</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Ch4-向双11进军，数据分析实战开始"><a href="#Ch4-向双11进军，数据分析实战开始" class="headerlink" title="Ch4 向双11进军，数据分析实战开始"></a>Ch4 向双11进军，数据分析实战开始</h1><h2 id="L11-店铺的诊断分析方法"><a href="#L11-店铺的诊断分析方法" class="headerlink" title="L11　店铺的诊断分析方法"></a>L11　店铺的诊断分析方法</h2><p>三基分析法——‘用户数’、‘平均销售金额’、‘复购率’</p>
+<ol>
+<li><p>用户数</p>
+<p>用户数是指成交后的买家数。通过买家数的多少，以及买家数的年均增长情况，来判断店铺当前所处的运营状态，并且是否保持增长的态势。</p>
+</li>
+<li><p>平均消费金额</p>
+<p>可以理解为平均（每人）消费金额以及平均（每单）消费金额。这里是指<strong>人均消费金额</strong>，也就是前者。通过人均消费金额，可以评估品牌的消费人群定位，以及盈利期望是否合理。</p>
+</li>
+<li><p>复购率</p>
+<p>以服装为例，复购率高的品牌，其用户忠诚度非常高。品牌调性、产品，以及服务质量都得到用户的认同。同时，在电商企业中，复购率高的品牌，对“付费流量”的依赖相对较低，因此可以节省更多的市场推广费用。这部分资金便可以使用到其他方面去，比如提升售后服务质量、改良产品质量等，这样便可以形成一个有益的经营循环。以时尚女装的电商店铺为例，行业可参考的复购率一般在18%～ 40%之间。</p>
+</li>
+</ol>
+<p>某店铺最近三年的“三基分析”数据：</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/816cd7304d645951.png" alt></p>
+<ol>
+<li>2014年的用户数中没有三年老客，间接证明这是一家成立于2013年的店。</li>
+<li>2014年、2015年两年期间，店铺花费了相当大的精力用于“新客引流”，并且取得了30%的用户数增长。 </li>
+<li>从2016年开始，店铺的新老客占比接近5:5，店铺已经不再完全依赖于“新客引流”，间接证明店铺的流量结构已经趋于合理；同时复购率的增加也直接证明店铺近两年在“老客维护”方面取得不小的进步。 </li>
+</ol>
+<h2 id="L12-店铺的流量分析"><a href="#L12-店铺的流量分析" class="headerlink" title="L12 店铺的流量分析"></a>L12 店铺的流量分析</h2><p>店铺流量来源及转化质量：</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/20/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part4/">http://xjw924.github.io/2020/03/20/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part4/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/DataAnalysis/"># DataAnalysis</a>
+                    
+                        <a href="/tags/Books/"># Books</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/03/20/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part3/">电商数据分析与数据化运营Note——Part3：数据表格</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

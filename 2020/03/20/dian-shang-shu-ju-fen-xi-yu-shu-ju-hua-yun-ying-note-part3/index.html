@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>电商数据分析与数据化运营Note——Part3：数据表格 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">电商数据分析与数据化运营Note——Part3：数据表格</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 20, 2020&nbsp;&nbsp;12:14:53</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Books/">Books</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Ch3-表作骨，美化为肉，方法是灵魂"><a href="#Ch3-表作骨，美化为肉，方法是灵魂" class="headerlink" title="Ch3 表作骨，美化为肉，方法是灵魂"></a>Ch3 表作骨，美化为肉，方法是灵魂</h1><p>本章主要讲解如何快速有效地构建一份适用的数据表格，并且选择恰当的数据分析方法来达到分析目的。</p>
+<h2 id="L9-快速建立实用美观的数据表"><a href="#L9-快速建立实用美观的数据表" class="headerlink" title="L9 快速建立实用美观的数据表"></a>L9 快速建立实用美观的数据表</h2><h3 id="快速构成实用的数据表"><a href="#快速构成实用的数据表" class="headerlink" title="快速构成实用的数据表"></a>快速构成实用的数据表</h3><ol>
+<li><p>三种常见的Excel表格类型</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/385e7ec81b201ac4.png" style="zoom:50%;"></p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/8daf519980122f53.png" alt></p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/95146dde24db3591.png" alt></p>
+<ul>
+<li>一维表：指表格的每一行都是一条独立而完整的信息；主要用于基础数据的存储，因为一维的格式方便把数据导入到各种数据处理软件；</li>
+<li>二维表和三维表中，每表格的‘行’必须与‘列’上的字段结合起来，才能够形成一条完整而独立的数据。不同点在于，<strong>二维表中，‘行’只需要与‘列’上的一个字段结合；而三维表中，‘行’需要与‘列’的两个字段结合</strong>。</li>
+<li>二维表主要用于各种简单场景下的数据分析，需要对品类进行销售分析，而不用区分渠道时，便是采用了二维表的方式</li>
+<li>三维表主要用于比较复杂的数据分析需求，如对各渠道与各品类的交叉式销售分析</li>
+</ul>
+</li>
+<li><p>[指标—维度]快速构表法 </p>
+<p>把‘维度’放在数据表格的第一列，而‘指标’放在表格的第一行。当指标与维度交叉时，就会形成数据。</p>
+<ul>
+<li><p>指标：用来衡量某一事物发展程度的。比如我们要衡量店铺的业绩好坏，便需要用到销售量、 销售额、完成率等指标。指标可又分‘绝对指标’与‘相对指标’。 比如‘销售量’‘销售额’便是绝对指标，而‘完成率’‘转化率’等便是相对指标。</p>
+</li>
+<li><p>例如：</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/6df3ce1aeb829578.png" alt></p>
+<p>首先，从构表方法来讲，这个表格是用‘指标–维度’的方法构成的。它包括三个指标，分别是‘销量’‘销额’和‘完成率’，然后包含了五个维度，其中‘6月’‘同比’‘MTD’‘YTD’是时间维度；‘竞品’是空间维度。</p>
+<p>从数据来解释，这家店铺6月销售额为1600万，超额完成了当月销售目标。但是1～6月的累积完成率仅96%，说明此前5个月是存在‘销售缺口’的；同样，年度完成率仅37%，结合MTD基本达标 （96%）的情况来看，证明这家店铺把大部分的销售目标‘押宝’在后面半年中。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="建立报表输出标准"><a href="#建立报表输出标准" class="headerlink" title="建立报表输出标准"></a>建立报表输出标准</h3><p>数据分析的过程：</p>
+<ol>
+<li>数据收集：做数据分析之前需要先收集能够被使用的数据，比如商品资料、 销售明细等数据。</li>
+<li>数据处理：需要清洗的数据层出不穷，如果不清洗干净，便会导致分析的结果出现非常大的偏差。</li>
+<li>数据建模：把一个个清洗好的数据放置于一个数据表格的模板中。需要注意的是，这个数据表格的结构与逻辑，必须确保是能够满足分析目的。</li>
+<li>报告出样：当我们根据设定好的“模型”把数据填充好后，数据报告便基本出样了。此时，更至关重要的是，我们要对数据报告进行反复解读，确保数据报告的“说服逻辑”是顺畅而且有理有据的。</li>
+<li>优化报告：再有用的数据与数据化建议，只有在美化后才更能打动用户。同样，假设一份数据报告过长，数据分析师便非常有必要把数据分析的重要结论摘抄下来，单独形成一页，并放置在数据报告的前文。</li>
+</ol>
+<p>建立报表输出标准：</p>
+<ol>
+<li>表格的行与列，分别用相同色系，但色差相邻的两个颜色填充。这样，可以达到立体化的视觉效果，便于用户阅读。同时，关于色系的选择，在销售类报表中建议使用暖色调的色系；在退货或成本相关的报表中，建议使用冷色调的色系。</li>
+<li>表格的字体：标题用“宋体”11号字体、表格中其他汉字及数字均用“微软雅黑”9号字体。</li>
+<li>关于数字的处理：表格中所有数字，均要使用千分位记数法， 同时过大的数字无须保留小数位，过小的数字可以保留1～2位小数，另外，表格中的数字的单位一定要在表格中备注好。</li>
+<li>关于小计与合计：表格中所有小计类数据均为斜体，并加单下划线；所有合计类数据，需要加粗，加双下划线，并且用淡灰色填充。</li>
+<li>关于表中重点/异常数据：对于表格中的重点数据，或是异常数据，必须用亮黄色填充，并用红色字体凸显，如此可引导表格的读者迅速发现数据重点，或异常数据。</li>
+<li>关于百分比：这也是表格优化的一种技巧。在实际分析场景中，我们常把结构复杂、数据绝对值过多的表格，转化为百分比表格。 这样，我们一眼就可以从表格中找出重点数值与异常数值。</li>
+</ol>
+<h2 id="L10-简单而实用的三大分析方法"><a href="#L10-简单而实用的三大分析方法" class="headerlink" title="L10 简单而实用的三大分析方法"></a>L10 简单而实用的三大分析方法</h2><p>本节课主要介绍数据分析的三大基础方法，分别是对比分析、细分分析、转化分析。</p>
+<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><ol>
+<li>绝对值对比与相对值对比</li>
+</ol>
+<p>在电商数据分析中，一般绝对值指正数之间的对比较多，如销售额、退货额等；</p>
+<p>相对值对比，则是指转化率、完成率等这类相对数之间的对比。</p>
+<ol>
+<li><p>环比</p>
+<p>环比是指<strong>统计周期内的数据与上期数据的比较</strong>，比如2017年6月数据与2017年5月数据的比较。</p>
+<p>在电商数据分析中，由于每个自然月之间的销售差额比较大，如果采用绝对指标，便很难通过对比观察到业务的变化。因此，<strong>一般会采用相对指标来做环比分析</strong>。</p>
+</li>
+<li><p>同比</p>
+<p>同比是指<strong>统计周期内数据与去年同期数据之间的对比</strong>，比如2017年6月数据与2016年6月数据的比较。</p>
+<p>在电商分析中，同比是应用最广泛的数据分析方法。通过同比，我们能大致判断店铺的运营能力在最近一年中，是保持增长还是呈下滑趋势。同时，也可以根据同比增长趋势，来制订初步的销售计划。</p>
+</li>
+<li><p>横向对比与纵向对比</p>
+<p>所谓横向对比与纵向对比，是指空间与时间两个不同的维度之间的对比。</p>
+<p>横向对比是空间维度的对比，指<strong>同类型的不同对象在统一的标准下进行的数据对比</strong>。如“本店”与“竞品”之间的对比；</p>
+<p>纵向对比是时间维度的对比，指<strong>同一对象在不同时间轴上的对比</strong>。如前面提到的“同比”“环比”都是纵向对比。</p>
+</li>
+<li><p>份额</p>
+<p>严格地说，“份额”属于横向对比的一种。在某些情况下，数据表格中多一个“份额”，会让表格清晰明了许多。</p>
+<p>假设我们要分析“某品牌天猫、京东、唯品会三大渠道”的“上衣、下衣、连衣裙和其他”在“Q1～Q4季度”的销售趋势和表现。但是，如表1这般的数据却不能直观告诉我们每个销售类别在不同渠道和不同季度的销售趋势是什么。因此，在数据分析中便需要加入表2这样的“份额”分析表格。如此，我们便可一目了然地掌握每个类别在不同渠道、不同时期的销售趋势。因此也就达到了数据分析的目的。</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/b6d94f77f721b5b1.png" alt></p>
+</li>
+</ol>
+<h3 id="细分"><a href="#细分" class="headerlink" title="细分"></a>细分</h3><p>细分分析法，常用于为分析对象找到更深层次的问题根源。难点在于我们要理解从哪个角度进行‘细分’与‘深挖’才能达到分析目的。在分析之前，选择正确的‘细分’方法便非常重要。</p>
+<ol>
+<li><p>分类分析</p>
+<p>就是指对所有需要被分析到的数据单元，按照某种标准打上标签，再根据标签进行分类，然后使用汇总或者对比的方法来进行分析。</p>
+<p>在服装行业中，常用于做分类分析的标签有“类目”“价格带”“折扣带”“年份”“季节”等。通过从“年份”“季节”的维度来对商品库存进行细分，我们可以轻松地知道有多少货属于“库存”，有多少货属于“适销品”；通过从“折扣带”的维度来对销售流水进行细分，我们可以大致知道店铺的盈利情况；通过从“类目”的维度对销售流水和库存同时进行细分，我们可以知道统计周期内品类的销售动态与库存满足度。</p>
+</li>
+<li><p>人—货—场</p>
+<p>“人—货—场”能够为人提供宏观视野的分析。其原理类似于分类分析，即将所有需要被分析到的数据单元，打上“人”“货”“场”的标签，然后再进行相应的数据分析与处理。</p>
+<p>在实际应用场景中，‘人—货—场’分析法往往被灵活运用在<strong>初步诊断某一竞品店铺</strong>时。如下图所示是利用“人—货—场”逻辑方法来分析竞品店铺的主流思路。在分析之前，先用“人—货—场”的方式罗列出来， 把所有能够想到的有用的“分支”都罗列出来，然后查漏补缺、标注重要与非重要。最后，再按此思路来进行分析。便可达到事半功倍的分析效果。</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/caf642c9a846bb9e.png" alt></p>
+</li>
+<li><p>杜邦分析</p>
+<p>在电商中，杜邦分析常被用于寻找销售变化的细小因素之中。 下图便是根据杜邦分析原理，<strong>将所有影响到销售额的量化指标都统计出来</strong>的一种常用分析方法。此种方法，有助于我们从细小的数据颗粒中找到影响销售变化的元素。</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/0c201d5a6a0fa9c2.png" alt></p>
+</li>
+</ol>
+<h3 id="转化"><a href="#转化" class="headerlink" title="转化"></a>转化</h3><p>转化分析常用于页面跳转分析、用户流失分析等业务场景。</p>
+<p>转化分析的表现形式一般是选用漏斗模型，如下图所示，模拟了某电商店铺的流量转化情况，并以漏斗图的形式展现出来。</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/0a0f02b9115b267a.png" style="zoom:67%;"></p>
+<ol>
+<li>转化分析方法的前提，是我们需要<strong>首先确定一条“转化路径”</strong>（如图左侧的路径所示），这条路径就是我们的“解题方法”，是决定我们接下来的分析能否达成目标的重要因素。</li>
+<li>当“转化路径”确定后，我们需要把“路径”中的各个“节点”罗列出来，并把节点下的重要数据统计出来。</li>
+<li>最后，根据路径把各节点的数据用漏斗图的形式表达出来。 </li>
+</ol>
+<p>同时，转化分析还可用于店铺微观方面的“转化”洞察。譬如在某一次店铺举行大促活动时，我们需要分析<strong>大促期间“活动二级页”的流量转化效果如何</strong>。此时，我们便可以参照如下图所示的漏斗模型。 </p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/409afd5883505179.png" style="zoom:80%;"></p>
+<p>在以上案例中，我们将转化路径定义为“活动页→详情页→支付页面（下单）→支付成功（购买）”四个节点。然后统计每个页面的流量到达数量，于是得出漏斗图。</p>
+<p>通过此图，可以清晰明确地诊断出此次活动二级页在“下单→付款”环节转化率仅40%，存在一定问题。在支付界面的流量跳失，很可能是价格过高所致。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/20/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part3/">http://xjw924.github.io/2020/03/20/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part3/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/DataAnalysis/"># DataAnalysis</a>
+                    
+                        <a href="/tags/Books/"># Books</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/20/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part4/">电商数据分析与数据化运营Note——Part4：数据分析实战</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/19/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part2/">电商数据分析与数据化运营Note——Part2：数据指标</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

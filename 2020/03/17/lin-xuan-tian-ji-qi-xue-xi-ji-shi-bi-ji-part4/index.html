@@ -245,7 +245,8 @@
 <p>假设平面上有5个点，目标函数是2阶多项式：</p>
 <p>如果hypothesis是二阶多项式加上一些小的noise的话，那么这5个点很靠近这个hypothesis，很小。<br>如果hypothesis是4阶多项式，那么这5点会完全落在hypothesis上，。<br>4阶多项式的必定是小于2阶多项式的，但是它的很大。因为根据VC Bound理论，阶数越大，即VC Dimension越大，就会让模型复杂度更高，更大。<br>我们把这种很小，很大的情况称之为bad generalization，即泛化能力差。</p>
 <p>我们看一下VC曲线：</p>
-<p>在的时候， 取到最小值；<br>当也就是向右移动时，，这就是过拟合（overfitting）；<br>当也就是向右移动时，，这就是欠拟合（underfitting）。<br>我们可以理解为，overfitting是VC dimension过大的过程，bad generalization是VC dimension过大的结果。</p>
+<p>overfitting是VC dimension过大的过程</p>
+<p>bad generalization是VC dimension过大的结果。</p>
 <p>一个合适的fit则有可能不是特别小，但是能做到和都比较小，这样比overfitting时取得更好的效果，也就是我们不一定要追求特别小的，毕竟我们的目标是。至于underfitting的情况，我们只要逐步提高模型复杂度就可以，相对便于解决。</p>
 <p>那么造成overfitting的原因是什么呢？我们把overfit比喻为出车祸：</p>
 <p>使用过大的（车开太快）<br>存有noise（路面颠簸）<br>数据量N不足（对路况的观察不够）<br>过大的情况我们知道能逐步提高复杂度来解决，后面主要研究noise 和 N的影响。</p>
