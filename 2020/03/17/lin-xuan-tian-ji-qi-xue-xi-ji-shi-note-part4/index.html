@@ -255,14 +255,14 @@
 </ul>
 </blockquote>
 <h1 id="How-Can-Machines-Learn-Better"><a href="#How-Can-Machines-Learn-Better" class="headerlink" title="How Can Machines Learn Better?"></a>How Can Machines Learn Better?</h1><h2 id="L13-Hazard-of-Overfitting"><a href="#L13-Hazard-of-Overfitting" class="headerlink" title="L13 Hazard of Overfitting"></a>L13 Hazard of Overfitting</h2><h3 id="What-is-Overfitting"><a href="#What-is-Overfitting" class="headerlink" title="What is Overfitting?"></a>What is Overfitting?</h3><p>假设平面上有5个点，目标函数是2阶多项式：</p>
-<p><img src="https://img-blog.csdn.net/20180808131730592?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNjMyNDczMg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
 <ul>
 <li>如果hypothesis是2阶多项式，那么这5个点很靠近这个hypothesis，$E_{in}$很小。</li>
 <li>如果hypothesis是4阶多项式，那么这5点会完全落在hypothesis上，$E_{in}=0$，但是$E_{out}$很大。</li>
 <li>根据VC Bound理论，阶数越大，即VC Dimension越大，就会让模型复杂度更高，$E_{out}$更大。</li>
 </ul>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/655d3663a730bb9e.png" style="zoom: 67%;"></p>
 <p>VC曲线：</p>
-<p><img src="https://img-blog.csdn.net/20180808133855663?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNjMyNDczMg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/b222e9809f91a19b.png" style="zoom:67%;"></p>
 <ul>
 <li>在$d_{VC} = d_{VC}^*$的时候， $E_{out}$取到最小值；</li>
 <li>当$d_{VC} &gt; d_{VC}^<em>$也就是向右移动时，$E_{in} \downarrow ,E_{out} \uparrow$，这就是<em>*过拟合</em></em>（overfitting）；</li>
@@ -279,14 +279,14 @@
 </ul>
 <p>也就是说，<strong>VC Dimension、noise、N这三个因素是影响过拟合现象的关键</strong>。</p>
 <h3 id="The-Role-of-Noise-and-Data-Size"><a href="#The-Role-of-Noise-and-Data-Size" class="headerlink" title="The Role of Noise and Data Size"></a>The Role of Noise and Data Size</h3><p>我们看这样一个在二维平面上的例子，离散的圆圈是数据集，目标函数是蓝色的曲线——</p>
-<p><img src="https://img-blog.csdn.net/20180808162900858?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNjMyNDczMg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/0c2d07c942e574c0.png" alt></p>
 <p>左图：目标函数是x的10阶多项式。数据没有完全落在曲线上，是因为加入了noise。<br>右图：目标函数是x的50阶多项式。没有noise的情况下，数据就全部落在曲线上。</p>
 <p>现在我们分别用二阶多项式和十阶多项式来对两个问题进行拟合，得到下面的结果——</p>
-<p><img src="https://img-blog.csdn.net/20180808163440632?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNjMyNDczMg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+<p><img src="https://i.bmp.ovh/imgs/2020/03/67389ba96094d800.png" alt></p>
 <p>我们能看到在两个问题中$g_{10}$都发生了过拟合，反而$g_2$却表现得相对不错。</p>
 <p>这种现象产生的原因，从哲学上来说，就是“<strong>以退为进</strong>”。有时候，简单的学习模型反而能表现的更好。</p>
 <p>下面我们来看看发生这样现象的具体原因：</p>
-<p><img src="https://img-blog.csdn.net/20180808164134510?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dpdGh1Yl8zNjMyNDczMg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+<p><img src="https://i.loli.net/2018/07/24/5b572f1d8cda6.png" alt="img"></p>
 <p>以上是用Learning Curves来看两个模型在有noise的情况，具体可以复习笔记：基石Lecture 9 - Linear Regression。$E_{in}$和$E_{out}$可以表示为：</p>
 <script type="math/tex; mode=display">
 E_{in}=\text{noise level}\ast (1-\frac{d+1}N)\\
@@ -634,9 +634,9 @@ E_{cv}(H,A)=\frac1V\sum_{v=1}^VE_{val}^{(V)}(g_V^-)</script><p>所以，<strong>
                 <span class="tag">
                     
                     
-                        <a href="/tags/MachineLearning/"># MachineLearning</a>
-                    
                         <a href="/tags/Notes/"># Notes</a>
+                    
+                        <a href="/tags/MachineLearning/"># MachineLearning</a>
                     
                         
                 </span>
