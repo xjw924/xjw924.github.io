@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>林轩田《机器学习基石》笔记Part3——How Can Machines Learn? | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">林轩田《机器学习基石》笔记Part3——How Can Machines Learn?</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 8, 2020&nbsp;&nbsp;17:06:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Notes/">Notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>课程：</p>
+<ul>
+<li><a href="https://www.bilibili.com/video/av12463015" target="_blank" rel="noopener">https://www.bilibili.com/video/av12463015</a></li>
+</ul>
+<p>参考笔记：</p>
+<ul>
+<li><a href="https://beader.me/mlnotebook/index.html" target="_blank" rel="noopener">https://beader.me/mlnotebook/index.html</a></li>
+<li><a href="https://me.csdn.net/github_36324732" target="_blank" rel="noopener">https://me.csdn.net/github_36324732</a></li>
+<li><a href="https://zhuanlan.zhihu.com/ml-note" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/ml-note</a></li>
+</ul>
+</blockquote>
+<h1 id="How-Can-Machines-Learn"><a href="#How-Can-Machines-Learn" class="headerlink" title="How Can Machines Learn?"></a>How Can Machines Learn?</h1><p>接下来要讲的就是各种error measurement的区别以及针对它们如何设计最优化的算法。通过设计出来的算法，使得机器能够从$\mathcal{H}$(Hypothesis Set)当中挑选可以使得cost function最小的$h$作为$g$输出。</p>
+<h2 id="Linear-Regression"><a href="#Linear-Regression" class="headerlink" title="Linear Regression"></a>Linear Regression</h2><p>本篇以线性回归为例，从方程的形式、误差的衡量方式、如何最小化$E_{in}$的角度出发，并简单分析了Hat Matrix的性质与几何意义。</p>
+<h3 id="方程的形式"><a href="#方程的形式" class="headerlink" title="方程的形式"></a>方程的形式</h3><script type="math/tex; mode=display">
+h(x)=w^Tx</script><p>和perceptron相差一个sign（perceptron是$h(x)=sign(w^Tx)$）。</p>
+<h3 id="误差的衡量"><a href="#误差的衡量" class="headerlink" title="误差的衡量"></a>误差的衡量</h3><p>平方误差(squared error)：</p>
+<script type="math/tex; mode=display">
+err(\hat{y},y)=(\hat{y}-y)^2</script><h3 id="Cost-Function"><a href="#Cost-Function" class="headerlink" title="Cost Function"></a>Cost Function</h3><script type="math/tex; mode=display">
+E_{in}(w)=\frac{1}{N}\sum_{n=1}^{N}(h(x_n)-y_n)^2</script><p>$h(x)$是一个以$x$为变量的方程，而$E_{in}(w)$变成了一个以$w$为变量的方程。这样一来，我们就把“在$\mathcal{H}$中寻找能使平均误差最小的方程”这个问题，转换为“求解一个函数的最小值”的问题。使得$E_{in}(w)$最小的$w$，就是我们要寻找的那个最优方程的参数。</p>
+<h3 id="参数求解"><a href="#参数求解" class="headerlink" title="参数求解"></a>参数求解</h3><p>用矩阵形式表示：</p>
+<p>$X$与$y$来源于$\mathcal{D}$，是固定不变的，因此它是一个以$w$为变量的函数。我们需要解使得$E_{in}$最小的$w$，即</p>
+<script type="math/tex; mode=display">
+\underset{w}{min}\,E_{in}(w)=\frac{1}{N}\begin{Vmatrix}Xw-y\end{Vmatrix}^2</script><p>$E_{in}(w)$是一个连续(continuous)、处处可微(differentiable)的凸函数(convex)：</p>
+<p><img src="https://beader.me/imgs/linear-regression/wlin.png" alt="img"></p>
+<p>对于这一类函数，只需要解其一阶导数为0时的解即可。</p>
+<p>令$\nabla E_{in}(w)=0$，可得最佳解：</p>
+<script type="math/tex; mode=display">
+w_{LIN}=(X^TX)^{-1}X^Ty</script><ul>
+<li>当$X^TX$可逆的时候，记$(X^TX)^{-1}X^T$为pseudo-inverse（伪逆）矩阵$X^{\dagger}$</li>
+<li>当$X^TX$不可逆的时候，再用其他方式定义$X^{\dagger}$（不展开）</li>
+</ul>
+<h3 id="帽子矩阵"><a href="#帽子矩阵" class="headerlink" title="帽子矩阵"></a>帽子矩阵</h3><p>用以$w_{LIN}$为参数的线性方程对原始数据做预测，可以得到拟合值$\hat{y}=Xw_{LIN}=XX^{\dagger}y$。这里称</p>
+<script type="math/tex; mode=display">
+H=XX^{\dagger}=X(X^TX)^{-1}X^T</script><p>为Hat Matrix（帽子矩阵）。$H$为$y$带上了帽子，成为$\hat{y}$。</p>
+<h4 id="H-的几何含义"><a href="#H-的几何含义" class="headerlink" title="$H$的几何含义"></a>$H$的几何含义</h4><p><img src="https://beader.me/imgs/linear-regression/geoview_hatmatrix.png" alt="img"></p>
+<p>这张图展示的是在$N$维实数空间$\mathbb{R}^N$中，注意这里是$N$为样本量，$y$为真实值，$\hat{y}$为预测值。$X$中包含$d+1$个column。</p>
+<ul>
+<li>$\hat{y}=Xw_{LIN}$是$X$的一个线性组合，$X$中每个column对应$\mathbb{R}^N$下的一个向量，共有$d+1$个这样的向量，因此$\hat{y}$在这$d+1$个向量所构成的$span$(平面)上。</li>
+<li>事实上我们要做的就是在这个平面上找到一个向量$\hat{y}$使得他与真实值之间的距离$|y-\hat{y}|$最短。不难发现当$\hat{y}$是$\color{purple}{y}$在这个平面上的投影时，即$y-\hat{y}\perp span$时，$|y-\hat{y}|$最短。</li>
+<li><strong>因此Hat Matrix $H$为$y$戴上帽子转化为$\hat{y}$，所做的就是投影这个动作，寻找$span$上$y$的投影。</strong></li>
+<li>$Hy=\hat{y}$，$(I-H)y=y-\hat{y}$。($I$为单位矩阵)</li>
+</ul>
+<h4 id="H-的性质"><a href="#H-的性质" class="headerlink" title="$H$的性质"></a>$H$的性质</h4><ul>
+<li><p>对称性(symetric)，即$H=H^T$</p>
+</li>
+<li><p>幂等性(idempotent)，即$H^2=H$</p>
+</li>
+<li><p>半正定(positive semi-definite)，即所有特征值为非负数：0或1</p>
+</li>
+<li><p>$trace(I-H) = N-(d+1)$。$trace$为矩阵的迹，一个矩阵的$trace$等于该矩阵的所有特征值(Eigenvalues)之和。$X$的维度为$d+1$维。用物理意义来解释这个式子：</p>
+<p><img src="https://beader.me/imgs/linear-regression/geoview_hatmatrix_noise.png" alt="geoview_hatmatrix_noise.png"></p>
+<p>假设$y$由$f(X)\in span+noise$构成的。有$y=f(X)+noise$。</p>
+<p>之前讲到$H$作用于某个向量，会得到该向量在$span$上的投影，而$I-H$作用于某个向量，会得到那条与$span$垂直的向量，在这里就是图中的$y-\hat{y}$，即$(I-H)noise=y-\hat{y}$。这个$y-\hat{y}$是真实值与预测值的差，其长度就是就是所有点的平方误差之和。于是就有：</p>
+<script type="math/tex; mode=display">
+E_{in}(w_{LIN})=\frac{1}{N}||y-\hat{y}||^2\\
+=\frac{1}{N}||(I-H)noise||^2=\frac{1}{N}trace(I-H)||noise||^2=\frac{1}{N}(N-(d+1))||noise||^2</script><p>因此，就平均而言，有：</p>
+<script type="math/tex; mode=display">
+\overline{E_{out}}=\text{noise level}·(1+\frac{d+1}{N})\\
+\overline{E_{in}}=\text{noise level}·(1-\frac{d+1}{N})</script><p>花这么大力气是为了什么，又回到之前learning可行性的话题了。</p>
+<p><img src="https://beader.me/imgs/linear-regression/linear_regression_learning_curve.png" alt="img" style="zoom:80%;"></p>
+<p>$\overline{E_{in}}$和$\overline{E_{out}}$都向$\sigma ^2$(noise level)收敛，并且他们之间的差异被$\frac{2(d+1)}{N}$给bound住了。虽然与VC Bound不同，VC Bound是通过最差错误概率来推导$E_{in}$与$E_{out}$接近，这里是从平均的角度，仍然能证明线性回归算法能够学习！</p>
+</li>
+</ul>
+<h3 id="线性回归与线性分类"><a href="#线性回归与线性分类" class="headerlink" title="线性回归与线性分类"></a>线性回归与线性分类</h3><p>实际中进行线性分类时，可以先做一个regression来求一个初始化参数值，然后再应用诸如PLA/Pocket这类的算法降低error。这样可以提升分类效率。</p>
+<h2 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression"></a>Logistic Regression</h2><p>之前提过的二元分类器如PLA，其目标函数为$f(x)=sign(w^Tx)\in\{-1,+1\}$，输出要么是-1要么是+1，是一个硬分类器。而Logistic Regression是一个软分类器，它的输出是$y=+1$的概率，因此Logistic Regression的目标函数是$f(x)=P(+1|x)\in [0,1]$。</p>
+<h3 id="方程形式"><a href="#方程形式" class="headerlink" title="方程形式"></a>方程形式</h3><p>使用</p>
+<script type="math/tex; mode=display">
+h(x)=\frac{1}{1+e^{-w^Tx}}</script><p>来近似Target Function$f(x)=P(+1|x)$</p>
+<h3 id="误差衡量"><a href="#误差衡量" class="headerlink" title="误差衡量"></a>误差衡量</h3><blockquote>
+<p>为什么不能像Linear Regression一样使用平方误差？</p>
+<p>如果使用平方误差，每个点产生的误差是：</p>
+<script type="math/tex; mode=display">
+err(h,x_n,y_n)=y_n(1-\theta(w^Tx))^2+(1-y_n)(\theta(w^Tx))^2</script><p>此时cost function，$E_{in}(w)=\sum{err}$就是一个关于$w$的非凸函数(non-convex)：</p>
+<p><img src="https://beader.me/imgs/logistic-regression/non_convex.png" alt="img"></p>
+<p>非凸函数由于存在很多个局部最小点，因此很难去做最优化(解全局最小)。所以Logistic Regression没有使用平方误差来定义error，而是使用极大似然法来估计模型的参数。</p>
+</blockquote>
+<p>Logistic Regression的目标函数的输出是，在已知$x$的条件下，$y=+1$的概率，因此在已知$x$的条件下，$y=+1$的概率是$f(x)$，$y=-1$的概率是$1-f(x)$:</p>
+<p>考虑训练样本$\mathcal{D}=\{(x_1,+1),(x_2,-1),…,(x_N,-1)\}$，并不是每次抽样都能抽到一模一样的$\mathcal{D}$，抽到这么一份样本是由于各种的机缘巧合。那么我们能抽到这么一份$\mathcal{D}$的概率取决于两部分：</p>
+<ol>
+<li>抽到样本$x_1,…,x_N$的概率；</li>
+<li>这些样本对应的$y_1,…,y_N$等于$+1$的概率</li>
+</ol>
+<p>对于目标函数$f$，抽到$\mathcal{D}$的概率只取决于第1部分，而我们无法知道$f$，即第2部分也是未知的，因此我们称在$h$的作用下抽出$\mathcal{D}$的概率为“似然性”。如果 $h\approx f$，则 $likelihood(h)\approx \text{probability using }f$，并且我们认为在$f$的作用下，产生$\mathcal{D}$这样的样本的概率通常是非常的大的。</p>
+<p>所以有：</p>
+<script type="math/tex; mode=display">
+\text{if }h\approx f\text{, then }\; likelihood(h)\approx(\text{probability using }f)\approx\text{large}</script><p>则理想的hypothesis就是能使得似然函数最大的那个$h$：</p>
+<script type="math/tex; mode=display">
+g=\underset{h}{argmax}\;likelihood(h)</script><p>当$h$是logistic函数的时候，即$h(x)=\theta(w^Tx)$，由于logistic函数的中心对称性，有:</p>
+<script type="math/tex; mode=display">
+1-h(x)=h(-x)</script><p>所以有：</p>
+<script type="math/tex; mode=display">
+1-h(x_n)=h(-x_n)=h(y_nx_n)</script><p>因此：</p>
+<script type="math/tex; mode=display">
+likelihood(logistic\;h)\propto \prod_{n=1}^{N}h(y_nx_n)</script><p>我们的目标是想找到一个似然性最大的方程:</p>
+<script type="math/tex; mode=display">
+\underset{h}{max}\;\;{likelihood(logistic\;h) \propto}\prod_{n=1}^{N}h(y_nx_n)\propto\prod_{n=1}^{N}\theta(y_nw^Tx_n)\propto\frac{1}{N}\sum_{n=1}^{N}\ln\theta(y_nw^Tx_n)</script><p>转化成与参数$w$有关的形式（求解上式最大值，等价于求解下式的最小值）：</p>
+<script type="math/tex; mode=display">
+\underset{w}{min}E_{in}(w)=\frac{1}{N}\sum_{n=1}^{N}\ln(1+\exp(-y_nw^Tx_n))</script><p>求和符号后面的部分就是在极大似然估计下，logistic方程的误差函数，这种形式的误差函数称为cross entropy error:</p>
+<script type="math/tex; mode=display">
+err(w,x_n,y_n)=\ln(1+\exp(-y_nw^Tx_n))</script><h3 id="参数求解-1"><a href="#参数求解-1" class="headerlink" title="参数求解"></a>参数求解</h3><p>那么如何能够最小化$E_{in}(w)$呢？按照之前Linear Regression的逻辑，由于它是凸函数，如果我们能解出一阶微分(梯度)为0的点，这个问题就解决了。</p>
+<p>先来看看$E_{in}(w)$在$w_i$方向上的偏微分：</p>
+<p><img src="https://beader.me/imgs/logistic-regression/deriv_costf_logistic.png" alt="img"></p>
+<p>再把偏微分方程中的$x_{n,i}$换成向量的形式，就得到$E_{in}(w)$的一阶微分:</p>
+<script type="math/tex; mode=display">
+\triangledown E_{in}(w)=\frac{1}{N}\sum_{n=1}^{N}\theta(-y_nw^Tx_n)(-y_nx_n)</script><p>和之前的Linear Regression不同，它不是一个线性的式子，要求解$\triangledown E_{in}(w)=0$这个式子，是困难的。那么该使用何种方法实现$E_{in}(w)$最小化呢？</p>
+<p>这里可以使用类似PLA当中的，通过迭代的方式来求解，这种方法又称为梯度下降法(Gradient Descent)。</p>
+<p><img src="https://beader.me/imgs/logistic-regression/iterative_opt.png" alt="img"></p>
+<p>有点类似一个小球，往山谷方向滚，直至山谷。每一步我们只要决定两个东西：1、滚动的方向；2、滚动的步长。</p>
+<p>滚动的方向好决定，即在该点一阶微分后的向量所指的方向；步长${\eta}$比较难决定，太小了更新太慢，太大了容易矫枉过正:</p>
+<p><img src="https://beader.me/imgs/logistic-regression/choise_of_eta.png" alt="img"></p>
+<p>一个比较好的做法是让 $\eta$ 与 $||\triangledown E_{in}(w_t)||$ 成一定的比例。</p>
+<p>完整的梳理下梯度下降法(Gradient Descent)：</p>
+<p>initialize $w_0$</p>
+<p>For t = 0, 1, …</p>
+<ol>
+<li><p>compute</p>
+<script type="math/tex; mode=display">
+\triangledown E_{in}(w_t)=\frac{1}{N}\sum_{n=1}^{N}\theta(-y_nw^T_tx_n)(-y_nx_n)</script></li>
+<li><p>update by</p>
+<script type="math/tex; mode=display">
+w_{t+1} \leftarrow w_t - \eta\triangledown E_{in}(w_t)</script></li>
+</ol>
+<p>…until $E_{in}(w_{t+1})=(\approx)0$ or enough iterations</p>
+<p>return $\text{last }w_{t+1}\text{ as }g$</p>
+<h2 id="Linear-Models-for-Classification"><a href="#Linear-Models-for-Classification" class="headerlink" title="Linear Models for Classification"></a>Linear Models for Classification</h2><p>前面介绍了三种线性模型：PLA、Linear Regression与Logistic Regression。之所以称他们是线性模型，是因为这三种分类模型的方程中，都含有一个相同的部分，该部分是各个特征的一个线性组合，也可以称这个部分叫做线性评分方程（linear scoring function）：</p>
+<script type="math/tex; mode=display">
+s=w^Tx</script><p>对比这三种模型：</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\llloverview.png" alt="img"></p>
+<ul>
+<li>Linear Classification模型：取$s$的符号作为结果输出，使用0/1 error作为误差衡量方式，但它的cost function，也就是$E_{in}(w)$是一个离散的方程，并且该方程的最优化是一个NP-hard问题。</li>
+<li>Linear Regression模型：直接输出评分方程，使用平方误差square error作为误差衡量方式，好处是$E_{in}(w)$是一个凸二次曲线，非常方便求最优解（可通过矩阵运算一次得到结果，一步登天）。</li>
+<li>Logistic Regression模型：输出的是评分方程经过sigmoid的结果，使用cross-entropy作为误差衡量方式，其$E_{in}(w)$是一个光滑的凸函数，可以使用gradient descent的方式求最佳解。</li>
+</ul>
+<p>Linear Regression和Logistic Regression的输出是一个实数，而不是一个Binary的值，他们能用来解分类问题吗？可以，只要定一个阈值，高于阈值的输出+1，低于阈值的输出-1就好。既然Linear Regression和Logistic Regression都可以用来解分类问题，并且在最优化上，他们都比Linear Classification简单许多，<strong>我们能否使用这两个模型取代Linear Classification呢？</strong></p>
+<p><strong>三个模型的区别在于误差的衡量</strong>：</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\lll_error_function.png" alt="img"></p>
+<p>这里$y$是一个binary的值，要么是-1，要么是+1。</p>
+<p>注意到三个模型的error function都有一个$ys$的部分，也叫做<strong>分类正确性分数 (classification correctness score)</strong>。其中$s$是模型对某个样本给出的分数，$y$是该样本的真实值。</p>
+<p>当$y=+1$时，$s$越大越好；当$y=-1$时，$s$越小越好。所以总的来说，我们希望$ys$尽可能大。因此这里希望给较小的$ys$较大的cost，给较大的$ys$较小的cost即可。因此，不同模型的本质差异，就在于这个cost该怎么给。</p>
+<p>既然这三个error function都与$ys$有关，我们可以以$ys$为横坐标，$err$为纵坐标，把这三个函数画出来。</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\lll_error_function_vis.png" alt="img"></p>
+<ul>
+<li><p>sqr(squre error)为Linear Regression的误差函数。可以看出：</p>
+<ul>
+<li>在$ys$较小的时候很大，符合情况；</li>
+<li>在$ys$较大的时候$err_{sqr}$同样很大，这点不是很理想，因为我们希望$ys$大的时候cost要小</li>
+<li>尽管如此，至少在$err_{sqr}$小的时候（在$ys=1$附近），$err_{0/1}$也很小，因此可以拿来做error function。</li>
+</ul>
+</li>
+<li><p>ce(cross entropy)为Logistic Regression的误差函数。可以看出：</p>
+<ul>
+<li><p>$err_{ce}$是一个单调递减的函数，形态有一点像$err_{0/1}$，但来的比较平缓。</p>
+</li>
+<li><p>注意到$err_{ce}$有一部分是小于$err_{0/1}$的，我们希望$err_{ce}$能成为$err_{0/1}$的一个upper bound（目的一会儿会说到），只要将$err_{ce}$做一个换底的动作，将以$e$为底的对数换成以$2$为底的对数：</p>
+<script type="math/tex; mode=display">
+\text{scaled ce : err}_{sce}(s,y)=\log_2(1+\exp(-ys))</script><p>换底过后三种误差函数的图像如下：</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\lll_error_function_scale.png" alt="img"></p>
+<p>事实上这里做scale的动作并不会影响最优化的过程，它只是让之后的推导证明更加容易一些。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>回到问题：能不能拿Linear Regression或Logistic Regression来替代Linear Classification？</p>
+<ul>
+<li><p>为什么会想做这样的替代？</p>
+<p>Linear Classification在分类上做的很好，但在最优化上是NP-hard问题，而Linear Regression与Logistic Regression在最优化上比较容易。如果他们在分类能力上的表现能够接近Linear Classification，用他们来替代Linear Classification来处理分类的问题，就是件皆大欢喜的事。</p>
+</li>
+<li><p>为何要对$err_{se}$进行换底，将其scale成$err_{0/1}$的upper bound？</p>
+<ul>
+<li>目的就是为了让这几个模型的观点在某个方向上是一致的，即：$err_{sqr}$或$err_{sce}$低的时候，$err_{0/1}$也低。</li>
+<li>通俗一点讲：假设某种疾病有两种检测方法A和B。A方法检查结果为阳性时，则患病，为阴性时，则未患病。B方法的效率差一些，对于一部分患病的人，B方法不一定结果为阳性，但只要B的结果为阳性，再用A来检查，A的结果一定也为阳性。这么一来，我们就可以说，如果B方法的结果为阳性的时候，我们就没有必要使用A方法再检查一次了，它的效率是和A相同的。</li>
+<li><p>从理论上来说明，我们能得到如下的三个性质：</p>
+<script type="math/tex; mode=display">
+err_{0/1}(s,y)\leq err_{SCE}(s,y)=\frac1{ln2}err_{CE}(s,y)\\
+E_{in}^{0/1}(w)\leq E_{in}^{SCE}(w)=\frac1{ln2}E_{in}^{CE}(w)\\
+E_{out}^{0/1}(w)\leq E_{out}^{SCE}(w)=\frac1{ln2}E_{out}^{CE}(w)</script><p>由VC理论可得：</p>
+<script type="math/tex; mode=display">
+E_{out}^{0/1}(w)\leq E_{in}^{0/1}(w)+\Omega^{0/1}\leq \frac1{ln2}E_{in}^{CE}(w)+\Omega^{0/1}\\
+E_{out}^{0/1}(w)\leq \frac1{ln2}E_{out}^{CE}(w)\leq \frac1{ln2}E_{in}^{CE}(w)+\frac1{ln2}\Omega^{CE}</script><p>从而我们就能够把LinReg和LogReg 作为Linear Classification的上界。即如果使用$err_{sqr}$或$err_{sce}$来衡量一个模型分类分得好不好的时候，如果他们认为分得好，那么如果使用$err_{0/1}$，它也会认为分得好。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>对比下在处理分类问题时，使用PLA，Linear Regression以及Logistic Regression的优缺点：</p>
+<ul>
+<li><p><strong>PLA</strong></p>
+<ul>
+<li>优点：高效（一个样本更新一次）；数据是线性可分时，$E_{in}^{0/1}$保证可以降到最低</li>
+<li>缺点：数据不是线性可分时，要额外使用pocket技巧，较难做最优化</li>
+</ul>
+</li>
+<li><p><strong>Linear Regression</strong></p>
+<ul>
+<li>优点：在这三个模型中最容易做最优化</li>
+<li>缺点：在$ys$很大或很小时，这个bound是很宽松的，没有办法保证$E_{in}^{0/1}$能够很小</li>
+</ul>
+</li>
+<li><p><strong>Logistic Regression</strong></p>
+<ul>
+<li>优点：较容易最优化</li>
+<li>缺点：当$ys$是很小的负数时，bound很宽松</li>
+</ul>
+</li>
+</ul>
+<p>所以我们常常可以使用Linear Regresion跑出的$w$作为(PLA/Pocket/Logistic Regression)的$w_0$（用于初始化），然后再使用$w_0$来跑其他模型，这样可以加快其他模型的最优化速度。同时，由于拿到的数据常常是线性不可分的，我们常常会去使用Logistic Regression而不是PLA+pocket。</p>
+<h3 id="Stochastic-Gradient-Descent"><a href="#Stochastic-Gradient-Descent" class="headerlink" title="Stochastic Gradient Descent"></a>Stochastic Gradient Descent</h3><p>我们知道PLA与Logistic Regression都是通过迭代的方式来实现最优化的，区别在于：</p>
+<ul>
+<li>PLA每次迭代只需要针对一个点进行错误修正，时间复杂度为$O(1)$</li>
+<li>Logistic Regression每一次迭代都需要遍历所有样本点，时间复杂度为$O(N)$</li>
+</ul>
+<p>这样一来，数据量大的时候，由于需要计算每一个点，Logistic Regerssion就会很慢了。那么可不可以每次只看一个点，即不要公式中先求和再取平均数的那个部分呢？随机取一个点$n$，它对梯度的贡献为：</p>
+<script type="math/tex; mode=display">
+\triangledown _w err(w,x_n,y_n)</script><p>我们把它称为随机梯度（stochastic gradient），而真实的梯度可以认为是随机抽出一个点的梯度值的<strong>期望</strong>：</p>
+<script type="math/tex; mode=display">
+\triangledown_w E_{in}(w) = \underset{random\,n}\epsilon\triangledown_w err(w,x_n,y_n)</script><p>因此我们可以把随机梯度当成是在真实梯度上增加一个均值为0的noise：</p>
+<script type="math/tex; mode=display">
+\text{stochastic gradient} = \text{true gradient} + \text{zero-mean ‘noise’ directions}</script><p>从单次迭代上来看，好像确实会对每一步找到正确的梯度方向有影响，但是从整体期望值来看，与真实的梯度方向没有差太多，同样能找到差不多好的位置。我们把这种方法称为<strong>随机梯度下降，Stochastic Gradient Descent (SGD)</strong>：</p>
+<script type="math/tex; mode=display">
+w_{t+1} \leftarrow w_t + \eta \underbrace{ {\theta({-y_nw_t^Tx_n} }){(y_nx_n)} }_{-{\triangledown_{err}(w_t,x_n,y_n)} }</script><p>和之前说到的Gradient Descent相比：</p>
+<ul>
+<li>SGD的好处在于时间复杂度大幅减小（每次只随机地看一个点），在数据量很大的时候可以很快得得到结果；且可以应用到在线学习（online learning）上。</li>
+<li>缺点在于，当noise比较大的时候，会较不稳定。</li>
+</ul>
+<p>我们看到SGD logistic regression和PLA有非常相似的地方：</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\20180805195816307.png" alt="img" style="zoom:50%;"></p>
+<ul>
+<li>都是对当前的与进行修正，可把SGD logistic regression称之为’soft’ PLA（更新速度随着错误的多少变动）；</li>
+<li>当$\eta=1$且足够大的时候，PLA近似于SGD。</li>
+</ul>
+<p>关于SGD算法的两点经验（rule-of-thumb）：</p>
+<ul>
+<li>SGD的终止迭代条件一般是让迭代次数足够多；</li>
+<li>更新速度$\eta$是根据实际情况来决定的，一般$\eta=0.1$就可以了。</li>
+</ul>
+<h3 id="Multiclass-Classification"><a href="#Multiclass-Classification" class="headerlink" title="Multiclass Classification"></a>Multiclass Classification</h3><p>我们现在已经有办法使用线性分类器解决二元分类问题，但有的时候，我们需要对多个类别进行分类，即模型的输出不再是0和1两种，而会是多个不同的类别。那么如何套用二元分类的方法来解决多类别分类的问题呢？</p>
+<p><strong>利用二元分类器来解决多类别分类问题主要有两种策略，OVA(One vs. ALL)和OVO(One vs. One)。</strong></p>
+<ol>
+<li><p><strong>One-Versus-All(OVA)</strong></p>
+<p>假设原问题有四个类别，那么每次我把其中一个类别当成圈圈，其他所有类别当成叉叉，建立二元分类器，循环下去，最终我们会得到4个分类器。</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\ova-1584414720961.png" alt="img"></p>
+<p>做预测的时候，分别使用这四个分类器进行预测，预测为圈圈的那个模型所代表的类别，即为最终的输出。譬如正方形的那个分类器输出圈圈，菱形、三角形、星型这三个分类器都说是叉叉，则我们认为它是正方形。</p>
+<p>优点：简单高效，并且可以和Logistic Regression的方法搭配使用；</p>
+<p>缺点：当数据类别$k$很大时，那么二分的正类和负类的数量差别就很大，数据不平衡unbalance，这样就不容易得出正确结果。另外，在选取某一类概率最大时，所有类别的概率之和不一定为1，虽然实际中影响不大，但统计上有更加严谨的方法——multinomial logistic regression。</p>
+</li>
+<li><p><strong>One-Versus-One(OVO)</strong></p>
+<p>在类别较多的时候，如果使用OVA方法，则又会遇到数据不平衡(unbalance)的问题，你拿一个类别作为圈圈，其他所有类别作为叉叉，那么圈圈的比例就会非常小，而叉叉的比例非常高。为了解决这个不平衡的问题，我们可以利用OVO，即每次只拿两个类别的数据出来建立分类器，如下图。</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\ovo.png" alt="img"></p>
+<p>一笔新数据进来之后，分别使用这六个模型进行预测，投票得票数最多的那个类别，作为最终的输出。</p>
+<p>优点：更加高效，因为虽然需要进行的分类次数增加了，但是每次只需要进行两个类别的比较，也就是说单次分类的数量减少了；而且一般不会出现数据unbalanced的情况，比较稳定；可以和任何的binary classification方法搭配使用。</p>
+<p>缺点：分类次数增加到$C_k^2$，时间复杂度和空间复杂度可能都比较高。</p>
+</li>
+</ol>
+<p>总之，OVA和OVO是两个多类别分类方法，都是非常不错的多类别分类算法，在$k$不大的时候比较推荐OVO，减少分类次数。</p>
+<h2 id="Nonliear-Transformation"><a href="#Nonliear-Transformation" class="headerlink" title="Nonliear Transformation"></a>Nonliear Transformation</h2><p>前面所谈到的分类模型，都是基于线性的，即我们假设数据是线性可分，或者至少看起来用一条线来做分类是不错的。但现实中我们的数据往往不那么容易得能用一条线区分开来。</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\linear-vs-nonlinear.png" alt="img"></p>
+<p>可以发现$\mathcal{D}$并不是一个线性可分的数据，但使用一个圆圈，却可以很好得把圈圈和叉叉区分开来。这个”圆圈分类器”可以是下面这种形式:</p>
+<script type="math/tex; mode=display">
+h_{SEP}(x)=sign(-x_1^2-x_2^2+0.6)</script><p>于是我们就能把这个式子再写成下面的形式</p>
+<script type="math/tex; mode=display">
+h(x)=sign(\tilde{w}_0\cdot z_0+\tilde{w}_1\cdot z_1+\tilde{w}_2\cdot z_2)=\tilde{w}^Tz</script><p>如果我们只看包含$z$的部分，它事实上依然是一个线性方程。即$\mathcal{X}$空间下的一个圆圈，对应到$\mathcal{Z}$空间下的一条直线。</p>
+<p><img src="https://beader.me/imgs/nonlinear-transformation/two-space.png" alt="img"></p>
+<p>这个转换的过程称为nonlinear feature transform，用符号$\Phi$表示，$\Phi$把两个互相独立的空间给联系了起来:</p>
+<script type="math/tex; mode=display">
+(1,x_1^2,x_2^2)=\Phi(x)=(z_0,z_1,z_2)=z</script><p>$\mathcal{X}$空间下的每个点，都对应$\mathcal{Z}$空间下的某个点，同样$\mathcal{X}$空间下的二次曲线方程，都对应$\mathcal{Z}$空间下的某个一次直线方程。</p>
+<script type="math/tex; mode=display">
+h(x)=sign({\tilde{w}_0}+{\tilde{w}_1}{x_1^2}+{\tilde{w}_2}{x_2^2})=sign({\tilde{w}^T}{\Phi}(x))={\tilde{h}({z})}</script><p>这样以来，两个空间产生了关联，前面说的$\Phi$就是这两个空间的纽带，在这个纽带下，$\mathcal{Z}$空间下的不同直线也就对应$\mathcal{X}$下的不同形态的分类器。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$\tilde{w}$</th>
+<th style="text-align:left">X空间下的曲线形态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">(0.6,−1,−1)</td>
+<td style="text-align:left">circle(圈圈在内部，叉叉在外部)</td>
+</tr>
+<tr>
+<td style="text-align:center">(−0.6,+1,+1)</td>
+<td style="text-align:left">circle(圈圈在外部，叉叉在内部)</td>
+</tr>
+<tr>
+<td style="text-align:center">(0.6,−1,−2)</td>
+<td style="text-align:left">ellipse椭圆</td>
+</tr>
+<tr>
+<td style="text-align:center">(0.6,−1,+2)</td>
+<td style="text-align:left">hyperbola双曲线</td>
+</tr>
+<tr>
+<td style="text-align:center">(0.6,+1,+2)</td>
+<td style="text-align:left">所有点都判断为圈圈</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>更加一般化，我们把一次空间$\mathcal{X}$映射到二次空间$\mathcal{Z}$的时候，还会保留其一次项（图形中心不一定在原点），即下面这个样子的映射才是完整的二次映射:</p>
+<script type="math/tex; mode=display">
+\Phi(x)=(1,x_1,x_2,x_1^2,x_1x_2,x_2^2)</script><p>这样一来，这个完整版的$\mathcal{Z}$空间的直线，就可以代表$\mathcal{X}$空间下的所有二次曲线了。</p>
+<p>我们为何要做这个非线性变换？逻辑是这样的：</p>
+<ul>
+<li>在$\mathcal{X}$空间中，我们使用一条直线，很难把圈圈和叉叉分开</li>
+<li>但是如果我们使用一条曲线，可以很容易做到</li>
+<li>可我们只学过找最优“直线”的算法，没有学过找最佳“曲线”的算法</li>
+<li>我们有一个纽带$\Phi$，它能够把$\mathcal{X}$空间中的所有曲线，对应到$\mathcal{Z}$空间中的曲线，反过来也可以根据$\mathcal{Z}$空间的一条直线，找到$\mathcal{X}$空间中对应的曲线</li>
+<li>所以我们可以把$\mathcal{X}$空间下的原始数据$\mathcal{D}$映射到$\mathcal{Z}$空间下</li>
+<li>然后在$\mathcal{Z}$空间下寻找最佳的“直线”，找直线这件事我们已经学过该怎么做了</li>
+<li>找到这条最佳的“直线”后，把它对应回$\mathcal{X}$空间，就是我们刚开始说的需要找的那条最佳的“曲线”了。</li>
+</ul>
+<p><img src="https://beader.me/imgs/nonlinear-transformation/nonlinear-transform-steps.png" alt="img"></p>
+<p>实际操作上分以下三步：</p>
+<ol>
+<li>变换原始数据 ${(x_n,y_n)}\Rightarrow {(z_n=\phi(x_n),y_n)}$</li>
+<li>利用之前学过的算法，使用${(z_n,y_n)}$训练线性模型，得到$\tilde{w}$</li>
+<li>得到分类器方程$g(x)=sign({\tilde{w}^T}{\Phi_2}(x))$</li>
+</ol>
+<h3 id="非线性变换的代价"><a href="#非线性变换的代价" class="headerlink" title="非线性变换的代价"></a>非线性变换的代价</h3><p>d维向量$x$经过Q次多项式变换（Q-th Order Polynomial Transform）:</p>
+<script type="math/tex; mode=display">
+\tilde{d}=C_{Q+d}^Q=C_{Q+d}^d=O(Q^d)</script><p>以上是Q次完整变换，当然我们不一定会需要完整项，譬如之前那个圆圈，就舍弃了$x_1x_2$项。若考虑完整变化，原来的$1+d$维向量经过变换，就成了$1+\tilde{d}=1+\binom{Q+d}{Q}$维向量，复杂度由$O(d)$变为$O(Q^d)$。</p>
+<ol>
+<li><p>计算变复杂，需要的存储空间增大</p>
+<p>这点很容易理解，如之前的例子，原始数据$(1,x_1,x_2)$经过变换之后变成$(1,x_1,x_2,x_1^2,x_1x_2,x_2^2)$，需要多一倍的空间来存转换后的数据，同时参数的增加，也增大了计算量。</p>
+</li>
+<li><p>模型复杂度增大</p>
+<p>之前有讲到自由度与VC Dimension的关系，线性模型的$d_{vc}\approx 自由度 \approx \tilde{d}+1$。如果Q非常大的话，则模型的$d_{vc}$也会非常大，我们知道$d_{vc}$越大，越容易实现小的$E_{in}$，同时，也会造成$|E_{out}-E_{in}|$的加大，即模型的泛化能力(generalization)变差。</p>
+</li>
+</ol>
+<h4 id="模型的泛化问题-Generalization-Issue"><a href="#模型的泛化问题-Generalization-Issue" class="headerlink" title="模型的泛化问题(Generalization Issue)"></a>模型的泛化问题(Generalization Issue)</h4><p><img src="https://beader.me/imgs/nonlinear-transformation/phi1-vs-phi4.png" alt="img"></p>
+<p>上图是分别使用原始数据进行训练以及进行4次非线性变换后的数据进行训练的结果对比。从视觉上看，虽然右图（经过4次非线性变换的模型）能够把圈圈叉叉完全分开，但显然这种模型过于复杂了。</p>
+<p>很多时候我们会面临模型泛化能力和分类能力的权衡取舍，即：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$\tilde{d}(Q)$</th>
+<th style="text-align:center">$E_{out}(g)$能否与$E_{in}(g)$很接近?</th>
+<th style="text-align:center">$E_{in}(g)$是否足够小?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">高</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">低</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">×</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>那么如何选择合适的复杂度呢？暂且不讨论10维的数据有没有办法用眼睛看，就拿前面2维的例子来说，用眼睛看来选择模型是件很危险的事情。</p>
+<p>$d_{vc}$是比较难判断的，因为你是在“看过”数据之后，由你大脑选择的一个模型，这里要考虑到你大脑“选择模型”产生的一个复杂度，因为如果重新选取一部分数据，你有可能就不再挑选正圆模型了，事实上你的大脑不知不觉地参与到了模型参数估计上。（human learning√ machine learning ×）</p>
+<h3 id="Structured-Hypothesis-Sets"><a href="#Structured-Hypothesis-Sets" class="headerlink" title="Structured Hypothesis Sets"></a>Structured Hypothesis Sets</h3><p>通常我们说的非线性变换，指的是多项式变换(Polynomial Transform)。用符号$\Phi_Q$来表示$Q$次多项式变换：</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\20180806215127288.png" alt="img"></p>
+<p>可以发现$\Phi_{i}(x)$中包含了$\Phi_{i-1}(x)$，因此他们对应的Hypothesis Set也有如下关系：</p>
+<p><img src="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/1Study\hexo\source\_posts\林轩田《机器学习基石》笔记Part3.assets\20180806215426586.png" alt="img"></p>
+<p>假如我们分别对原始数据进行$i$次非线性多项式变换并训练模型，$g_i$表示使用$i$次非线性多项式变换后的数据所训练出的最优模型，$\color{blue}{g_i=argmin_{h\in \mathcal{H}_i}E_{in}(h)}$则有：</p>
+<script type="math/tex; mode=display">
+H_{\Phi_0} \subset H_{\Phi_1} \subset H_{\Phi_2} \subset \cdots \subset H_{\Phi_Q} \\
+d_{VC}(H_0)\leq d_{VC}(H_1)\leq d_{VC}(H_2)\leq \cdots \leq d_{VC}(H_Q)\\
+E_{in}(g_0)\geq E_{in}(g_1)\geq E_{in}(g_2)\geq \cdots \geq E_{in}(g_Q)</script><p>通常在进行高次非线性变换的时候，应该特别小心，因为$d_{vc}$上升很快，极容易造成overfitting。</p>
+<p>比较安全的做法是，先尝试不做非线性变换，即使用$\mathcal{H}_{\phi_1}$，如果效果足够好了，就不需要进行非线性变换，如果效果不够好，再慢慢尝试使用复杂更高的模型。</p>
+<p><img src="https://beader.me/imgs/nonlinear-transformation/model_complexity_curve.png" alt="img"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>xjw924</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/">http://xjw924.github.io/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/MachineLearning/"># MachineLearning</a>
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part1-2/">林轩田《机器学习基石》Note——Part1&2：When/Why Can Machines Learn?</a>
+            
+            
+            <a class="next" rel="next" href="/2020/02/14/jian-zhi-offer-ti-mu-python-jie-da/">剑指offer题目Python解答</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
