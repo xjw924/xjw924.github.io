@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>林轩田《机器学习基石》Note——Part1：When Can Machines Learn? | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">xjw924</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Category</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/categories/网课学习笔记">网课学习笔记</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">xjw924</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Category</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/categories/网课学习笔记">网课学习笔记</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">林轩田《机器学习基石》Note——Part1：When Can Machines Learn?</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 8, 2020&nbsp;&nbsp;17:06:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Notes/">Notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>课程：</p>
+<ul>
+<li><a href="https://www.bilibili.com/video/av12463015" target="_blank" rel="noopener">https://www.bilibili.com/video/av12463015</a></li>
+</ul>
+<p>参考笔记：</p>
+<ul>
+<li><a href="http://redstonewill.com/" target="_blank" rel="noopener">http://redstonewill.com/</a></li>
+<li><a href="https://beader.me/mlnotebook/index.html" target="_blank" rel="noopener">https://beader.me/mlnotebook/index.html</a></li>
+<li><a href="https://me.csdn.net/github_36324732" target="_blank" rel="noopener">https://me.csdn.net/github_36324732</a></li>
+<li><a href="https://zhuanlan.zhihu.com/ml-note" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/ml-note</a></li>
+</ul>
+</blockquote>
+<h1 id="When-Can-Machines-Learn"><a href="#When-Can-Machines-Learn" class="headerlink" title="When Can Machines Learn?"></a>When Can Machines Learn?</h1><h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><p><strong>技巧</strong>：某种表现的增进（e.g. prediction accuarcy）</p>
+<p><strong>机器学习</strong>：</p>
+<ul>
+<li>从数据出发，经过电脑的计算后，最终得到某种表现的增进（data→ML→improved performance measure）</li>
+<li>一种构建复杂规则的路径，授机以渔(?)</li>
+</ul>
+<p><strong>机器学习条件</strong>：</p>
+<ul>
+<li>存在某些潜在的模式可以学习</li>
+<li>有一定的难以具体言明的规则（not easily programmable）</li>
+<li>一定的数据资料</li>
+</ul>
+<p><strong>机器学习的组成部分</strong>：</p>
+<ul>
+<li>输入： $x\in X$</li>
+<li>输出： $y\in Y$</li>
+<li>目标函数 $f$：$X\rightarrow Y$（未知的目标函数）</li>
+<li>数据，即训练样本， $D=\{(x_1,y_1),(x_2,y_2),\cdots,(x_n,y_n)\}$</li>
+<li>假设函数 $g$： $X\rightarrow Y$ （能够学习到的函数），$g$与$f$越接近越好</li>
+<li><img src="https://www.zhihu.com/equation?tex=g%5Cin+H+%3D+%5Cleft%5C%7B+h_1%2Ch_2...h_n+%5Cright%5C%7D" alt="[公式]"> ，是属于假设空间$H$的一个假设，$H$称为假设函数集，包含了好与不好的各种$h$（假设），反映数据中可能存在的规律，从输入到输出的函数</li>
+</ul>
+<p><strong>机器学习 v.s. 数据挖掘 v.s. 人工智能 v.s. 统计</strong></p>
+<ul>
+<li>机器学习的目的是从数据资料出发，假设空间中选出一个最接近目标函数$f$的函数$g$，使得$g\approx f$</li>
+<li>数据挖掘：用数据找到隐含在资料中的有用信息，与机器学习密不可分，相互帮助（但有时候并不是以找到函数$g$为目标）</li>
+<li>人工智能：机器学习是实现人工智能的一种方法</li>
+<li>统计：使用数据来进行推论，$g$就是一个推论结果，统计是实现机器学习的一种方法；由于统计是从数学出发的，统计会更注重数学假设，而非计算。</li>
+</ul>
+<h2 id="感知机算法"><a href="#感知机算法" class="headerlink" title="感知机算法"></a>感知机算法</h2><p>Perceptron Learning Algorithm（PLA）</p>
+<p>首先要保证在这些得到的数据中，假设函数可以预测的很好</p>
+<p>根据预测与实际结果，不断地去修正决策平面</p>
+<script type="math/tex; mode=display">
+sign(w^T_tx_n)\neq y_n \\
+w_{t+1}\leftarrow w_t+y_{n(t)}x_{n(t)}</script><p><img src="https://i.loli.net/2020/03/09/wLcn5qdYjgOCkl9.png" alt="未命名1583747872.png"></p>
+<p>$w$是决策平面的法向量</p>
+<p>当发生错误时，比如，当实际标签为正$y=+1$而预测为负，则决策平面会更接近$x$；当实际标签为负$y=-1$而预测为正，则决策平面会更远离$x$。</p>
+<p>不断更新决策平面，直到不犯错误，最终得到的$w_{PLA}$是所要求的$g$。</p>
+<p>因此又称PLA为“知错能改算法”。</p>
+<blockquote>
+<p>感知器学习算法对$w$的更新方法，首先$w$和$x$的内积就表示两个向量的夹角大小，假如$x$的类别是+1，那么内积也是正的，如果初始的$w_0$使得这个值为负，那么代表$w_0$和$x$之间的夹角是钝角，太大了，就旋转$w_0$到$w_1$， 使得内积的值是正的，这就对$w_0$完成了一次更新</p>
+</blockquote>
+<p>终止条件：线性可分(linear separable)，即存在一个向量$w_f$使得能够完美地区分开正负样本</p>
+<p>由于函数间隔大于0（均可完全区分，且最近点离平面的也有一定的距离）：</p>
+<script type="math/tex; mode=display">
+y_{n(t)}w_f^Tx_{n(t)}\ge \min_n y_{n}w_f^Tx_{n}>0</script><p>因此可以推导</p>
+<script type="math/tex; mode=display">
+\begin{align}
+w^T_fw_{t+1}
+&=w^T_f(w_{t}+y_{n(t)}x_{n(t)})\\
+&\ge w^T_fw_{t}+\min_n y_{n}w_f^Tx_{n}\\
+&> w^T_fw_{t} +0
+\end{align}</script><p>可以看出随着$w_t$的更新，是在不断接近$w_f$</p>
+<p>（衡量向量接近的一个方法是内积，越大越接近）</p>
+<h2 id="机器学习的分类"><a href="#机器学习的分类" class="headerlink" title="机器学习的分类"></a>机器学习的分类</h2><p>根据输出类型可以划分为：</p>
+<ul>
+<li>分类（二元，多元）</li>
+<li>回归</li>
+<li>结构化学习（如标识词性，NLP）</li>
+</ul>
+<p>根据是否具有标签可分为：</p>
+<ul>
+<li>有监督</li>
+<li>无监督（聚类、密度分析、异常值检测）</li>
+<li>半监督（有标注+无标注混合）</li>
+<li>强化学习（通过对错误进行惩罚/对正确进行奖励，从而实现对序列化的信息进行学习）</li>
+</ul>
+<p>根据训练的形式可分为：</p>
+<ul>
+<li>批学习（batch）：一批样本一起学习，填鸭式’duck feeding’</li>
+<li>在线学习（online）：一个样本学习一次，一条一条地</li>
+<li>主动学习（active）：让机器有问问题的能力</li>
+</ul>
+<p>根据输入空间（特征）的类别可分为：</p>
+<ul>
+<li>具体的（concrete）</li>
+<li>原始的（raw）：通常需要人或机器去将抽象转化为具体</li>
+<li>抽象的（abstract）：通常也需要进行特征转换、提取等</li>
+</ul>
+<h2 id="机器学习可行性论证"><a href="#机器学习可行性论证" class="headerlink" title="机器学习可行性论证"></a>机器学习可行性论证</h2><blockquote>
+<p><strong>第一部分：证明适用于训练集的$g$同样适用于整个输入空间</strong></p>
+</blockquote>
+<ul>
+<li><strong>No Free Lunch（没有免费午餐定理）</strong>：即使对于已有的样本算法完全能够预测正确，但对于未知的样本来说并不能做到。</li>
+<li><p>这表明：<strong>学习可能是做不到的</strong>，在训练集中可以求得一个最佳假设$g$，但是在训练集外的样本中，$g$可能和目标函数$f$相差甚远。</p>
+</li>
+<li><p>引入<strong>Hoeffding’s Inequality（霍夫丁不等式）</strong></p>
+<script type="math/tex; mode=display">
+P(|\nu-\mu|> \varepsilon) \le 2\exp(-2\varepsilon^2N)</script><ul>
+<li>$|\nu-\mu|$表示$\nu$与$\mu$的接近程度</li>
+<li>随着样本量$N$增大，$\nu$与$\mu$相差较大的概率不断变小，<strong>$\nu$与$\mu$相等的结论“可能近似正确”（Probably Approximately Correct，PAC）</strong></li>
+<li>用$E_{in}(h)$和$E_{out}(h)$表示一个确定的假设函数$h$在样本内的错误率和样本外的错误率，则有： $P(|E_{in}(h)-E_{out}(h)|&gt; \varepsilon) \le 2\exp(-2\varepsilon^2N)$</li>
+<li>如果求得一个$h$，使得$E_{in}(h)$很小，且$E_{in}(h)\approx E_{out}(h)$，则可以推出$E_{out}(h)$很小，则可以推出$h\approx f$ </li>
+</ul>
+</li>
+</ul>
+<p><strong>通过大数定理由样本估计总体，可以增加样本数量使得估计与真实更加接近。证明了在一个$h$的情况下，当样本的数量足够多，该$h$在样本集上的表现可以代表它与真实$f$的接近程度。</strong></p>
+<ul>
+<li><p>但$h$只是假设空间的一种，不能由$h\approx f$得到$g\approx f$。（#不能由部分可行来推断总体可行）</p>
+</li>
+<li><p>因此算法要能够自由的从中挑选$h$，这里就需要添加一个<strong>验证流程(Verification Flow)</strong>，这个流程使用历史数据来判断某个够不够好。选出一个最小的$E_{in}(h)$，把挑选出的最好的称为final hypothesis，从而得到$g\approx f$。</p>
+<p><img src="https://beader.me/mlnotebook/section2/images/verification_flow.png" alt="img"></p>
+</li>
+</ul>
+<p><strong>以上证明了机器学习在训练样本中学习得到的$g$在整个输入空间中也可行。</strong></p>
+<blockquote>
+<p><strong>第二部分：证明训练样本的误差不会导致选择到的$g$对整个输入空间有误差</strong></p>
+</blockquote>
+<ul>
+<li><p>当$h$有多个时，要从中挑选最好的$h$，但验证所用的数据只是来自于总体的一个样本 (sample)，会存在抽样误差。譬如你想知道一枚硬币抛出正面的概率是多少，于是扔了5次，有一定的可能你连续扔了5个正面出来，这时候说抛出正面的概率是1，这当然是行不通的，因此你扔的这5次硬币，就是一个<strong>bad sample</strong>。</p>
+</li>
+<li><p>凡是由于抽样误差所造成样本分布与总体分布相差很大的样本，$E_{in}(h)$和$E_{out}(h)$差很远，我们都可以称之为<strong>bad sample</strong>。</p>
+</li>
+<li><p>由于数据不完美有噪声，在假设$h$有很多个的情况下，会倾向于选择让$E_{in}(h)$最小的那个$h$，导致恶化。</p>
+</li>
+<li><p>但当数据量足够多时，肯定能有数据使得机器学习$g$时不踩雷，即在每个$h$上$E_{in}(h)\approx E_{out}(h)$，能正确学习到g。（例如样本$D_{1126}$）</p>
+<p><img src="https://pic4.zhimg.com/80/v2-4d9f3d54a18a3edefecff9f3f47d3437_1440w.jpg" alt="img"></p>
+<ul>
+<li>上图包含了$M$个假设$h$，而不好的$D$不是由单一假设就能确定的，而是只要有一个假设在此抽样$D$上表现不好则该抽样被标记为不好的。求训练样本不好的几率是多少：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-574d528dd3031280c049da6a3000b0df_1440w.jpg" alt="img"></p>
+<ul>
+<li>当训练样本量$N$足够大且$M$有限大，则概率可以小于一个足够小的数字，可以说每一个假设$h$都是安全的，因此肯定会存在一个$D_{1126}$这样的样本。</li>
+</ul>
+</li>
+<li><p>所以如果通过机器学习找出了$g$满足<script type="math/tex">E_{in}(g)\approx 0</script> ，则PAC规则可以保证$E_{out}(g)\approx 0$</p>
+</li>
+<li><p>此时，我们就能把选到的最小$E_{in}(h)$的$h$当做$g$，那么$E_{out}(h)\approx 0$，从而达到了学习的效果。</p>
+</li>
+</ul>
+<p>此处留坑：这里假定$M$有限大，但如果像感知机一样$M=\infin$呢？</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part1/">http://xjw924.github.io/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part1/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/MachineLearning/"># MachineLearning</a>
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/11/shu-ju-hua-guan-li-dong-xi-ling-shou-ji-dian-zi-shang-wu-yun-ying-note/">数据化管理——洞悉零售及电子商务运营Note</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/08/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part3/">林轩田《机器学习基石》Note——Part3：How Can Machines Learn?</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
