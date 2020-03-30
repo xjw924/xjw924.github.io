@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>PySpark常用操作总结——预处理 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HOME</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/MachineLearning">Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">Data Analysis</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Category</a>
+                
+                    <a class="menu-item" href="/tag">Tag</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HOME</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/MachineLearning">Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">Data Analysis</a>
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Category</a>
+                
+                    <a class="menu-item" href="/tag">Tag</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">PySpark常用操作总结——预处理</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 22, 2020&nbsp;&nbsp;15:01:14</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Spark/">Spark</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h1><h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> DoubleType, IntegerType, StringType, NullType</span><br><span class="line"></span><br><span class="line"><span class="comment"># 替换原始列</span></span><br><span class="line">df = df.withColumn(col+<span class="string">'_tmp'</span>, df[col].cast(DoubleType())).drop(col).withColumnRenamed(col+<span class="string">'_tmp'</span>, col)</span><br><span class="line"><span class="comment"># 类型有：DoubleType(), IntegerType(), StringType()</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 保留原始列</span></span><br><span class="line">df = df.withColumn(col+<span class="string">'_new'</span>, df[col].cast(DoubleType()))</span><br></pre></td></tr></table></figure>
+<h2 id="缺失值填充"><a href="#缺失值填充" class="headerlink" title="缺失值填充"></a>缺失值填充</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">df = df.fillna(&#123;key: DoubleFillValue <span class="keyword">for</span> key <span class="keyword">in</span> DoubleFeatureList&#125;) \</span><br><span class="line">       .fillna(&#123;key: IntFillValue <span class="keyword">for</span> key <span class="keyword">in</span> intFeatureList&#125;) \</span><br><span class="line">       .fillna(&#123;key: StringFillValue <span class="keyword">for</span> key <span class="keyword">in</span> StringFeatureList&#125;)</span><br><span class="line"><span class="comment"># fillna()函数可以使用常数或字典类型</span></span><br><span class="line"><span class="comment"># 比如fillna(0)代表全部用0填充</span></span><br><span class="line"><span class="comment"># 比如fillna(&#123;'age':20, 'sex':-1&#125;) 表示'age'字段空值采用20填充，'sex'字段空值采用-1填充</span></span><br></pre></td></tr></table></figure>
+<p>str型字段的空值填充</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">stringNaValue = <span class="string">'null'</span> <span class="comment"># 缺失值非空时的取值（缺失值有空值''和非空值）</span></span><br><span class="line">stringFillValue = <span class="number">-1</span> <span class="comment"># 填充值</span></span><br><span class="line">df = df.replace(<span class="string">''</span>, stringFillValue, subset=StringFeatureList).na.fill(stringFillValue, subset=StringFeatureList)</span><br></pre></td></tr></table></figure>
+<h2 id="计算字段饱和度、值的个数"><a href="#计算字段饱和度、值的个数" class="headerlink" title="计算字段饱和度、值的个数"></a>计算字段饱和度、值的个数</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">n_sample = df.count() <span class="comment"># 样本数量</span></span><br><span class="line">featureQualityDict = &#123;feat:<span class="literal">None</span> <span class="keyword">for</span> feat <span class="keyword">in</span> featureList&#125; <span class="comment"># 初始化</span></span><br><span class="line"></span><br><span class="line">notNullCountSql = [<span class="string">"sum(case when &#123;f&#125; is not null then 1 else 0 end) as not_null_count_&#123;f&#125;"</span>.format(f=feat) <span class="keyword">for</span> feat <span class="keyword">in</span> featureList]</span><br><span class="line">distinctCountSql = [<span class="string">"count(distinct &#123;f&#125;) as distinct_count_&#123;f&#125;"</span>.format(f=feat) <span class="keyword">for</span> feat <span class="keyword">in</span> featureList]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用selectExpr接口进行并行计算</span></span><br><span class="line">countResultDF = df.selectExpr(*(notNullCountSql+distinctCountSql))</span><br><span class="line">countResult = countResultDF.collect()[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> featureList:</span><br><span class="line">    notNullCount = countResult[<span class="string">"not_null_count_&#123;f&#125;"</span>.format(f=feat)]</span><br><span class="line">    distinctCount = countResult[<span class="string">"distinct_count_&#123;f&#125;"</span>.format(f=feat)]</span><br><span class="line">    notNullRate = round(<span class="number">1.0</span> * notNullCount / n_sample, <span class="number">3</span>)</span><br><span class="line">    featureQualityDict[feat] = &#123;<span class="string">"notNullRate"</span>: notNullRate, <span class="string">"distinctCount"</span>: distinctCount&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="计算统计指标"><a href="#计算统计指标" class="headerlink" title="计算统计指标"></a>计算统计指标</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">statisticDict = &#123;&#125;</span><br><span class="line">dataDescribeDF = df.describe(numFeatureList) <span class="comment"># 对数值型变量计算统计指标</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> numFeatureList:</span><br><span class="line">    statisticDict[feat] = &#123;&#125; <span class="comment"># 嵌套dict</span></span><br><span class="line">    median = df.approxQuantile(feat, (<span class="number">0.5</span>,), <span class="number">0</span>)[<span class="number">0</span>] <span class="comment"># 计算中位数(0.5分位数)</span></span><br><span class="line">    statisticDict[<span class="string">'feat'</span>][<span class="string">'median'</span>] = round(median, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> dataDescribeDF.collect():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(numFeatureList)):</span><br><span class="line">        featName = numFeatureList[i]</span><br><span class="line">        statName = row[<span class="number">0</span>].encode(<span class="string">"utf-8"</span>)</span><br><span class="line">        statValue = round(eval(row[i+<span class="number">1</span>]), <span class="number">3</span>) </span><br><span class="line">        <span class="comment"># eval()函数将去掉字符串的两个引号,将其解释为一个变量。单/双引号eval()函数都将其解释为int类型</span></span><br><span class="line">        statisticDict[featName][statName] = statValue</span><br></pre></td></tr></table></figure>
+<h2 id="采样"><a href="#采样" class="headerlink" title="采样"></a>采样</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 固定数量采样</span></span><br><span class="line">sampleAmount = <span class="number">100</span> <span class="comment"># 抽取样本数量(int)</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> rand</span><br><span class="line">sample = df.withColumn(<span class="string">"rand"</span>,rand).orderBy(<span class="string">"rand"</span>).limit(sampleAmount).drop(<span class="string">"rand"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 按比例采样</span></span><br><span class="line">fraction = <span class="number">0.1</span> <span class="comment"># 采样比例(double in (0,1))</span></span><br><span class="line">withReplacement = <span class="literal">False</span> <span class="comment"># 是否可放回，默认不可放回</span></span><br><span class="line">sample = df.sample(fraction = fraction, withReplacement = withReplacement, seed = <span class="number">123</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>pyspark.sql.functions.rand</strong>(<em>seed=None</em>)<a href="http://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/functions.html#rand" target="_blank" rel="noopener">[source]</a></p>
+<p>Generates a random column with independent and identically distributed (i.i.d.) samples from <strong>U[0.0, 1.0]</strong>.</p>
+<p><strong>pyspark.sql.functions.randn</strong>(<em>seed=None</em>)<a href="http://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/functions.html#randn" target="_blank" rel="noopener">[source]</a></p>
+<p>Generates a column with independent and identically distributed (i.i.d.) samples from <strong>the standard normal distribution.</strong></p>
+</blockquote>
+<h2 id="划分样本"><a href="#划分样本" class="headerlink" title="划分样本"></a>划分样本</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">splitRatio = <span class="number">0.8</span> <span class="comment"># 训练集占80%</span></span><br><span class="line">trainDF, testDF = df.randomSplit([splitRatio, <span class="number">1</span>-splitRatio], seed = <span class="number">123</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="归一化"><a href="#归一化" class="headerlink" title="归一化"></a>归一化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> VectorAssembler, MinMaxScaler</span><br><span class="line"></span><br><span class="line">features = df.columns</span><br><span class="line"></span><br><span class="line"><span class="comment"># 首先使用VectorAssembler将需要归一化的变量合并为一列，输出新的变量"inputFeatures"</span></span><br><span class="line">inputAssembler = VectorAssembler(inputCols=normFeatureList, outputCol=<span class="string">"inputFeatures"</span>)</span><br><span class="line"><span class="comment"># normFeatureList: 需要归一化的变量</span></span><br><span class="line">df = inputAssembler.transform(df)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 其次使用MinMaxScaler进行归一化</span></span><br><span class="line">scaler = MinMaxScaler(inputCol=<span class="string">"inputFeatures"</span>, outputCol=<span class="string">"scaledFeatures"</span>)</span><br><span class="line">scalerModel = scaler.fit(df)</span><br><span class="line">scaledData = scalerModel.transform(df)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后将归一化后的合并变量列"scaledFeatures"分开</span></span><br><span class="line">scaledRDD = scaledData.select(features+[<span class="string">"scaledFeatures"</span>]).rdd.map(<span class="keyword">lambda</span> row: tuple([i <span class="keyword">for</span> i <span class="keyword">in</span> row[:<span class="number">-1</span>]]+[float(i) <span class="keyword">for</span> i <span class="keyword">in</span> row[<span class="number">-1</span>]]))</span><br><span class="line">newDF = scaledRDD.toDF(features + [(<span class="string">"normalized_"</span>+feat) <span class="keyword">for</span> feat <span class="keyword">in</span> normFeatureList])</span><br><span class="line"></span><br><span class="line"><span class="comment">#可选：替换原字段</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> normFeatureList:</span><br><span class="line">    newDF = newDF.drop(feat).withColumnRenamed(<span class="string">"normalized_"</span>+feat, feat)</span><br></pre></td></tr></table></figure>
+<h2 id="标准化"><a href="#标准化" class="headerlink" title="标准化"></a>标准化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> VectorAssembler, StandardScaler</span><br><span class="line"></span><br><span class="line">features = df.columns</span><br><span class="line"></span><br><span class="line"><span class="comment"># 首先使用VectorAssembler将需要标准化的变量合并为一列，输出新的变量"inputFeatures"</span></span><br><span class="line">inputAssembler = VectorAssembler(inputCols=standardFeatureList, outputCol=<span class="string">"inputFeatures"</span>)</span><br><span class="line"><span class="comment"># standardFeatureList: 需要标准化的变量</span></span><br><span class="line">df = inputAssembler.transform(df)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 其次使用StandardScaler进行标准化</span></span><br><span class="line">scaler = StandardScaler(inputCol=<span class="string">"inputFeatures"</span>, outputCol=<span class="string">"scaledFeatures"</span>)</span><br><span class="line">scalerModel = scaler.fit(df)</span><br><span class="line">scaledData = scalerModel.transform(df)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后将归一化后的合并变量列"scaledFeatures"分开</span></span><br><span class="line">scaledRDD = scaledData.select(features+[<span class="string">"scaledFeatures"</span>]).rdd.map(<span class="keyword">lambda</span> row: tuple([i <span class="keyword">for</span> i <span class="keyword">in</span> row[:<span class="number">-1</span>]]+[float(i) <span class="keyword">for</span> i <span class="keyword">in</span> row[<span class="number">-1</span>]]))</span><br><span class="line">newDF = scaledRDD.toDF(features + [(<span class="string">"stdized_"</span>+feat) <span class="keyword">for</span> feat <span class="keyword">in</span> standardFeatureList])</span><br><span class="line"></span><br><span class="line"><span class="comment">#可选：替换原字段</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> standardFeatureList:</span><br><span class="line">    newDF = newDF.drop(feat).withColumnRenamed(<span class="string">"stdized_"</span>+feat, feat)</span><br></pre></td></tr></table></figure>
+<h2 id="特征缩放"><a href="#特征缩放" class="headerlink" title="特征缩放"></a>特征缩放</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.function <span class="keyword">import</span> log10, log2, log, sqrt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可选方法如下（可增加）</span></span><br><span class="line">scaleFuncDict = &#123;</span><br><span class="line">    <span class="string">"log2"</span>: (<span class="keyword">lambda</span> x: log2(x)),</span><br><span class="line">    <span class="string">"log10"</span>: (<span class="keyword">lambda</span> x: log10(x)),</span><br><span class="line">    <span class="string">"ln"</span>: (<span class="keyword">lambda</span> x: log(x)),</span><br><span class="line">    <span class="string">"abs"</span>: (<span class="keyword">lambda</span> x: abs(x)),</span><br><span class="line">    <span class="string">"sqrt"</span>: (<span class="keyword">lambda</span> x: sqrt(x)),</span><br><span class="line">    <span class="string">"square"</span>: (<span class="keyword">lambda</span> x: x**<span class="number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 所选的特征缩放方法</span></span><br><span class="line">scaleMethod = <span class="string">"log2"</span></span><br><span class="line"></span><br><span class="line">newDF = df</span><br><span class="line"><span class="comment"># scaleFeatureList: 需要特征缩放的变量</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> scaleFeatureList:</span><br><span class="line">    newDF = newDF.withColumn(<span class="string">"scaled_"</span>+feat, scaleFuncDict[scaleMethod](newDF[feat]))</span><br><span class="line"></span><br><span class="line"><span class="comment">#可选：替换原字段</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> scaleFeatureList:</span><br><span class="line">    newDF = newDF.drop(feat).withColumnRenamed(<span class="string">"scaled_"</span>+feat, feat)</span><br></pre></td></tr></table></figure>
+<h2 id="异常特征平滑"><a href="#异常特征平滑" class="headerlink" title="异常特征平滑"></a>异常特征平滑</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">newDF = df.copy()</span><br><span class="line">featureThreshMap = &#123;feat:&#123;&#125; <span class="keyword">for</span> feat <span class="keyword">in</span> softenFeatureList&#125;</span><br><span class="line"><span class="comment"># softenFeatureList: 需要进行异常特征平滑的变量</span></span><br><span class="line">softenMethod = <span class="string">"zScore"</span> <span class="comment"># or "minMaxThresh" / "minMaxPercent" </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算统计指标</span></span><br><span class="line">statisticDict = &#123;&#125;</span><br><span class="line">dataDescribeDF = df.describe(softenFeatureList) <span class="comment"># 对数值型变量计算统计指标</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> dataDescribeDF.collect():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(softenFeatureList)):</span><br><span class="line">        featName = softenFeatureList[i]</span><br><span class="line">        statName = row[<span class="number">0</span>].encode(<span class="string">"utf-8"</span>)</span><br><span class="line">        statValue = round(eval(row[i+<span class="number">1</span>]), <span class="number">3</span>) </span><br><span class="line">        <span class="comment"># eval()函数将去掉字符串的两个引号,将其解释为一个变量。单/双引号eval()函数都将其解释为int类型</span></span><br><span class="line">        statisticDict[featName][statName] = statValue</span><br><span class="line">       </span><br><span class="line"><span class="comment"># 1. softenMethod = "zScore"</span></span><br><span class="line">zValue = <span class="number">1.96</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> featureThreshMap:</span><br><span class="line">    mean, stddev = statisticDict[feat][<span class="string">"mean"</span>], statisticDict[feat][<span class="string">"stddev"</span>]</span><br><span class="line">    featureThreshMap[feat][<span class="string">"minThresh"</span>] = mean - zValue * stddev</span><br><span class="line">    featureThreshMap[feat][<span class="string">"maxThresh"</span>] = mean + zValue * stddev</span><br><span class="line">    <span class="comment"># 进行类型转换（转为Double类型）</span></span><br><span class="line">    newDF = newDF.withColumn(feat+<span class="string">"_tmp"</span>, df[feat].cast(DoubleType())).drop(feat).withColumnRenamed(feat+<span class="string">"_tmp"</span>, feat)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 2. softenMethod = "minMaxPercent" </span></span><br><span class="line">minPercent = <span class="number">0.25</span></span><br><span class="line">maxPercent = <span class="number">0.75</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> featureThreshMap:</span><br><span class="line">    featureThreshMap[feat][<span class="string">"minThresh"</span>], featureThreshMap[feat][<span class="string">"maxThresh"</span>] = df.approxQuantile(feat, [minPercent, maxPercent], <span class="number">0.01</span>)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 3. softenMethod = "minMaxThresh" </span></span><br><span class="line">minThresh = <span class="number">0</span></span><br><span class="line">maxThresh = <span class="number">100</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> featureThreshMap:</span><br><span class="line">    featureThreshMap[feat][<span class="string">"minThresh"</span>], featureThreshMap[feat][<span class="string">"maxThresh"</span>] = minThresh, maxThresh</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 创建平滑UDF</span></span><br><span class="line">featureTypeMap = &#123;k:v <span class="keyword">for</span> k,v <span class="keyword">in</span> df.dtypes&#125; <span class="comment"># 需要对bigint/double类型进行转换，转换为int/float</span></span><br><span class="line">minV, maxV = featureThreshMap[feat][<span class="string">"minThresh"</span>], featureThreshMap[feat][<span class="string">"maxThresh"</span>]</span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> featureThreshMap:</span><br><span class="line">    <span class="keyword">if</span> featureTypeMap[feat] == <span class="string">"bigint"</span>:</span><br><span class="line">        featureType = IntegerType()</span><br><span class="line">        minV, maxV = int(minV), int(maxV)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        featureType = FloatType()</span><br><span class="line">        minV, maxV = float(minV), float(maxV)</span><br><span class="line">    compare = <span class="keyword">lambda</span> x: minV <span class="keyword">if</span> x &lt; minV <span class="keyword">else</span> (maxV <span class="keyword">if</span> x&gt;maxV <span class="keyword">else</span> x)</span><br><span class="line">    compareUDF = udf(compare, featureType)</span><br><span class="line">    newDF = newDF.withColumn(<span class="string">"soft_"</span>+feat, compareUDF(newDF[feat]))</span><br><span class="line">    <span class="comment"># 可选：替换原始变量</span></span><br><span class="line">    newDF = newDF.drop(feat).withColumnRenamed(<span class="string">"soft_"</span>+feat, feat)</span><br></pre></td></tr></table></figure>
+<h2 id="one-hot编码"><a href="#one-hot编码" class="headerlink" title="one-hot编码"></a>one-hot编码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> StringIndexer, OneHotEncoder</span><br><span class="line"></span><br><span class="line">newDF = df.select(oneHotFeatList)</span><br><span class="line">colList = newDF.columns</span><br><span class="line">colAmount = len(colList)</span><br><span class="line"></span><br><span class="line"><span class="comment"># oneHotFeatList: 要进行one-hot编码的变量</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> oneHotFeatList:</span><br><span class="line">    <span class="comment"># 先对变量进行数值化编码</span></span><br><span class="line">    stringIndexer = StringIndexer(inputCol=feat, outputCol=<span class="string">"categoryIndex"</span>)</span><br><span class="line">    model = stringIndexer.fit(newDF)</span><br><span class="line">    indexed = model.transform(newDF)</span><br><span class="line">    <span class="comment"># 一个变量名生成多个变量名</span></span><br><span class="line">    categoryList = [feat+<span class="string">"_"</span>+str(cat) <span class="keyword">for</span> cat,index <span class="keyword">in</span> indexed.select(feat,<span class="string">"categoryIndex"</span>).distinct().orderBy(<span class="string">"categoryIndex"</span>).collect()]</span><br><span class="line">    <span class="comment"># 然后进行one-hot编码</span></span><br><span class="line">    encoder = OneHotEncoder(inputCol=<span class="string">"categoryIndex"</span>,outputCol=<span class="string">"categoryVec"</span>,dropLast=<span class="literal">False</span>)</span><br><span class="line">    encoded = encoder.transform(indexed)</span><br><span class="line">    newDF = encoded.select(colList+[<span class="string">"categoryVec"</span>]).rdd\</span><br><span class="line">           .map(<span class="keyword">lambda</span> row: tuple(list(row[<span class="number">0</span>:colAmount])+[float(x) <span class="keyword">for</span> x <span class="keyword">in</span> row[<span class="number">-1</span>].toArray()]))\</span><br><span class="line">           .toDF(colList+categoryList)</span><br><span class="line">    colList = colList+categoryList</span><br><span class="line">    colAmount = len(colList)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>OneHotEncoder中的dropLast含义：</p>
+<p><a href="https://stackoverflow.com/questions/39500213/why-does-sparks-onehotencoder-drop-the-last-category-by-default" target="_blank" rel="noopener">https://stackoverflow.com/questions/39500213/why-does-sparks-onehotencoder-drop-the-last-category-by-default</a></p>
+<p><a href="https://spark.apache.org/docs/1.5.2/api/java/org/apache/spark/ml/feature/OneHotEncoder.html" target="_blank" rel="noopener">https://spark.apache.org/docs/1.5.2/api/java/org/apache/spark/ml/feature/OneHotEncoder.html</a></p>
+</blockquote>
+<h2 id="分箱"><a href="#分箱" class="headerlink" title="分箱"></a>分箱</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.feature <span class="keyword">import</span> Bucketizer</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">splitRangeIntoFloatList</span><span class="params">(start, end, numOfSplits)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    返回下界start到上界end之间的等分点。</span></span><br><span class="line"><span class="string">    例：(start=1, end=5, numOfSplits=2) -&gt; [1.0,3.0,5.0]</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    stepsize = (float(end)-float(start))/numOfSplits <span class="comment"># 间隔长度</span></span><br><span class="line">    resultList = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(numOfSplits):</span><br><span class="line">        resultList.append(round(start+stepsize*i), <span class="number">3</span>)</span><br><span class="line">    resultList.append(float(end))</span><br><span class="line">    <span class="keyword">return</span> resultList</span><br><span class="line"></span><br><span class="line">newDF = df.copy()</span><br><span class="line">numOfSplits = <span class="number">5</span> <span class="comment"># 分箱的个数</span></span><br><span class="line"><span class="comment"># bucketizedFeatureList: list, 要进行分箱的字段列表</span></span><br><span class="line">featureSplitDict = &#123;feat:[] <span class="keyword">for</span> feat <span class="keyword">in</span> bucketizedFeatureList&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> bucketizedFeatureList:</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">"*** Handling %s ***"</span> % feat) <span class="comment"># 每次循环可能耗时较长</span></span><br><span class="line">    <span class="comment"># 等频分箱</span></span><br><span class="line">    featSplits = newDF.approxQuantile(<span class="string">"typed_"</span>+feat, splitRangeIntoFloatList(<span class="number">0</span>,<span class="number">1</span>,numOfSplits),<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 等距分箱</span></span><br><span class="line">    <span class="comment"># featSplits = splitRangeIntoFloatList(newDF[feat].min(),newDF[feat].max(),numOfSplits)</span></span><br><span class="line">    featSplits[<span class="number">0</span>] = float(<span class="string">"-inf"</span>)</span><br><span class="line">    featSplits[<span class="number">-1</span>] = float(<span class="string">"inf"</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(featSplits))[::<span class="number">-1</span>][<span class="number">1</span>:]:</span><br><span class="line">        <span class="keyword">while</span> featSplits[i] &gt;= featSplits[i+<span class="number">1</span>]:</span><br><span class="line">            featSplits[i] -= <span class="number">0.00001</span> <span class="comment"># 避免数据倾斜</span></span><br><span class="line">    featureSplitDict[feat] = featSplits</span><br><span class="line">    bucketizer = Bucketizer(splits=featSplits, inputCol=<span class="string">"typed_"</span>+feat, outputCol=<span class="string">"discreate_"</span>+feat, handleInvalid=<span class="string">"keep"</span>)</span><br><span class="line">    newDF = bucketizer.transform(newDF)</span><br><span class="line">    newDF = newDF.drop(<span class="string">"typed_"</span>+feat)</span><br><span class="line">    <span class="comment"># 删除原始变量</span></span><br><span class="line">    newDF = newDF.drop(feat).withColumnRenamed(<span class="string">"discreate_"</span>+feat, feat)</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/22/pyspark-chang-yong-cao-zuo-zong-jie-yu-chu-li/">http://xjw924.github.io/2020/03/22/pyspark-chang-yong-cao-zuo-zong-jie-yu-chu-li/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        <a href="/tags/Spark/"># Spark</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/22/pyspark-chang-yong-cao-zuo-zong-jie-zeng-shan-gai-cha/">PySpark常用操作总结——增删改查</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/20/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part4/">电商数据分析与数据化运营Note——Part4：数据分析实战</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
