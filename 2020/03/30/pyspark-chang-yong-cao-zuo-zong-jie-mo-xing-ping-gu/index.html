@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>PySpark常用操作总结——建模 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HOME</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HOME</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">PySpark常用操作总结——建模</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 30, 2020&nbsp;&nbsp;15:01:14</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Spark建模/">Spark建模</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="模型评估"><a href="#模型评估" class="headerlink" title="模型评估"></a>模型评估</h1><h2 id="Logistic回归"><a href="#Logistic回归" class="headerlink" title="Logistic回归"></a>Logistic回归</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">lrSummary = lrModel.summary() <span class="comment"># 注：仅lr模型有该接口</span></span><br><span class="line"></span><br><span class="line">AUC = lrSummary.areaUnderROC</span><br><span class="line"></span><br><span class="line">fMeasureDF = lrSummary.fMeasureByThreshold</span><br><span class="line">precisionDF = lrSummary.precisionByThreshold</span><br><span class="line">recallDF = lrSummary.recallByThreshold</span><br><span class="line"></span><br><span class="line">maxFMeasure = fMeasureDF.agg(&#123;<span class="string">"F-Measure"</span>: <span class="string">"max"</span>&#125;).first()[<span class="number">0</span>] <span class="comment"># F-Measure最大值</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 选取F-Measure最大值所对应的threshold/precision/recall</span></span><br><span class="line">curThreshold = fMeasureDF.filter(fMeasureDF[<span class="string">"F-Measure"</span>]&gt;=(maxFMeasure<span class="number">-0.000001</span>))\</span><br><span class="line">                         .filter(fMeasureDF[<span class="string">"F-Measure"</span>]&lt;=(maxFMeasure+<span class="number">0.000001</span>))\</span><br><span class="line">                         .first().threshold <span class="comment"># 由于精度问题不使用等号</span></span><br><span class="line">curPrecision = precisionDF.filter(precisionDF[<span class="string">"threshold"</span>]&gt;=(curThreshold<span class="number">-0.000001</span>))\</span><br><span class="line">                          .filter(precisionDF[<span class="string">"threshold"</span>]&lt;=(curThreshold+<span class="number">0.000001</span>))\</span><br><span class="line">                          .first().precision</span><br><span class="line">curRecall = recallDF.filter(recallDF[<span class="string">"threshold"</span>]&gt;=(curThreshold<span class="number">-0.000001</span>))\</span><br><span class="line">                    .filter(recallDF[<span class="string">"threshold"</span>]&lt;=(curThreshold+<span class="number">0.000001</span>))\</span><br><span class="line">                    .first().recall</span><br><span class="line"></span><br><span class="line">result = &#123;<span class="string">"maxFMeasure"</span>: round(maxFMeasure, <span class="number">3</span>),</span><br><span class="line">          <span class="string">"curThreshold"</span>: round(curThreshold, <span class="number">3</span>),</span><br><span class="line">          <span class="string">"curPrecision"</span>: round(curPrecision, <span class="number">3</span>),</span><br><span class="line">          <span class="string">"curRecall"</span>: round(curRecall, <span class="number">3</span>),</span><br><span class="line">          <span class="string">"AUC"</span>: round(AUC, <span class="number">3</span>)&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二分类模型"><a href="#二分类模型" class="headerlink" title="二分类模型"></a>二分类模型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.evaluation <span class="keyword">import</span> BinaryClassificationEvaluator</span><br><span class="line"></span><br><span class="line">evaluator = BinaryClassificationEvaluator(labelCol=<span class="string">"label"</span>, rawPredictionCol=<span class="string">"prediction"</span>) <span class="comment"># 指定标签列和预测列的列名</span></span><br><span class="line"><span class="comment"># resultDF：模型输出的预测结果</span></span><br><span class="line">areaUnderPR = evaluator.evaluate(resultDF, &#123;evaluator.metricName:<span class="string">"areaUnderPR"</span>&#125;)</span><br><span class="line">areaUnderROC = evaluator.evaluate(resultDF, &#123;evaluator.metricName:<span class="string">"areaUnderROC"</span>&#125;)</span><br><span class="line"></span><br><span class="line">truePositiveCount = resultDF.filter(<span class="string">"label == 1 and prediction == 1"</span>).count()</span><br><span class="line">predictedPositiveCount = resultDF.filter(<span class="string">"prediction == 1"</span>).count()</span><br><span class="line">totalPositiveCount = resultDF.filter(<span class="string">"label == 1"</span>).count()</span><br><span class="line"></span><br><span class="line">precision = <span class="number">1.0</span> * truePositiveCount / predictedPositiveCount</span><br><span class="line">recall = <span class="number">1.0</span> * truePositiveCount / totalPositiveCount</span><br><span class="line"></span><br><span class="line">result = &#123;<span class="string">"areaUnderPR"</span>: round(areaUnderPR,<span class="number">3</span>),</span><br><span class="line">          <span class="string">"AUC"</span>: round(areaUnderROC,<span class="number">3</span>),</span><br><span class="line">          <span class="string">"precision"</span>: round(precision,<span class="number">3</span>),</span><br><span class="line">          <span class="string">"recall"</span>: round(recall,<span class="number">3</span>)&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ROC曲线-PR曲线"><a href="#ROC曲线-PR曲线" class="headerlink" title="ROC曲线/PR曲线"></a>ROC曲线/PR曲线</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 对positive_probability降低精度，提高运算效率</span></span><br><span class="line">trimRoundedDF = resultDF.select(<span class="string">"label"</span>,<span class="string">"positive_probability"</span>)\</span><br><span class="line">              .rdd.map(<span class="keyword">lambda</span> row: (row[<span class="string">"label"</span>], round(row[<span class="string">"positive_probability"</span>],<span class="number">4</span>)))\</span><br><span class="line">              .toDF([<span class="string">"label"</span>, <span class="string">"positive_probability"</span>])</span><br><span class="line">trimRoundedDF.cache()</span><br><span class="line"></span><br><span class="line">listOfPRF = []</span><br><span class="line">listOfTpFp = []</span><br><span class="line">steps = <span class="number">200</span> <span class="comment"># 设置threshold的遍历步长</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> threshold <span class="keyword">in</span> [<span class="number">1.0</span>/steps*i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,steps,<span class="number">1</span>)]:</span><br><span class="line">    <span class="keyword">print</span> (<span class="string">"*** Handling Threshold:&#123;threshold&#125; ***"</span>.format(threshold=threshold))</span><br><span class="line">    tmpCalcDF = trimRoundedDF.rdd.map(<span class="keyword">lambda</span> row:(int(row[<span class="string">"label"</span>]),<span class="number">1</span> <span class="keyword">if</span> row[<span class="string">"positive_probability"</span>] &gt;= threshold <span class="keyword">else</span> <span class="number">0</span>)).toDF([<span class="string">"label"</span>,<span class="string">"prediction"</span>])</span><br><span class="line">    tmpResult = tmpCalcDF.selectExpr(</span><br><span class="line">        <span class="string">"sum(case when label = 0 and prediction = 1 then 1 else 0 end) as FP"</span>,</span><br><span class="line">        <span class="string">"sum(case when label = 1 and prediction = 0 then 1 else 0 end) as FN"</span>,</span><br><span class="line">        <span class="string">"sum(case when label = 1 and prediction = 1 then 1 else 0 end) as TP"</span>,</span><br><span class="line">        <span class="string">"sum(case when label = 0 and prediction = 0 then 1 else 0 end) as TN"</span></span><br><span class="line">    ).collect()[<span class="number">0</span>]</span><br><span class="line">    actualPositive = tmpResult.TP + tmpResult.FN</span><br><span class="line">    actualNegative = tmpResult.TN + tmpResult.FP</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        precision = tmpResult.TP / (tmpResult.TP + tmpResult.FP)</span><br><span class="line">        recall = tmpResult.TP / actualPositive</span><br><span class="line">        TPR = recall <span class="comment"># 分到正样本中真实的正样本所占所有正样本的比例</span></span><br><span class="line">        FPR = tmpResult.FP / (tmpResult.FP + tmpResult.TN) <span class="comment"># 分到正样本类别中真实的负样本所占所有负样本总数的比例</span></span><br><span class="line">        fMeasure = <span class="number">2</span> * precision * recall / (precision + recall)</span><br><span class="line">        listOfPRF.append([precision,recall,fMeasure])</span><br><span class="line">        listOfTpFp.append([TPR,FPR])</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="comment"># 超过阈值全部预测为0的情况</span></span><br><span class="line">        print(<span class="string">"TP: %s"</span> % tmpResult.TP)</span><br><span class="line">        print(<span class="string">"FN: %s"</span> % tmpResult.FN)</span><br><span class="line">        print(<span class="string">"TN: %s"</span> % tmpResult.TN)</span><br><span class="line">        print(<span class="string">"FP: %s"</span> % tmpResult.FP)</span><br><span class="line">        listOfPRF.append([<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>])</span><br><span class="line">        listOfTpFp.append([<span class="number">0.0</span>, <span class="number">0.0</span>])</span><br><span class="line">    <span class="comment"># 计算最大的FMeasure</span></span><br><span class="line">    maxFMeasureGroup = sorted(listOfPRF, key=<span class="keyword">lambda</span> x: x[<span class="number">-1</span>], reverse=<span class="literal">True</span>)[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 计算PR曲线面积（PR曲线横坐标为recall，纵坐标为precision）</span></span><br><span class="line">    sortedListOfPRF = sorted(listOfPRF, key=<span class="keyword">lambda</span> x: (x[<span class="number">1</span>],x[<span class="number">0</span>]) ,reverse=<span class="literal">False</span>) <span class="comment"># 保证横纵坐标是增加的（便于计算近似梯形面积）</span></span><br><span class="line">    prArea = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(steps<span class="number">-1</span>):</span><br><span class="line">        prArea += (sortedListOfPRF[i][<span class="number">0</span>] + sortedListOfPRF[i+<span class="number">1</span>][<span class="number">0</span>]) / <span class="number">2</span>*(sortedListOfPRF[i+<span class="number">1</span>][<span class="number">1</span>] - sortedListOfPRF[i][<span class="number">1</span>]) <span class="comment"># 近似为梯形面积</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 计算ROC曲线面积AUC</span></span><br><span class="line">    AUC = <span class="number">0</span></span><br><span class="line">    sortedListOfTpFp = sorted(listOfTpFp, key=<span class="keyword">lambda</span> x: (x[<span class="number">1</span>],x[<span class="number">0</span>]) ,reverse=<span class="literal">False</span>) <span class="comment"># 保证横纵坐标是增加的（便于计算近似梯形面积）</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(steps<span class="number">-1</span>):</span><br><span class="line">        AUC += (sortedListOfTpFp[i][<span class="number">0</span>] + sortedListOfTpFp[i+<span class="number">1</span>][<span class="number">0</span>]) / <span class="number">2</span>*(sortedListOfTpFp[i+<span class="number">1</span>][<span class="number">1</span>] - sortedListOfTpFp[i][<span class="number">1</span>]) <span class="comment"># 近似为梯形面积</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 生成PR曲线DF</span></span><br><span class="line">    prfData = [tuple(r) <span class="keyword">for</span> r <span class="keyword">in</span> sortedListOfPRF]</span><br><span class="line">    prfDF = spark.createDataFrame(prfData, schema=[<span class="string">'precision'</span>,<span class="string">'recall'</span>,<span class="string">'fMeasure'</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 生成ROC曲线DF</span></span><br><span class="line">    rocData = [tuple(r) <span class="keyword">for</span> r <span class="keyword">in</span> sortedListOfTpFp]</span><br><span class="line">    tpfpDF = spark.createDataFrame(rocData, schema=[<span class="string">'TPR'</span>,<span class="string">'FPR'</span>])</span><br><span class="line">    </span><br><span class="line">    result = &#123;</span><br><span class="line">        <span class="string">"maxFMeasure"</span>: maxFMeasureGroup[<span class="number">-1</span>],</span><br><span class="line">        <span class="string">"precisionAtMaxFMeasure"</span>: maxFMeasureGroup[<span class="number">0</span>],</span><br><span class="line">        <span class="string">"recallAtMaxFMeasure"</span>: maxFMeasureGroup[<span class="number">1</span>],</span><br><span class="line">        <span class="string">"areaUnderPR"</span>: prArea,</span><br><span class="line">        <span class="string">"areaUnderROC"</span>: AUC,</span><br><span class="line">        <span class="string">"prfDF"</span>: prfDF,</span><br><span class="line">        <span class="string">"tpfpDF"</span>: tpfpDF</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="多分类模型"><a href="#多分类模型" class="headerlink" title="多分类模型"></a>多分类模型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.ml.evaluation <span class="keyword">import</span> MulticlassClassificationEvaluator</span><br><span class="line"></span><br><span class="line">evaluator = MulticlassClassificationEvaluator(labelCol=<span class="string">"label"</span>, rawPredictionCol=<span class="string">"prediction"</span>) <span class="comment"># 指定标签列和预测列的列名</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># resultDF：模型输出的预测结果</span></span><br><span class="line">accuracy = evaluator.evaluate(resultDF, &#123;evaluator.metricName:<span class="string">"accuracy"</span>&#125;)</span><br><span class="line">weightedPrecision = evaluator.evaluate(resultDF, &#123;evaluator.metricName:<span class="string">"weightedPrecision"</span>&#125;)</span><br><span class="line">weightedRecall = evaluator.evaluate(resultDF, &#123;evaluator.metricName:<span class="string">"weightedRecall"</span>&#125;)</span><br><span class="line">f1 = evaluator.evaluate(resultDF, &#123;evaluator.metricName:<span class="string">"f1"</span>&#125;)</span><br><span class="line"></span><br><span class="line">result = &#123;<span class="string">"accuracy"</span>: round(accuracy,<span class="number">3</span>),</span><br><span class="line">          <span class="string">"weightedPrecision"</span>: round(weightedPrecision,<span class="number">3</span>),</span><br><span class="line">          <span class="string">"weightedRecall"</span>: round(weightedRecall,<span class="number">3</span>),</span><br><span class="line">          <span class="string">"f1"</span>: round(f1,<span class="number">3</span>)&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/30/pyspark-chang-yong-cao-zuo-zong-jie-mo-xing-ping-gu/">http://xjw924.github.io/2020/03/30/pyspark-chang-yong-cao-zuo-zong-jie-mo-xing-ping-gu/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Spark/"># Spark</a>
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/03/30/pyspark-chang-yong-cao-zuo-zong-jie-jian-mo/">PySpark常用操作总结——建模</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
