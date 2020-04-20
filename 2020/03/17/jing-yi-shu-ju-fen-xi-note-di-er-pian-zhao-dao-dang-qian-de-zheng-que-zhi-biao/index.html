@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>精益数据分析Note——第二篇 找到当前的正确指标 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HOME</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HOME</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">精益数据分析Note——第二篇 找到当前的正确指标</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 17, 2020&nbsp;&nbsp;21:26:02</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Books/">Books</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="第二篇-找到当前的正确指标"><a href="#第二篇-找到当前的正确指标" class="headerlink" title="第二篇 找到当前的正确指标"></a>第二篇 找到当前的正确指标</h1><h2 id="Ch5-数据分析框架"><a href="#Ch5-数据分析框架" class="headerlink" title="Ch5 数据分析框架"></a>Ch5 数据分析框架</h2><ol>
+<li><p>戴夫.麦克卢尔 的<strong>海盗指标说</strong></p>
+<p>麦克卢尔将创业公司最需要关注的指标分为五大类：</p>
+<p><strong>获取用户Acquisition、提高活跃度 Activation、提高留存率 Retention、获取营收 Revenue、自传播 Referral</strong></p>
+<p><img src="https://images2018.cnblogs.com/blog/1425945/201807/1425945-20180727111421656-1691619468.jpg" alt="img"></p>
+<p>描述了用户/客户/访客须经历的五个环节，以便企业获取价值。</p>
+</li>
+<li><p>埃里克.莱斯的<strong>增长引擎</strong>传说</p>
+<p>驱动创业增长的三大引擎，它们都着各自对应的关键绩效指标KPI。</p>
+<ul>
+<li><p><strong>黏着式增长引擎</strong></p>
+<p>重点是让客户成为回头客，并且持续使用你的产品。如果产品的用户黏着性不大，流失率就会很高，用户参与度不理想。<strong>用户参与度</strong>是预测产品成功的最佳指示剂之一。</p>
+<p>衡量黏着性最重要的KPI：<strong>客户留存率</strong>。除此之外，流失率和使用频率也是非常重要的指标。</p>
+</li>
+<li><p><strong>病毒式增长引擎</strong></p>
+<p>所谓病毒式传播归根结底就是：让声名传播出去。</p>
+<p>病毒式传播之所以吸引人，在于它的<strong>指数性</strong>本质。</p>
+<p>关键指标是<strong>病毒式传播系数</strong>，即每个用户所带来的新用户数。这个指标衡量的是每一个病毒传播周期的新用户量。</p>
+<p>还要衡量哪些用户行为形成了一个<strong>病毒传播周期</strong>。还有一些其他因素也与病毒性相关，包括用户完成一次邀请所需的时间（或叫病毒传播周期）以及病毒性的类别。</p>
+</li>
+<li><p><strong>付费式增长引擎</strong></p>
+<p>第三种驱动增长的引擎是付费。在确知产品具有黏着性和病毒性前就开动这一引擎，是过于仓促的行为。</p>
+<p>赚钱是识别一个商业模式是否可持续的终极指标。从客户身上赚的钱 <strong>&gt;</strong> 获取客户的花费，并可以一直做下去，就是可持续的。</p>
+<p>只有反过来把营收的一部分再用于获取用户时，营收才有助于增长，这样就有了一个可调节的业务增长机器。机器上的两个调节旋钮是<strong>客户终生价值（CLV）</strong>和<strong>客户获取成本（CAC）</strong>。取决于多久才可以让客户付清你获取他所花的成本。一种衡量方法是看<strong>客户盈亏平衡时间</strong>，即收回获取一位用户的成本所需时间。</p>
+</li>
+</ul>
+</li>
+<li><p>肖恩.埃利斯的<strong>创业增长金字塔</strong></p>
+<p>着眼于创业公司在找到产品与市场契合点<strong>之后</strong>该如何增长。</p>
+<p>该框架的最大问题：如何确定已经达到产品与市场的契合点？　　　</p>
+<p>为此肖恩设计了一份问卷，问卷中最重要的问题是：“如果不能再使用这个产品或服务，你的感受是什么？”如果40%（或以上）的人回答他们会“非常失望”，就说明你已经找到了契合点。</p>
+</li>
+<li><p>长漏斗</p>
+<p>长漏斗是一种分析方法，能够帮助理解最初是如何获得客户的注意力的，以及客户从最初得知该网站到发生你所期望的行为的全过程。</p>
+</li>
+<li><p>精益数据分析阶段和关隘模型</p>
+<p>在了解以上的数据框架后，需要用一个模型来确立创业通常经历的几个不同阶段，并确定你是否应进入下一阶段的“关隘”指标。</p>
+<p>创业的五个独立阶段：<strong>移情、黏性、病毒性、营收和扩展</strong>。</p>
+</li>
+</ol>
+<blockquote>
+<p>总结：</p>
+<p>侧重于获取和转化用户的行为：如海盗指标和长漏洞框架<br>帮助你了解在何时以何种方式增长：如增长引擎和创业增长金字塔框架<br>帮助你厘清商业模式及其组成部分：如创业画布框架</p>
+</blockquote>
+<h2 id="Ch6-第一关键指标的约束力"><a href="#Ch6-第一关键指标的约束力" class="headerlink" title="Ch6  第一关键指标的约束力"></a>Ch6  第一关键指标的约束力</h2><ul>
+<li>创业在不同的阶段有不同的指标，同一阶段最好专注于某一个指标，这一指标称为<strong>第一关键指标（OMTM，One Metric That Matters）</strong>。在实际的工作中，可以选择尽量少的指标作为日常跟踪对象。</li>
+<li>使用第一关键指标的四大理由：<ol>
+<li>它回答了现阶段最重要的问题</li>
+<li>它促使你得出初始的基线并建立清晰的目标</li>
+<li>它关注的是整个公司层面的健康（数据呕吐：形容想一次汇报太多事情）</li>
+<li>它鼓励一种实验文化：高频率地开展开发–测量–认知循环，高度倡导试验精神</li>
+</ol>
+</li>
+<li>定立初始成功：明确最应该关注的指标以外，还需要定立初始基准，即确定什么数字算是成功，什么算是未达标</li>
+<li>挤压玩具：一个地方是优势，另一个地方一定会显示出劣势，这就是下一个需要攻克的目标了，无论当前目标是什么，都需要做好<strong>随时改变</strong>的准备。</li>
+</ul>
+<h2 id="Ch7-你所在的商业领域"><a href="#Ch7-你所在的商业领域" class="headerlink" title="Ch7 你所在的商业领域"></a>Ch7 你所在的商业领域</h2><ul>
+<li><p>创业增长中的杠杆：</p>
+<ol>
+<li><strong>更多的商品</strong>意味着推出新产品和新服务（新产品研发）</li>
+<li><strong>更多的人</strong>意味着获取更多的用户</li>
+<li><strong>更频繁</strong>意味着高用户黏性、低流失率以及反复使用</li>
+<li><strong>更多的钱</strong>意味着追加销售、将用户愿意支付的价格最大化</li>
+<li><strong>更有效率</strong>意味着降低完成以及支持服务的成本，尽量少打广告，多利用营销来降低获取客户的成本</li>
+</ol>
+</li>
+<li><p>关于“人”</p>
+<p>不是每个用户都是你想要的那种。需要区分哪些是真正有价值的客户，哪些是路过的、好奇的，哪些是有害的客户。<br>接下来要通过改进产品，尽可能增长优质用户比例，同时驱逐劣质用户。<br>不要执迷于用户数，而应该为好的用户做好优化，并根据这些用户来判定好的行为是什么。</p>
+</li>
+<li><p>商业模式拼接书</p>
+<p><strong>商业模式</strong>是一些因素的混合体，不要把营销模式和商业模式混为一谈。<br>主要组成：获取渠道、销售手段、营收来源、产品类型、送达模式<br><img src="https://img-blog.csdnimg.cn/20190115213108305.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNzM1MDI4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<h2 id="Ch8-商业模式一：电子商务"><a href="#Ch8-商业模式一：电子商务" class="headerlink" title="Ch8 商业模式一：电子商务"></a>Ch8 商业模式一：电子商务</h2><ol>
+<li><p>早期电子商务模式的简单“转化漏斗”模型：</p>
+<p>浏览网页–驻足于某件商品–点击购买按钮–提供详细信息–完成此次交易</p>
+</li>
+<li><p>如今电子商务已经没有简单</p>
+<ul>
+<li>变化1：大家更多是通过<strong>站外搜索</strong>找到结果，而非站内的导航——<strong>搜索关键字</strong>变得更加重要。</li>
+<li>变化2：电商商家通过<strong>推荐</strong>引擎来预测买家要买的东西，以历史购买记录为基础，向用户推荐信息。</li>
+<li>变化3：电商一直在优化网站性能，比如划分来访流量并区别对待来源不同的访客，从而找到最优的产品、内容和价格。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>变化4：购买流程早在访问网站前就已经开始，比如社交软件等，使买家行为难以跟踪。</li>
+</ul>
+<ol>
+<li><p>不同的电商模式：</p>
+<p>年度重复购买率=去年购买过的买家中有多少比例今年仍在此购物</p>
+<ul>
+<li><strong>用户获取模式</strong>：客户的重复购买率较低（小于<strong>40%</strong>），应致力于发展新客户。但对于卖眼镜以及运动装备的电商，回头客会较少，可以把精力放在客户推荐机制上。</li>
+<li><strong>混合模式</strong>：客户重复购买率为40%-60%，应兼顾新客户获取与回头客的招揽。</li>
+<li><strong>忠诚度模式</strong>：客户重复购买率超过60%，将经营重心放在客户忠诚度上，即鼓励更加频繁地消费。</li>
+<li>注：三种模式没有优劣之分，重点要找到适合自己的商业模式。</li>
+</ul>
+</li>
+<li><p>关注的指标</p>
+<ul>
+<li><strong>转化率</strong>：访客发生购买行为的比例。是电商健康程度的<strong>最基本</strong>指标之一，可以按人群、商品、访客来源等多重标准讨论转化率。很大程度取决于电商类型。</li>
+<li><strong>年均购买率</strong>：每位买家的年均购买次数。<strong>90天内重复购买率</strong>是判断电商所属类型的绝好指示剂。</li>
+<li><strong>平均购物车大小</strong>：买家下单时平均每单的钱数。一般倾向于把客户获取成本看作是相对固定的，因此订单量越大，利润率越高。</li>
+<li><strong>弃买率</strong>：弃买率=1-转化率，买家开始购买流程后放弃购买的比率。客户可能在任何一步放弃购买，因此把弃买率分解到每一步是是十分必要的。</li>
+<li><strong>客户获取成本</strong>：获取一位客户所需的平均成本。</li>
+<li><strong>平均每位客户营收</strong>（客户终身价值）：平均每位客户终其一生在该网站消费的总金额。包含了其他关键指标的综合指标，是<strong>衡量网站健康程度的唯一标准</strong>。转化率与平均每位客户营收寻求平衡。</li>
+<li><strong>关键词和搜索词</strong>：有助于了解相邻产品与市场。因为搜索引擎有竞价排名，所以应该要找性价比最高的。需要弄清楚大家在找些什么。如果有大量的搜索指向某一特定分类，则需要调整商品分类或者将这个分类放到首页。</li>
+<li><strong>推荐接受率</strong>：从推荐的商品中获得了多少额外的营收。</li>
+<li><strong>病毒性</strong>：口碑以及平均每个访客带来的分享次数。</li>
+<li><strong>邮件列表点入率</strong>：邮件中链接的点击率以及招揽回头客的能力。电子邮件是把双刃剑，一次失败的邮件推广所造成的退订和推广获取的利润。</li>
+</ul>
+</li>
+<li><p>线上线下相结合</p>
+<ul>
+<li>运送时间：提高整体的运营效率，有助于获取对质量和速度有更高要求的客户</li>
+<li>库存可供率：商品缺货时，销售量也随之下降；建议根据销售量来分配库存，做到库存和销量之间的均衡 </li>
+</ul>
+</li>
+<li><p>图说电子商务：一位买家在电商网站中的历程，以及每一步的关键指标。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190119203351417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNzM1MDI4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom:200%;"></p>
+</li>
+</ol>
+<blockquote>
+<p>总结：</p>
+<ul>
+<li>明确应关注忠诚度还是客户的获取</li>
+<li>站内外搜索成为寻找购买商品的常用方式</li>
+<li>真正起作用的是平均每位客户营收=转化率*重复购买率*购物车的大小</li>
+<li>不要忽视现实问题，如送货、物流、库存等</li>
+</ul>
+</blockquote>
+<h2 id="Ch9-商业模式二：SaaS"><a href="#Ch9-商业模式二：SaaS" class="headerlink" title="Ch9 商业模式二：SaaS"></a>Ch9 商业模式二：SaaS</h2><ol>
+<li><p>SaaS简介</p>
+<p>指按需提供软件的公司，通常以网站的形式出现，如Gmail。</p>
+<p>大部分的 SaaS提供商以<strong>月费或者年费</strong>的形式获取收益。成本为<strong>实际硬件消耗</strong>，如存储空间、占用带宽等。</p>
+<p>对于SaaS而言，增加一个用户的边际成本是可以忽略不计的，因此大多数的SaaS采用<strong>免费增值模式</strong>来获取客户。</p>
+</li>
+<li><p>关注指标</p>
+<ul>
+<li>眼球：网站吸引访客的效果如何</li>
+<li>参与度：有多少访客注册成为了免费版或者试用版的用户</li>
+<li>黏性：有多少客户真正在使用你的产品</li>
+<li>转化率：有多少用户成为了付费用户</li>
+<li>平均每位客户营收：单位时间内平均每位客户带来的营收</li>
+<li>客户获取成本：获取一位付费客户的所需成本</li>
+<li>病毒性：客户邀请他人或向他人推荐公司产品的可能性以及所需时间</li>
+<li>追加销售：是什么促使客户支付更多费用，以及这种情况发生的频率</li>
+<li>系统正常运行时间和可靠性：公司会面临多少用户投诉、问题升级或者服务争端问题</li>
+<li>流失率：单位时间内流失的用户和付费客户人数</li>
+<li>终身价值：客户使用产品期间的付费总额。</li>
+</ul>
+</li>
+<li><p>案例：对于产品生命周期的探索</p>
+<ul>
+<li>在开始优化各种复杂的财务指标之前，先把营收做好。但注意不要忽视成本，因为发展的关键是盈利能力。</li>
+<li>当付费引擎状态良好，客户获取成本只占客户终身价值的一小部分时，即可加大投入，开始扩张。低占比是付费投入回报率的积极信号。</li>
+<li>大多是SaaS公司均依靠月再发收入（客户月以继月地支付费用）获取收益。该指标是公司成功的重要基础。</li>
+</ul>
+</li>
+<li><p>一些指标的衡量</p>
+<ul>
+<li><p><strong>参与度</strong>：用于衡量参与度的终极指标是<strong>日活跃量</strong>。</p>
+<p>将产品的早期版本推向市场，测试客户的反应，然后找出对产品反响最大的人群。着重发展这部分人群。</p>
+<p>此外，部分专业应用未必是天天使用的，因此日活量可以对应变为月活量，<strong>找准适合自己产品的衡量线</strong>最为重要。</p>
+<p><strong>“跨越鸿沟”</strong>：早期用户即可代表主流群体，然后以他们为起点，扩大商品市场。</p>
+<p>衡量参与度时，不要只关注访问率等原始数据，要试着看用户的使用规律。用处有两点：1、找到产品的改进点；2、判断某项产品改动是否奏效，可以先测试部分用户的反应，然后将测试结果与对照组进行比较。</p>
+<p>不仅需要告知产品或服务的黏性如何，还应指出哪些客户留了下来、付出是否的得到了回报。</p>
+</li>
+<li><p><strong>流失率</strong>：流失率之在一段时间内流失掉的用户比例，单位时间可以是周、月或者季度，但是所有指标的时间单位应该保持一致性，这样才具有可比性。</p>
+<p>免费客户流失和付费客户流失应该分开衡量。免费：用户注销账户或再也没回来使用过；付费：注销账号并停止支付费用，或降级到免费版。</p>
+<p>非活跃用户：90天（或更短）内没有登录的用户。</p>
+<p>计算公式：一段时间内流失的用户数/这段时间开始时的用户数<br>修正公式：一段时间内流失的用户数/[(这段时间开始时的用户数+时间段结束时的用户数)/2]</p>
+<p>其他修正：以断代来衡量流失率（以注册时间为基础比较）；以天为单位计算流失率</p>
+<p><img src="https://i.bmp.ovh/imgs/2020/04/8cb505b068218538.png" style="zoom:150%;"></p>
+</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>案例分析：ClearFit放弃月费模式后获得了10倍增长</p>
+<p>SaaS并不意味着一定要采用年费或月费的模式。如果服务存续性十分短暂，也许按件计费的方式会更好些。</p>
+<p>低价位并不一定带来好结果，客户可能会低估产品或服务的质量。</p>
+</li>
+<li><p>SaaS的难题：免费增值、分级收费以及其他定价模式</p>
+<ul>
+<li><p>免费增值模式和付费模式，各有优缺点</p>
+<p>付费模式可以有效控制成本，更具有预测性且能够即时明确所提供这些服务是否具有相应的价值。<br>免费模式可以了解用户的目的并以此为基础进行产品的迭代。</p>
+<p>这些客户群之间的差异可以使分析变得非常复杂。</p>
+</li>
+<li><p>如何分级定价？<br>对使用量的需求因人而异，因此所付金额也会随着时间的推移而变化，因此需要不断尝试让用户升级到更昂贵的版本。</p>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>总结：</p>
+<ul>
+<li>尽管免费增值模式可见度高，但是其实际上是一种销售策略，需谨慎使用。</li>
+<li>在SaaS中，流失率等于一切。如果忠实客户的形成速度要高于用户流失的速度，你就可以生存下来。</li>
+<li>需在用户转换成付费用户前衡量其参与度，并在客户流失以前对其活动进行分析，以采用先见性的措施。</li>
+<li>很多人会把SaaS模式和订阅等同起来，但是完全可以采用许多其他方式来销售软件，有时还比订阅模式有效的多。</li>
+</ul>
+</blockquote>
+<h2 id="Ch10-商业模式三：免费移动应用"><a href="#Ch10-商业模式三：免费移动应用" class="headerlink" title="Ch10 商业模式三：免费移动应用"></a>Ch10 商业模式三：免费移动应用</h2><p>移动应用的开发者通过以下几种方式在应用内赚钱：</p>
+<ul>
+<li>可下载内容（例如新的地图或车型）</li>
+<li>角色天赋、虚拟外观定制和游戏内容（宠物或虚拟角色的一套衣服）</li>
+<li>优势（更好的武器、装备升级等）</li>
+<li>节省时间：付费即可获得原地复活功能，而无需从墓地跑到阵亡点，一种被许多大型多人网页游戏所采取的盈利手段</li>
+<li>跳过冷却/等待时间：付费即可瞬间充满平时需要一天才能充满的能量条</li>
+<li>追加销售至付费成本：有些应用会推出功能不完整的免费版本</li>
+<li>游戏中的广告</li>
+</ul>
+<p>此类公司关注的重要指标如下：</p>
+<ul>
+<li><p>下载量：应用的已下载数量，应用商店排名和评分等相关指标</p>
+</li>
+<li><p>客户获取成本（CAC）：获取一位用户和付费客户的所需成本</p>
+</li>
+<li><p>应用运行率：有多少下载用户真正开启了该项应用，并注册了账号</p>
+</li>
+<li><p>活跃用户/玩家比例：每天/每月保持活跃在线的用户比例，日活（DAU）和月活（MAU）</p>
+</li>
+<li><p>付费用户率：有多少用户曾支付过费用</p>
+</li>
+<li><p>首次付费时间：用户激活多久后才会开始付费</p>
+</li>
+<li><p>用户平均每月营收（monthly Average Revenue Per User，APRU）：该指标是购买和广告的收入总和，通常还包括特定于某个应用程序的信息，例如哪一屏或哪个物品最能吸引用户购买。此外还需跟踪ARPPU，即平均每位付费用户营收（Average Revenue Per Paying User）</p>
+</li>
+<li><p>点评率</p>
+</li>
+<li><p>病毒性：平均每位用户可以邀请多少新客户</p>
+</li>
+<li><p>流失率：卸载应用或一定时间段内没有开启过应用的用户比例</p>
+</li>
+<li><p>客户终身价值</p>
+</li>
+</ul>
+<p>对于移动开发者而言，<strong>应用商店几乎是应用成功普及的最重要因素</strong>。</p>
+<p>计算移动应用的所有必要指标：</p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/11486274-41d3146d2e0bb69f.png?imageMogr2/auto-orient/strip|imageView2/2/w/376/format/webp" alt="img" style="zoom:150%;"></p>
+<p>移动应用商业模式图解：</p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/11486274-1e6379e9c5aa1ecb.png?imageMogr2/auto-orient/strip|imageView2/2/w/419/format/webp" alt="img" style="zoom:150%;"></p>
+<blockquote>
+<p>总结：</p>
+<ul>
+<li>移动应用的盈利模式有很多种</li>
+<li>大部分营收来自于一小部分用户，应将该部分用户单独划归一组进行分析处理。（“鲸鱼”玩家与其他玩家）</li>
+</ul>
+</blockquote>
+<h2 id="Ch11-商业模式四：媒体网站"><a href="#Ch11-商业模式四：媒体网站" class="headerlink" title="Ch11 商业模式四：媒体网站"></a>Ch11 商业模式四：媒体网站</h2><p>广告是一些媒体网站的保底变现方式。那些通过广告盈利颇丰的网站通常更为关注网站的具体内容，并努力提高特定访客的重复访问率。</p>
+<p>广告收入可以有很多种形式：</p>
+<ol>
+<li>出售广告位</li>
+<li>达成赞助协议</li>
+<li>点击量</li>
+<li>后续销售的提成</li>
+</ol>
+<p>媒体网站最为关注的是<strong>点击率和展示率</strong>，其次是<strong>访客在线时长、页面浏览数量以及独立访客数</strong>。</p>
+<p>媒体关注的指标：</p>
+<ul>
+<li>访客与流失率：访客人数及忠诚度</li>
+<li>广告库存：可供变现的广告次数</li>
+<li>广告价格：有时以印象成本计算，即以网页内容和来访人群为基础，计算网站通过展示次数而获得的收入</li>
+<li>点击率</li>
+<li>内容与广告间的平衡：实现广告库存与媒体内容的平衡，以最大化网站的总体性能。</li>
+</ul>
+<h2 id="Ch12-商业模式五：用户生成内容"><a href="#Ch12-商业模式五：用户生成内容" class="headerlink" title="Ch12 商业模式五：用户生成内容"></a>Ch12 商业模式五：用户生成内容</h2><p><strong>用户生成内容网站（UGC）</strong>：将用户聚集在一起，组成在线社区并生成用户内容。如Facebook、Reddit和Twitter。<br>此类商业模式需要关注<strong>优质内容的生成</strong>，此内容不仅局限于帖子的发布与上传，还包括投票、评论、不良内容举报以及其他有价值的活动。</p>
+<p>UGC指优质内容与糟糕内容之间以及内容生成者和潜水者之间的比例。这是一个<strong>参与度漏斗</strong>，与传统电商模式的转化漏斗十分相似。二者之间的唯一差别在于，转化漏斗的最终目的是购买行为的发生，而参与度漏斗则旨在<strong>不断提高用户参与度，让潜水者参与投票，投票者参与评论等</strong>。</p>
+<p>从毫无参与度可言，到只碰巧来过一次的访客，再到深度用户，用户参与度的高低形成了一个天然漏斗。</p>
+<p>网站的核心功能之一便是获取一次性访客，将其转换成注册用户，并最终使为网站的内容作出贡献。</p>
+<p>值得关注的几个关键指标：</p>
+<ul>
+<li>活跃访客数：访客回放频率，以及每次来访的停留时间。还有距上次访问的平均时间（需事先排除超出某临界值如30天的用户数据）。</li>
+<li>内容生成：以某种方式与内容进行互动的访客比例，包括生成内容以及顶/踩行为等。在发展初期，网站的最初内容需要事先准备好一部分，克服鸡生蛋、蛋生鸡的问题。</li>
+<li>参与度漏斗的变化：网站是否有效地增加了用户参与度。比较各级别的用户参与度（环比）。</li>
+<li>生成内容的价值：内容的商业价值，如捐款或广告收入等。最好按照用户群或流量来源分开比较。</li>
+<li>内容的分享和病毒性：内容是如何分享的，分享又是如何有利于网站发展的</li>
+<li>消息提醒的有效性：应用的未来不是移动，而是消息提醒。游戏规则的颠覆者。通过消息提醒不断将用户召回应用，是保持用户参与度的必备要素之一。</li>
+</ul>
+<p>UGC领域发生的三大变革：</p>
+<ul>
+<li>无处不在的签到，智能设备负责记录地理位置的变化并将其分享到网上</li>
+<li>电子钱包：可存放积分、票据、会员数据</li>
+<li>近场通信，摇一摇电子设备就能完成支付或分享信息</li>
+</ul>
+<p>要点：</p>
+<ul>
+<li>对于UGC而言，访客参与度意味着一切</li>
+<li>80/20定律存在于你希望用户完成的所有活动当中</li>
+<li>使用邮件或其他召回方式提高用户回访率</li>
+<li>欺诈防范的工作量十分巨大</li>
+</ul>
+<h2 id="Ch13-商业模式六：双边市场"><a href="#Ch13-商业模式六：双边市场" class="headerlink" title="Ch13 商业模式六：双边市场"></a>Ch13 商业模式六：双边市场</h2><ul>
+<li><p>双边市场是电商网站的一个变种。本模式中，公司通过帮助买家和卖家在网上达成交易来盈利。（如如淘宝、闲鱼、滴滴、美团）</p>
+</li>
+<li><p>双边市场具体定义如下：</p>
+<ol>
+<li>卖家需负责商品的上架与推广。</li>
+<li>市场负责人对每笔交易采取不干预政策。</li>
+<li>买卖双方之间存在利益冲突。</li>
+</ol>
+</li>
+<li><p>双边市场面临着一个特殊的问题，即必须要同时吸引买家和买家。重点关注有钱的一方，通常这一方指的是买家，找到一群愿意花钱的人后，再找到一群愿意挣钱的人要容易更多。</p>
+</li>
+<li><p>首先利用最小市场证明自己的供需状况，以及对买卖双方交易的渴望。然后从中找寻盈利的方法。最后，根据交易规模、频率以及其他商业特质来决定应关注的指标，但归根结底就是交易的营收。</p>
+</li>
+<li><p>如果想从买家这一边做起，则可能需要先选择部分初始库存以供出售，或者在确保库存来源的前提下先接订单，再延时向买家发送货物。先创造需求，在实现市场供应。</p>
+</li>
+<li><p>将双边市场的关键指标分为三类，即买方活动、卖方活动和交易活动。想赚钱的人不难找，难找的是想要花钱的人。</p>
+</li>
+<li><p>建立双边市场的第一步是创建库存（供应）或受众（需求）的能力，这也是应首要衡量的内容。双边市场建设初期，需要关注的指标主要围绕吸引力、参与度以及关注群体的发展状况。</p>
+</li>
+<li><p>关注的数据：</p>
+<ol>
+<li>网站访客数据（潜在买家）</li>
+<li>活跃买家人数。把在过去30天内搜索过商品的买家定义为活跃买家</li>
+<li>卖家人数和在售商品数量的增长情况</li>
+<li>活跃卖家和在售商品的数量与占比</li>
+<li>销售额、满意度与营收</li>
+<li>在售商品质量。</li>
+</ol>
+</li>
+<li><p>关注的指标：</p>
+<ol>
+<li>买卖双方的人数增长。在双边市场的早期阶段尤为重要。当谈及可持续的竞争优势时，需求要强过供给</li>
+<li>库存增长速率。关注每位卖家的在售商品数量，并判断该数值是否得到了增长。</li>
+<li>搜索有效性。买家的搜索内容，以及该内容是否与所建库存相匹配。搜索次数与商品信息的点击次数之比，也是转化漏斗的重要一环。</li>
+<li>转化漏斗。应衡量满意的交易数量。</li>
+<li>评分以及欺诈迹象。用户可基于自身的交易体验为交易对象评分。</li>
+</ol>
+</li>
+<li><p>欺诈与信任是双边市场的另一大问题。你不想承担商品或服务的运送责任，但需确保市场内具有可靠的信誉系统。</p>
+</li>
+<li><p>双边市场的另一大问题在于网络平台内交易的维持。大额的房屋交易不适合线上支付，也很难阻止双方私下交易，从而造成交易中介费的流失。</p>
+</li>
+</ul>
+<blockquote>
+<p>双边市场面临中同时吸引买家和卖家、欺诈与信任、网络平台内交易的维持三大问题。</p>
+<p>关于吸引买家和卖家的问题，先吸引买家，需求永大于供给，满足买家的需求，在汇集更多的卖家，初期可以采用雇佣制；</p>
+<p>关于欺诈与信任，我们在淘宝时会关注店铺的等级、评价、销量等，同时淘宝也采用预付的政策，我们购买物品，所支付的金额在存在在支付宝，待我们收到货后在支付给卖家，同时出台了七天无理由退款；</p>
+<p>关于网站平台内交易的维持，淘宝定时和不定时的活动，双十一、聚划算等，吸引买家。</p>
+</blockquote>
+<h2 id="Ch14-创业阶段的划分"><a href="#Ch14-创业阶段的划分" class="headerlink" title="Ch14 创业阶段的划分"></a>Ch14 创业阶段的划分</h2><ul>
+<li>每家创业公司都必须经历多个阶段的磨练。磨练过程从发现问题开始，历经解决方案的创造及其有效性的核查，并以口碑营销以及资金的筹集结束。<ol>
+<li>移情。你需要深入目标市场，着手解决人们关心的问题，从而促使消费者愿意为你的商品买单。</li>
+<li>黏性。黏性来自好的产品。你需要了解自己能否找到已发现问题的解决方案。</li>
+<li>病毒性。在保证产品或服务的黏性后，即可开始口碑营销。你要以对产品或服务感兴趣的新访客为对象，测试网站的用户获取能力和新手流程，因为你已经从现有用户处获得了品质保证。同时病毒性也可加大付费推广的效力。</li>
+<li>营收。该阶段应着手盈利事宜，但并不意味着此前不存在收费行为。</li>
+<li>规模性。盈利后，公司即可从自身发展模式切换至市场扩张模式。你需要从新的垂直领域和地理位置获取更多的客户。同时，还可投资不同的分销渠道，帮助增长用户基础。</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>创业公司发展历程即为，发现用户需求→解决用户需求→完善用户需求，吸引更多用户→盈利→扩大市场。发现并解决用户需求是基础，如果无法满足，公司也会很快倒闭。</p>
+</blockquote>
+<ul>
+<li>之所以注重公司所处的创业阶段，是因为应关注指标在很大程度上受特定阶段的影响。过早的关注某指标或优化无关紧要的内容必然会导致创业失败。</li>
+</ul>
+<h2 id="Ch15-阶段1：移情"><a href="#Ch15-阶段1：移情" class="headerlink" title="Ch15 阶段1：移情"></a>Ch15 阶段1：移情</h2><ul>
+<li>创业伊始，你投入时间找寻对人们重要的内容。你要做的是尝试了解他人所想，学会换位思考。</li>
+<li>将重点放在定性反馈的收集上，并主要通过有关问题和解决方案的用户访谈来完成这一工作。旨在找到一个值得解决的问题，以及足以获取早期用户的解决方案。</li>
+<li>问题（或想法）的发现往往源于聆听。毕竟人们很喜欢抱怨自己遇到的问题。但请对抱怨内容持保留态度。需要积极主动地聆听，从而找到隐藏在各种抱怨背后的真相或规律。</li>
+<li><p>想法的得出只是一个开始，再将想法付诸实践之前，应使其历经一段时间的沉淀。找到一群朋友或可信任的顾问，这些人均与当前问题息息相关或对其内容有所涉猎，从而可通过互相的交流快速核实想法的现实程度。</p>
+</li>
+<li><p>精益创业的第一阶段旨在判断问题是否足以让足够多的人感到困扰，以及了解目前是如何试图解决这一问题的。</p>
+<ol>
+<li>问题足以让人感到困扰。人充满惰性。这就要求人们的处境足够窘迫，从而不得不按照你的希望去做事。</li>
+<li>有足够多的人感到困扰。只为一个人解决问题的行为叫作咨询。营销者希望受众能够达到群内同质化（即群内成员的喜好存在一定的共性）以及群际异质化（即可按照某种特定方式，利用定制信息区分盒瞄准各细分市场）</li>
+<li>他们已在试图解决这一问题。如果问题真实存在并得到充分认识，则人们一定会想办法加以解决。</li>
+</ol>
+</li>
+<li><p>在进入下一阶段以前，需逐一验证以上三点。数据分析在验证过程中发挥着关键作用。首先，利用定性指标检测所发现问题是否值得付诸行动。建议先于15位潜在客户进行对话。定性数据的关键在于规律和规律的识别。开展成功客户访谈的几点建议：力争面对面地访谈；选择中立场所；避免录音；确保有一个脚本。</p>
+</li>
+<li><p>如何避免引导受访者</p>
+<ol>
+<li>不表明自己的意图。带有倾向性的措辞，例如“你是否同意……”就是这样一种暗示。这也是开放性问题可在客户开发的早期发挥作用的原因。先入为主也是一大影响因素。其他社会暗示源于你的外表。</li>
+<li>保持问题的真实性。要想得到真实的回答，方法之一就是使受访者感到不自在。问题问得越具体，得到的答案就越真实。要想防止受访者为取悦你而给出不真实的答案，还可要求其模仿自己朋友的所作所为。</li>
+<li>刨根问底。客户开发访谈中有一个很棒的技巧，即连续追问三次为什么，反复询问为什么，实际上是在迫使受访者解释自己为何如此作答。</li>
+<li>寻找其他蛛丝马迹。肢体语言往往更能传达出人们的感受与情感。</li>
+</ol>
+</li>
+<li><p>聚合性和发散性问题访谈</p>
+<ol>
+<li>聚合性问题访谈可为你将来的行动设定明确的方向，但要冒一定的风险，即由于过分关注某些自认为重要的问题，而无法让受访者说出对他们而言可能更加重要的问题。</li>
+<li>发散性问题访谈则要随机得多，其目的在于扩大可用于解决方案的搜索范围。风险在于，你关注的问题数量太多、范围太广，没有让受访者重点关注其中的某个问题。</li>
+</ol>
+</li>
+<li><p>人们目前在如何解决问题</p>
+<ol>
+<li>有多少人从未尝试着解决问题？</li>
+<li>有多少人主动提供了“足够好”的解决方案？</li>
+</ol>
+</li>
+<li><p>“典型的一天”故事板是一种还原客户日常生活的方法。故事板是一种视觉表现方式，并且可以使你在客户的一天当中自由地穿梭，以判断你的解决方案在哪里才能发挥出最大的作用。</p>
+</li>
+</ul>
+<h2 id="Ch16-阶段2：黏性"><a href="#Ch16-阶段2：黏性" class="headerlink" title="Ch16 阶段2：黏性"></a>Ch16 阶段2：黏性</h2><ul>
+<li><p>最小可行化产品的黏性</p>
+<ol>
+<li>现如今的关注点完全落在了黏性和参与度上。</li>
+<li>你需要的不只是用户深度参与的表征，还要有证据表明你的产品正逐步成为用户生活中必不可少且难以替代的一部分</li>
+<li>你的第一要务是打造一组核心功能，以保证用户的频繁使用与功能的成功应用，即便受用群体只是一小群早期用户。</li>
+</ol>
+</li>
+<li><p>在步入病毒性阶段以前，你需要证明两件事：一是人们是否在如你所料地使用着产品？二是人们是否从你的产品中得到了足够多的价值？</p>
+</li>
+<li><p>迭代最小可行化产品是一项艰难而又烦冗的工作，迭代是渐变式的，而转型是突变式的。在迭代中，你的目标是提高跟踪中的核心指标。</p>
+</li>
+<li><p>最终的目标是留存率。用户对产品（以及产品的其他潜在用户）的参与度越高，越有可能长久地使用该款产品。</p>
+</li>
+<li><p>开发功能前七问：</p>
+<ol>
+<li>这个功能有什么帮助。黏性阶段重点关注的是留存率。</li>
+<li>你能衡量这一功能的效果吗？围绕功能展开的实验要求对功能的影响做出衡量，同时这种影响必须是可量化的。</li>
+<li>功能开发要多久。时间是一去不复返的珍贵资源。</li>
+<li>这一功能是否会使产品变得太过复杂。复杂是产品的坟墓。</li>
+<li>这一新功能会带来多大的风险。包括与新功能对代码基的影响有关的技术分风险，人们对于新功能如何反馈的用户风险，以及新功能如何推动产品未来发展的相关风险。</li>
+<li>这项新功能有多创新。最好选择下大赌注、孤注一掷、尝试更激进的试验并开发更具颠覆性的产品，尤其是在初期用户期望并不高时更是如此。</li>
+<li>用户说他们想要什么。不要只根据用户反馈就过度优先某功能，用户的行为要比话语更为可靠。</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>新增加一项功能，需要考虑这项功能的可行性，可以带来多大的黏性、需要多久的时间、复杂性、风险度、创新性、效果。首先需要满足我们的目标，到底是为了什么，其次要试验，看看可操作性，整体效果。新增加的一项功能可能是有用的，但是产品现在所处的时期到底有多大的用处，需要结合多方面进行思考。</p>
+</blockquote>
+<ol>
+<li>如何处理用户反馈。</li>
+</ol>
+<p>1)    在查看用户反馈时，一方面用户反馈存在着严重的取样偏差。另一方面他们并不知道自己对于你的价值。</p>
+<p>2)    想改善你对用户反馈的解读，三点建议：第一提前计划好测试，并在测试前厘清自己究竟想要知道些什么。第二选择特定的交谈对象。第三在收集数据的同时快速评审结果。</p>
+<p>读者笔记：在分析用户反馈的时候，首先有目的的，我们此次关注点是什么，并不是要分析所有的用户反馈，其次我们分析哪类人群，是轻度还是重度，最后是及时反馈，随时收集随时总结。</p>
+<ol>
+<li>下面这些信号说明你已拥有最小可行愿景。</li>
+</ol>
+<p>1)    你在打造一个平台。如果你创造的环境内可以创建其他事物</p>
+<p>2)    你有重复性收费的能力。</p>
+<p>3)    你形成了自然的阶梯定价。</p>
+<p>4)    你与一场颠覆性的革命息息相关。</p>
+<p>5)    用户自发成为拥护者。</p>
+<p>6)    你能引发一场价格战。</p>
+<p>7)    你正处于一场环境变革之中。</p>
+<p>8)    你拥有一种可持续的压倒性优势。</p>
+<p>9)    你的边际成本逐步降为零。</p>
+<p>10)    公司模式中有固有的网络效应。</p>
+<p>11)    你有多种赚钱方式。</p>
+<p>12)    你因客户的盈利而盈利。</p>
+<p>13)    你的周围会形成一个生态系统。</p>
+<p>作者：Joan_shallot<br>链接：<a href="https://www.jianshu.com/p/1362764820a0" target="_blank" rel="noopener">https://www.jianshu.com/p/1362764820a0</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/03/17/jing-yi-shu-ju-fen-xi-note-di-er-pian-zhao-dao-dang-qian-de-zheng-que-zhi-biao/">http://xjw924.github.io/2020/03/17/jing-yi-shu-ju-fen-xi-note-di-er-pian-zhao-dao-dang-qian-de-zheng-que-zhi-biao/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/DataAnalysis/"># DataAnalysis</a>
+                    
+                        <a href="/tags/Books/"># Books</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/17/jing-yi-shu-ju-fen-xi-note-di-yi-pian-bie-zai-qi-pian-zi-ji-liao/">精益数据分析Note——第一篇 别再欺骗自己了</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/17/lin-xuan-tian-ji-qi-xue-xi-ji-shi-note-part4/">林轩田《机器学习基石》Note——Part4：How Can Machines Learn Better?</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

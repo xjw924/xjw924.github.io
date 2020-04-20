@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>林轩田《机器学习技法》Note——1.Linear SVM | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HOME</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HOME</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">林轩田《机器学习技法》Note——1.Linear SVM</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 19, 2020&nbsp;&nbsp;10:42:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Notes/">Notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>课程：</p>
+<ul>
+<li><a href="https://www.bilibili.com/video/av12463015" target="_blank" rel="noopener">https://www.bilibili.com/video/av12463015</a></li>
+</ul>
+<p>参考笔记：</p>
+<ul>
+<li><a href="http://redstonewill.com/" target="_blank" rel="noopener">http://redstonewill.com/</a></li>
+</ul>
+</blockquote>
+<h1 id="Lecture-1-Linear-SVM"><a href="#Lecture-1-Linear-SVM" class="headerlink" title="Lecture 1: Linear SVM"></a>Lecture 1: Linear SVM</h1><h2 id="1-Large-Margin-Separating-Hyperplane"><a href="#1-Large-Margin-Separating-Hyperplane" class="headerlink" title="1. Large-Margin Separating Hyperplane"></a>1. Large-Margin Separating Hyperplane</h2><p>对于线性可分的情况，可以使用PLA/pocket算法在平面或者超平面上把正负类分开。</p>
+<p>例如对平面2D这种情况，能将正类和负类完全分开的直线通常不止一条。哪条线更好呢？</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/2-5.png" alt="img"></p>
+<p>这三条直线都是由PLA/pocket算法不断修正错误点而最终产生的，整个确定直线形状的过程是随机的。</p>
+<p>单从分类效果上看，这三条直线都满足要求，而且都满足VC bound要求，模型复杂度$\Omega(H)$是一样的，即具有一定的泛化能力。</p>
+<p>但是，凭第一感觉，我们还是会选择第三条直线，感觉它的分类效果更好一些。那这又是为什么呢？</p>
+<p>先给个简单解释，一般情况下，训练样本外的测量数据应该分布在训练样本附近，但与训练样本的位置有一些偏差。若要保证对未知的测量数据也能进行正确分类，<strong>最好让分类直线距离正类负类的点都有一定的距离</strong>。这样能让<strong>每个样本点附近的圆形区域是“安全”的</strong>。<strong>圆形区域越大，表示分类直线对测量数据误差的容忍性越高，越“安全”</strong>。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/3-3.png" alt="img"></p>
+<p>左图的点距离分类直线的最小距离很小，它的圆形区域很小。那么，分类线对测量数据误差的容忍性就很差，测量数据与样本数据稍有偏差，很有可能就被误分。</p>
+<p>右图的点距离分类直线的最小距离更大一些，其圆形区域也比较大。这种情况下，分类线对测量数据误差的容忍性就相对来说大很多，不容易误分。也就是说，<strong>左边分类线和右边分类线的最大区别是对这类测量误差的容忍度不同</strong>。</p>
+<p>如果每一个训练样本距离分类线越远的话，就表示分类型可以忍受更多的测量误差（noise）。noise是造成overfitting的主要原因，而测量误差也是一种noise。所以，如果分类线对测量误差的容忍性越好的话，表示这是一条不错的分类线。那么，我们的目标就是找到这样一条最“健壮”的线，即距离数据点越远越好。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/4-3.png" alt="img"></p>
+<p>上面我们用圆形区域表示分类线能够容忍多少误差，也就相当于计算点到直线的距离。距离越大，表示直线越“胖”，越能容忍误差；距离越小，表示直线越“瘦”，越不能容忍误差。<strong>越胖越好</strong>。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/5-3.png" alt="img"></p>
+<p>如何定义分类线有多胖，就是看距离分类线最近的点与分类线的距离，我们把它用margin表示（图中灰色部分，注意是两遍的距离之和）。</p>
+<p>分类线由权重$w$决定，目的就是找到使margin最大时对应的$w$值。</p>
+<p>整体来说，我们的目标就是找到这样的分类线并满足下列条件：</p>
+<ol>
+<li>分类正确（分对）：$y_nw^Tx_n \gt0$</li>
+<li>margin最大化：</li>
+</ol>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/6-3.png" alt="img"></p>
+<h2 id="2-Standard-Large-Margin-Problem"><a href="#2-Standard-Large-Margin-Problem" class="headerlink" title="2. Standard Large-Margin Problem"></a><strong>2. Standard Large-Margin Problem</strong></h2><blockquote>
+<p>如何计算<strong>点到分类线的距离</strong>？</p>
+<p>首先，我们将权重$w(w_0,w_1,\cdots,w_d)$中的$w_0$拿出来，用$b$表示，省去$x_0$项。这样，hypothesis就变成了$h(x)=sign(w^Tx+b)$。</p>
+<p>下面，利用图解的方式，详细推导如何计算点到分类平面的距离公式：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/8-4.png" alt="img"></p>
+<p>如上图所示，平面上有两个点：$x’$和$x’’$。因为这两个点都在分类平面上，所以它们都满足：</p>
+<script type="math/tex; mode=display">
+w^Tx’+b=0\\w^Tx''+b=0</script><p>则有：</p>
+<script type="math/tex; mode=display">
+w^T(x''-x’)=w^Tx''-w^Tx’=0</script><p>$(x’’-x’)$是平面上的任一向量，$(x’’-x’)$与$w$内积为0，表示$(x’’-x’)$垂直于$w$，那么$w$就是平面的法向量。</p>
+<p>现在，若要计算平面外一点$x$到该平面的距离，做法是只要将向量$(x-x’)$投影到垂直于该平面的方向（即$w$方向）上就可以了。那么，令$(x-x’)$与$w$的夹角为$\theta$，距离就可以表示为：</p>
+<script type="math/tex; mode=display">
+distance(x,b,w)=|(x-x’)cos(\theta)|=|\ ||x-x’||\cdot \frac{(x-x’)w}{||x-x’||\cdot ||w||}|=\frac1{||w||}|w^Tx-w^Tx’|</script><p>代入$w^Tx’=-b$，可得：</p>
+<script type="math/tex; mode=display">
+distance(x,b,w)=\frac1{||w||}|w^Tx+b|</script><p>点到分类面（Separating Hyperplane）的距离已经算出来了。</p>
+</blockquote>
+<p>基于这个分类面，所有的点均满足：$y_n(w^Tx_n+b)&gt;0$，表示所有点都分类正确，则distance公式就可以变换成：</p>
+<script type="math/tex; mode=display">
+distance(x,b,w)=\frac1{||w||}y_n(w^Tx_n+b)</script><p>那么，我们的目标形式就转换为：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/9-4.png" alt="img"></p>
+<p>对上面的式子还不容易求解，我们继续对它进行简化。我们知道分类面$w^Tx+b=0$和$3w^Tx+3b=0$其实是一样的。也就是说，<strong>对w和b进行同样的缩放还会得到同一分类面</strong>。所以，为了简化计算，我们令距离分类满最近的点满足$y_n(w^Tx_n+b)=1$。那我们所要求的margin就变成了:</p>
+<script type="math/tex; mode=display">
+margin(b,w)=\frac1{||w||}</script><p>这样，目标形式就简化为：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/10-4.png" alt="img"></p>
+<p>这里可以省略条件：$y_n(w^Tx_n+b)&gt;0$，因为满足条件$y_n(w^Tx_n+b)=1$必然满足大于零的条件。</p>
+<p>另外，因为最小化问题我们最熟悉也最好解，所以可以把目标$\frac1{||w||}$最大化转化为计算$\frac12w^Tw$的最小化问题。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/11-3.png" alt="img"></p>
+<p>如上图所示，最终的条件就是$y_n(w^Tx_n+b)\geq 1$，而我们的目标就是最小化$\frac12w^Tw$值。</p>
+<h2 id="3-Support-Vector-Machine"><a href="#3-Support-Vector-Machine" class="headerlink" title="3. Support Vector Machine"></a><strong>3. Support Vector Machine</strong></h2><p>现在，条件和目标变成：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/12-3.png" alt="img"></p>
+<p>假如平面上有四个点，两个正类，两个负类：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/13-2.png" alt="img"></p>
+<p>不同点的坐标加上条件$y_n(w^Tx_n+b)\geq 1$，可以得到：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/14-3.png" alt="img"></p>
+<p>最终得到的条件是：</p>
+<script type="math/tex; mode=display">
+w_1\geq +1\\
+
+w_2\leq -1</script><p>而我们的目标是：</p>
+<script type="math/tex; mode=display">
+\min\ \frac12w^Tw=\frac12(w_1^2+w_2^2)\geq 1</script><p>目标最小值为1，即$w_1=1, w_2=-1, b=-1$，那么这个例子就得到了最佳分类面的解，且$margin(b,w)=\frac1{||w||}=\frac1{\sqrt2}$。分类面的表达式为：</p>
+<script type="math/tex; mode=display">
+x_1-x_2-1=0</script><p>最终我们得到的矩的表达式为：</p>
+<script type="math/tex; mode=display">
+g_{SVM}(x)=sign(x_1-x_2-1)</script><blockquote>
+<p>Support Vector Machine(SVM)这个名字从何而来？为什么把这种分类面解法称为支持向量机呢？<strong>这是因为分类面仅仅由分类面的两边距离它最近的几个点决定的，其它点对分类面没有影响</strong>。决定分类面的几个点称之为<strong>支持向量</strong>（Support Vector），好比这些点“支撑”着分类面。而<strong>利用Support Vector得到最佳分类面的方法，称之为支持向量机</strong>（Support Vector Machine）。</p>
+</blockquote>
+<p>下面介绍SVM的一般求解方法。先写下我们的条件和目标：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/15-2.png" alt="img"></p>
+<p>满足：</p>
+<ol>
+<li>目标函数是凸函数（关于$w$的二次函数）</li>
+<li>约束是线性的（关于$w$和$b$的一次函数）</li>
+</ol>
+<p>因此这是一个典型的二次规划问题，即Quadratic Programming（QP）。所以它的求解过程还是比较容易的，可以使用一些软件（例如Matlab）自带的二次规划的库函数来求解。下图给出SVM与标准二次规划问题的参数对应关系：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/16-2.png" alt="img"></p>
+<p>那么，线性SVM算法可以总结为三步：</p>
+<ol>
+<li>计算对应的二次规划参数$Q，p，A，c$</li>
+<li>根据二次规划库函数，计算$b，w$</li>
+<li>将$b$和$w$代入$g_{SVM}$，得到最佳分类面</li>
+</ol>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/17-3.png" alt="img"></p>
+<p>这种方法称为<strong>Linear Hard-Margin SVM Algorithm</strong>。如果是非线性的，例如包含$x$的高阶项，那么可以使用我们之前在《机器学习基石》课程中介绍的特征转换的方法，先作$z_n=\Phi(x_n)$的特征变换，从非线性的$x$域映射到线性的$z$域空间，再利用Linear Hard-Margin SVM Algorithm求解即可。</p>
+<h2 id="4-Reasons-behind-Large-Margin-Hyperplane"><a href="#4-Reasons-behind-Large-Margin-Hyperplane" class="headerlink" title="4. Reasons behind Large-Margin Hyperplane"></a><strong>4. Reasons behind Large-Margin Hyperplane</strong></h2><p>从视觉和直觉的角度，我们认为Large-Margin Hyperplane的分类效果更好。<strong>SVM的这种思想其实与正则化regularization思想很类似</strong>。</p>
+<ol>
+<li>regularization的目标是将$E_{in}$最小化，条件是$w^Tw\leq C$；</li>
+<li>SVM的目标是$w^Tw$最小化，条件是$y_n(w^Tx_n+b)\geq1$，即保证了$E_{in}=0$。</li>
+</ol>
+<p>有趣的是，<strong>regularization与SVM的目标和限制条件分别对调了</strong>。其实，考虑的内容是类似的，效果也是相近的。SVM也可以说是一种weight-decay regularization，限制条件是$E_{in}=0$。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/18-1.png" alt="img"></p>
+<p>从另一方面来看，Large-Margin会限制Dichotomies的个数。这从视觉上也很好理解，假如一条分类面越“胖”，即对应Large-Margin，那么它可能shtter的点的个数就可能越少：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/19.png" alt="img"></p>
+<p>之前的《机器学习基石》课程中介绍过，Dichotomies与VC Dimension是紧密联系的。也就是说如果Dichotomies越少，那么复杂度就越低，即有效的VC Dimension就越小，得到$E_{out}\approx E_{in}$，泛化能力强。</p>
+<p>下面我们从概念的角度推导一下为什么dichotomies越少，VC Dimension就越少。首先我们考虑一下Large-Margin演算法的VC Dimension，记为$d_{vc}(A_{\rho})$。$d_{vc}(A_{\rho})$与数据有关，而我们之前介绍的$d_{vc}$与数据无关。</p>
+<p>假如平面上有3个点分布在单位圆上：</p>
+<ol>
+<li>如果Margin为0，即$\rho=0$，这条细细的直线可以很容易将圆上任意三点分开（shatter），就能得到它的$d_{vc}=3$。</li>
+<li>如果$\rho\gt\frac{\sqrt3}{2}$，这条粗粗的线无论如何都不能将圆上的任一三点全完分开（no shatter），因为圆上必然至少存在两个点的距离小于$\sqrt3$，那么其对应d的$d_{vc}&lt;3$。</li>
+</ol>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/20.png" alt="img"></p>
+<p>那么，一般地，在$d$维空间，当数据点分布在半径为$R$的超球体内时，得到的$d_{vc}(A_{\rho})$满足下列不等式：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/21.png" alt="img"></p>
+<p>之前介绍的Perceptrons的VC Dimension为$d+1$，这里得到的结果是Large-Margin演算法的$d_{vc}(A_{\rho})\leq d+1$。所以，由于Large-Margin，得到的dichotomies个数减少，从而VC Dimension也减少了。VC Dimension减少降低了模型复杂度，提高了泛化能力。</p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a><strong>5. 总结</strong></h2><p>本节课主要介绍了线性支持向量机（Linear Support Vector Machine）。我们先从视觉角度出发，希望得到一个比较“胖”的分类面，即满足所有的点距离分类面都尽可能远。然后，我们通过一步步推导和简化，最终把这个问题转换为标准的二次规划（QP）问题。二次规划问题可以使用Matlab等软件来进行求解，得到我们要求的$w$和$b$，确定分类面。这种方法背后的原理其实就是减少了dichotomies的种类，减少了有效的VC Dimension数量，从而让机器学习的模型具有更好的泛化能力。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/04/19/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-1.linear-svm/">http://xjw924.github.io/2020/04/19/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-1.linear-svm/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        <a href="/tags/MachineLearning/"># MachineLearning</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/04/19/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-2.dual-svm/">林轩田《机器学习技法》Note——2.Dual SVM</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/30/pyspark-chang-yong-cao-zuo-zong-jie-jian-mo/">PySpark常用操作总结——建模</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
