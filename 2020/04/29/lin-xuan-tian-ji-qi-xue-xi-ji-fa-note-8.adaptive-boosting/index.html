@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>林轩田《机器学习技法》Note——8.Adaptive Boosting | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HOME</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HOME</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">林轩田《机器学习技法》Note——8.Adaptive Boosting</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 29, 2020&nbsp;&nbsp;10:04:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Notes/">Notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>课程：</p>
+<ul>
+<li><a href="https://www.bilibili.com/video/av12463015" target="_blank" rel="noopener">https://www.bilibili.com/video/av12463015</a></li>
+</ul>
+<p>参考笔记：</p>
+<ul>
+<li><a href="http://redstonewill.com/" target="_blank" rel="noopener">http://redstonewill.com/</a></li>
+</ul>
+</blockquote>
+<h1 id="Lecture-8-Adaptive-Boosting"><a href="#Lecture-8-Adaptive-Boosting" class="headerlink" title="Lecture 8: Adaptive Boosting"></a>Lecture 8: Adaptive Boosting</h1><p>上节课我们主要开始介绍Aggregation Models，目的是将不同的hypothesis得到的$g_t$集合起来，利用集体智慧得到更好的预测模型$G$。首先我们介绍了Blending，blending是将已存在的所有$g_t$结合起来，可以是uniformly，linearly，或者non-linearly组合形式。然后，我们讨论了在没有那么多$g_t$的情况下，使用bootstrap方式，从已有数据集中得到新的类似的数据集，从而得到不同的$g_t$。这种做法称为bagging。本节课将继续从这些概念出发，介绍一种新的演算法。</p>
+<h2 id="1-Motivation-of-Boosting"><a href="#1-Motivation-of-Boosting" class="headerlink" title="1. Motivation of Boosting"></a>1. Motivation of Boosting</h2><p>我们先来看一个简单的识别苹果的例子，老师展示20张图片，让6岁孩子们通过观察，判断其中哪些图片的内容是苹果。从判断的过程中推导如何解决二元分类问题的方法。</p>
+<p>显然这是一个监督式学习，20张图片包括它的标签都是已知的。</p>
+<p>首先，学生Michael回答说：所有的苹果应该是圆形的。根据Michael的判断，对应到20张图片中去，大部分苹果能被识别出来，但也有错误。其中错误包括有的苹果不是圆形，而且圆形的水果也不一定是苹果。如下图所示：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/1-14.png" alt="img"></p>
+<p>上图中蓝色区域的图片代表分类错误。显然，只用“苹果是圆形的”这一个条件不能保证分类效果很好。我们<strong>把蓝色区域（分类错误的图片）放大，分类正确的图片缩小，这样在接下来的分类中就会更加注重这些错误样本</strong>。</p>
+<p>然后，学生Tina观察被放大的错误样本和上一轮被缩小的正确样本，回答说：苹果应该是红色的。根据Tina的判断，得到的结果如下图所示：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/2-13.png" alt="img"></p>
+<p>上图中蓝色区域的图片一样代表分类错误，即根据这个苹果是红色的条件，使得青苹果和草莓、西红柿都出现了判断错误。那么结果就是把这些分类错误的样本放大化，其它正确的样本缩小化。同样，这样在接下来的分类中就会更加注重这些错误样本。</p>
+<p>接着，学生Joey经过观察又说：苹果也可能是绿色的。根据Joey的判断，得到的结果如下图所示：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/3-11.png" alt="img"></p>
+<p>上图中蓝色区域的图片一样代表分类错误，根据苹果是绿色的条件，使得图中蓝色区域都出现了判断错误。同样把这些分类错误的样本放大化，其它正确的样本缩小化，在下一轮判断继续对其修正。</p>
+<p>后来，学生Jessica又发现：上面有梗的才是苹果。得到如下结果：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/4-11.png" alt="img"></p>
+<p>经过这几个同学的推论，苹果被定义为：圆的，红色的，也可能是绿色的，上面有梗。从一个一个的推导过程中，我们似乎得到一个较为准确的苹果的定义。虽然可能不是非常准确，但是要比单一的条件要好得多。也就是说把所有学生对苹果的定义融合起来，最终得到一个比较好的对苹果的总体定义。</p>
+<p>这种做法就是我们本节课将要讨论的演算法。这些学生代表的就是简单的hypotheses $g_t$，将所有$g_t$融合，得到很好的预测模型$G$。例如，二维平面上简单的hypotheses（水平线和垂直线），这些简单$g_t$最终组成的较复杂的分类线能够较好地将正负样本完全分开，即得到了好的预测模型。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/5-11.png" alt="img"></p>
+<p>所以，上个苹果的例子中，不同的学生代表不同的hypotheses $g_t$；最终得到的苹果总体定义就代表hypothesis $G$；而老师就代表演算法$A$，指导学生的注意力集中到关键的例子中（错误样本），从而得到更好的苹果定义。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/6-11.png" alt="img"></p>
+<h2 id="2-Diversity-by-Re-weighting"><a href="#2-Diversity-by-Re-weighting" class="headerlink" title="2. Diversity by Re-weighting"></a><strong>2. Diversity by Re-weighting</strong></h2><p>在介绍这个演算法之前，我们先来讲一下上节课就介绍过的bagging。Bagging的核心是bootstrapping，通过对原始数据集D不断进行bootstrap的抽样动作，得到与D类似的数据集$\hat{D}_t$，每组$\hat{D}_t$都能得到相应的$g_t$，从而进行aggregation的操作。现在，假如包含四个样本的D经过bootstrap，得到新的$\hat{D}_t$如下：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/7-12.png" alt="img"></p>
+<p>那么，对于新的$\hat{D}_t$，把它交给base algorithm，找出$E_{in}$最小时对应的$g_t$，如下图右边所示。</p>
+<script type="math/tex; mode=display">
+E_{in}^{0/1}(h)=\frac14\sum_{n=1}^4[y\neq h(x)]</script><p>由于$\hat{D}_t$完全是$D$经过bootstrap得到的，其中样本$(x_1,y_1)$出现2次，$(x_2,y_2)$出现1次，$(x_3,y_3)$出现0次，$(x_4,y_4)$出现1次。引入一个参数$u_i$来表示原$D$中第$i$个样本在$\hat{D}_t$中出现的次数，如下图左边所示。</p>
+<script type="math/tex; mode=display">
+E_{in}^u(h)=\frac14\sum_{n=1}^4u_n^{(t)}\cdot [y_n\neq h(x)]</script><p><img src="http://redstonewill.com/wp-content/uploads/2018/07/8-12.png" alt="img"></p>
+<p>参数$u$相当于是权重因子，当$\hat{D}_t$中第$i$个样本出现的次数越多的时候，那么对应的$u_i$越大，表示在error function中对该样本的惩罚越多。</p>
+<p>所以，从另外一个角度来看bagging，它其实就是<strong>通过bootstrap的方式，来得到这些$u_i$值，作为犯错样本的权重因子，再用base algorithn最小化包含$u_i$的error function，得到不同的$g_t$。</strong>这个error function被称为bootstrap-weighted error。</p>
+<p>这种算法叫做Weightd Base Algorithm，目的就是最小化bootstrap-weighted error。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/9-12.png" alt="img"></p>
+<p>其实，这种weightd base algorithm我们之前就介绍过类似的算法形式。例如在soft-margin SVM中，我们引入允许犯错的项，同样可以将每个点的error乘以权重因子$u_n$。加上该项前的参数$C$，经过QP，最终得到$0\leq \alpha_n\leq Cu_n$，有别于之前介绍的$0\leq \alpha_n\leq C$。这里的$u_n$相当于每个犯错的样本的惩罚因子，并会反映到$\alpha_n$的范围限定上。</p>
+<p>同样在logistic regression中，同样可以对每个犯错误的样本乘以相应的$u_n$，作为惩罚因子。$u_n$表示该错误点出现的次数，$u_n$越大，则对应的惩罚因子越大，则在最小化error时就应该更加重视这些点。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/10-12.png" alt="img"></p>
+<p>其实这种example-weighted learning，我们在机器学习基石课程第8次笔记中就介绍过class-weighted的思想。二者道理是相通的。</p>
+<p>知道了$u$的概念后，我们知道不同的$u$组合经过base algorithm得到不同的$g_t$。那么如何选取$u$，使得到的$g_t$之间有很大的不同呢？之所以要让所有的$g_t$差别很大，是因为上节课aggregation中，我们介绍过$g_t$越不一样，其aggregation的效果越好，即每个人的意见越不相同，越能运用集体的智慧，得到好的预测模型。</p>
+<p>为了得到不同的$g_t$，我们先来看看$g_t$和$g_{t+1}$是怎么得到的：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/11-11.png" alt="img"></p>
+<p>如上所示，$g_t$是由$u_n^{t}$得到的，$g_{t+1}$是由$u_n^{(t+1)}$得到的。如果$g_t$这个模型在使用$u_n^{(t+1)}$的时候得到的error很大，即预测效果非常不好，那就表示由$u_n^{(t+1)}$计算的$g_{t+1}$会与$g_t$有很大不同。而$g_{t+1}$与$g_t$差异性大正是我们希望看到的。</p>
+<p>怎么做呢？方法是利用$g_t$在使用$u_n^{(t+1)}$的时候表现很差的条件，越差越好。如果在$g_t$作用下，$u_n^{(t+1)}$中的表现（即error）近似为0.5的时候，表明$g_t$对$u_n^{(t+1)}$的预测分类没有什么作用（就像抛硬币一样）。这样的做法就能最大限度地保证$g_{t+1}$会与$g_t$有较大的差异性。其数学表达式如下所示：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/12-11.png" alt="img"></p>
+<p>乍看上面这个式子，似乎不好求解。但是，我们对它做一些等价处理，其中分式中分子可以看成$g_t$作用下犯错误的点，而分母可以看成犯错的点和没有犯错误的点的集合，即所有样本点。其中犯错误的点和没有犯错误的点分别用橘色方块和绿色圆圈表示：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/13-11.png" alt="img"></p>
+<p>要让分式等于0.5，显然只要<strong>将犯错误的点和没有犯错误的点的数量调成一样就可以了</strong>。也就是说，在$g_t$作用下，让犯错的$u_n^{(t+1)}$数量和没有犯错的$u_n^{(t+1)}$数量一致就行。</p>
+<p>一种简单的方法就是利用放大和缩小的思想（本节课开始引入识别苹果的例子中提到的放大图片和缩小图片就是这个目的），将犯错误的$u_n^{t}$和没有犯错误的$u_n^{t}$做相应的乘积操作，使得二者值变成相等。例如$u_n^{t}$ of incorrect为1126，$u_n^{t}$ of correct为6211，要让$u_n^{(t+1)}$中错误比例正好是0.5，可以这样做，对于incorrect $u_n^{(t+1)}$：</p>
+<script type="math/tex; mode=display">
+u_n^{(t+1)}\leftarrow u_n^{(t)}\cdot 6211</script><p>对于correct $u_n^{(t+1)}$：</p>
+<script type="math/tex; mode=display">
+u_n^{(t+1)}\leftarrow u_n^{(t)}\cdot 1126</script><p>或者利用犯错的比例来做，令weighted incorrect rate和weighted correct rate分别设为$\frac{1126}{7337}$和$\frac{6211}{7337}$。一般求解方式是令犯错率为$\epsilon_t$，在计算$u_n^{(t+1)}$的时候，$u_n^{t}$分别乘以$(1-\epsilon_t)$和$\epsilon_t$。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/14-11.png" alt="img"></p>
+<h2 id="3-Adaptive-Boosting-Algorithm"><a href="#3-Adaptive-Boosting-Algorithm" class="headerlink" title="3. Adaptive Boosting Algorithm"></a>3. Adaptive Boosting Algorithm</h2><p>上一部分，我们介绍了在计算$u_n^{(t+1)}$的时候，$u_n^{t}$分别乘以$(1-\epsilon_t)$和$\epsilon_t$。下面将构造一个新的尺度因子：</p>
+<script type="math/tex; mode=display">
+\diamond_t=\sqrt{\frac{1-\epsilon_t}{\epsilon_t}}</script><p>那么引入这个新的尺度因子之后，对于错误的$u_n^{t}$，将它乘以$\diamond_t$；对于正确的$u_n^{t}$，将它除以$\diamond_t$。</p>
+<p>这种操作跟之前介绍的分别乘以$(1-\epsilon_t)$和$\epsilon_t$的效果是一样的。之所以引入$\diamond_t$是因为它告诉我们更多的物理意义。因为如果$\epsilon_t\leq\frac12$，得到$\diamond_t\geq1$，那么接下来错误的$u_n^{t}$与$\diamond_t$的乘积就相当于把错误点放大了，而正确的$u_n^{t}$与$\diamond_t$的相除就相当于把正确点缩小了。这种scale up incorrect和scale down correct的做法与本节课开始介绍的学生识别苹果的例子中放大错误的图片和缩小正确的图片是一个原理，让学生能够将注意力更多地放在犯错误的点上。通过这种scaling-up incorrect的操作，能够保证得到不同于$g_t$的$g_{t+1}$。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/15-10.png" alt="img"></p>
+<p>值得注意的是上述的结论是建立在$\epsilon_t\leq\frac12$的基础上，如果$\epsilon_t\geq\frac12$，那么就做相反的推论即可。关于$\epsilon_t\geq\frac12$的情况，我们稍后会进行说明。</p>
+<p>从这个概念出发，我们可以得到一个初步的演算法。其核心步骤是每次迭代时利用$\diamond _t=\sqrt{\frac{1-\epsilon_t}{\epsilon_t}}$把$u_t$更新为$u_{t+1}$。具体迭代步骤如下：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/16-10.png" alt="img"></p>
+<p>但是，上述步骤还有两个问题没有解决：</p>
+<ol>
+<li>初始的$u^{(1)}$应为多少呢？一般来说，为了保证第一次$E_{in}$最小的话，设$u^{(1)}=\frac1N$即可。这样最开始的$g_1$就能由此推导。</li>
+<li>最终的$G(x)$应该怎么求？是将所有的$g(t)$合并uniform在一起吗？一般来说并不是这样直接uniform求解，因为$g_{t+1}$是通过$g_t$得来的，二者在$E_{in}$上的表现差别比较大。所以，一般是对所有的$g(t)$进行linear或者non-linear组合来得到$G(t)$。</li>
+</ol>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/17-11.png" alt="img"></p>
+<p>接下来的内容，我们将对上面的第二个问题进行探讨，研究一种算法，将所有的$g(t)$进行linear组合。方法是计算$g(t)$的同时，就能计算得到其线性组合系数$\alpha_t$，即aggregate linearly on the fly。这种算法使最终求得$g_{t+1}$的时候，所有$g_t$的线性组合系数$\alpha$也求得了，不用再重新计算$\alpha$了。这种Linear Aggregation on the Fly算法流程为：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/18-9.png" alt="img"></p>
+<p>如何在每次迭代的时候计算$\alpha_t$呢？我们知道$\alpha_t$与$\epsilon_t$是相关的：$\epsilon_t$越小，对应的$\alpha_t$应该越大，$\epsilon_t$越大，对应的$\alpha_t$应该越小。又因为$\diamond_t$与$\epsilon_t$是正相关的，所以，$\alpha_t$应该是$\diamond_t$的单调函数。我们构造$\alpha_t$为：</p>
+<script type="math/tex; mode=display">
+\alpha_t=\ln(\diamond_t)</script><p>$\alpha_t$这样取值是有物理意义的：</p>
+<ol>
+<li>当$\epsilon_t=\frac12$时，error很大，跟掷骰子这样的随机过程没什么两样，此时对应的$\diamond_t=1$，$\alpha_t=0$，即此$g_t$对$G$没有什么贡献，权重应该设为零。</li>
+<li>当$\epsilon_t=0$时，没有error，表示该$g_t$预测非常准，此时对应的$\diamond_t=\infty$，$\alpha_t=\infty$，即此$g_t$对$G$贡献非常大，权重应该设为无穷大。</li>
+</ol>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/19-6.png" alt="img"></p>
+<p>这种算法被称为Adaptive Boosting。它由三部分构成：base learning algorithm $A$，re-weighting factor $\diamond_t$和linear aggregation $\alpha_t$。这三部分分别对应于我们在本节课开始介绍的例子中的Student，Teacher和Class。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/20-5.png" alt="img"></p>
+<p>综上所述，完整的adaptive boosting（AdaBoost）Algorithm流程如下：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/21-5.png" alt="img"></p>
+<p>从我们之前介绍过的VC bound角度来看，AdaBoost算法理论上满足：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/22-4.png" alt="img"></p>
+<p>上式中，$E_{out}(G)$的上界由两部分组成，一项是$E_{in}(G)$，另一项是模型复杂度$O(*)$。模型复杂度中$d_{vc}(H)$是$g_t$的VC Dimension，$T$是迭代次数，可以证明$G$的$d_{vc}$服从$O(d_{vc}(H)\cdot Tlog\ T)$。</p>
+<p>对这个VC bound中的第一项$E_{in}(G)$来说，有一个很好的性质：如果满足$\epsilon_t\leq \epsilon\lt\frac12$，则经过$T=O(\log N)$次迭代之后，$E_{in}(G)$能减小到等于零的程度。而当$N$很大的时候，其中第二项也能变得很小。因为这两项都能变得很小，那么整个$E_{out}(G)$就能被限定在一个有限的上界中。</p>
+<p>其实，这种性质也正是AdaBoost算法的精髓所在。只要每次的$\epsilon_t\leq \epsilon\lt\frac12$，即所选择的矩$g$比乱猜的表现好一点点，那么经过每次迭代之后，矩$g$的表现都会比原来更好一些，逐渐变强，最终得到$E_{in}=0$且$E_{out}$很小。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/23-2.png" alt="img"></p>
+<h2 id="4-Adaptive-Boosting-in-Action"><a href="#4-Adaptive-Boosting-in-Action" class="headerlink" title="4. Adaptive Boosting in Action"></a><strong>4. Adaptive Boosting in Action</strong></h2><p>上一小节我们已经介绍了选择一个“弱弱”的算法$A$（$\epsilon_t\leq \epsilon\lt\frac12$，比乱猜好就行），就能经过多次迭代得到$E_{in}=0$。我们称这种形式为decision stump模型。下面介绍一个例子，来看看AdaBoost是如何使用decision stump解决实际问题的。</p>
+<p>如下图所示，二维平面上分布一些正负样本点，利用decision stump来做切割。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/24-3.png" alt="img"></p>
+<p>第一步：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/25.png" alt="img"></p>
+<p>第二步：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/26.png" alt="img"></p>
+<p>第三步：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/27.png" alt="img"></p>
+<p>第四步：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/28.png" alt="img"></p>
+<p>第五步：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/29.png" alt="img"></p>
+<p>可以看到，经过5次迭代之后，所有的正负点已经被完全分开了，则最终得到的分类线为：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/30.png" alt="img"></p>
+<p>另外一个例子，对于一个相对比较复杂的数据集，如下图所示。它的分界线从视觉上看应该是一个sin波的形式。如果我们再使用AdaBoost算法，通过decision stump来做切割。在迭代切割100次后，得到的分界线如下所示。</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/31.png" alt="img"></p>
+<p>可以看出，AdaBoost-Stump这种非线性模型得到的分界线对正负样本有较好的分离效果。</p>
+<p>课程中还介绍了一个AdaBoost-Stump在人脸识别方面的应用：</p>
+<p><img src="http://redstonewill.com/wp-content/uploads/2018/07/32.png" alt="img"></p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a><strong>5. 总结</strong></h2><p>本节课主要介绍了Adaptive Boosting。首先通过讲一个老师教小学生识别苹果的例子，来引入Boosting的思想，即把许多“弱弱”的hypotheses合并起来，变成很强的预测模型。然后重点介绍这种算法如何实现，关键在于每次迭代时，给予样本不同的系数$u$，宗旨是放大错误样本，缩小正确样本，得到不同的小矩$g$。并且在每次迭代时根据错误$\epsilon$值的大小，给予不同$g_t$不同的权重。最终由不同的$g_t$进行组合得到整体的预测模型$G$。实际证明，Adaptive Boosting能够得到有效的预测模型。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/04/29/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-8.adaptive-boosting/">http://xjw924.github.io/2020/04/29/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-8.adaptive-boosting/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        <a href="/tags/MachineLearning/"># MachineLearning</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/05/01/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-9.decision-tree/">林轩田《机器学习技法》Note——9.Decision Tree</a>
+            
+            
+            <a class="next" rel="next" href="/2020/04/22/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-7.blending-and-bagging/">林轩田《机器学习技法》Note——7.Blending and Bagging</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

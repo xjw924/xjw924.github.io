@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>林轩田《机器学习技法》Note——6.Support Vector Regression | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HOME</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HOME</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">林轩田《机器学习技法》Note——6.Support Vector Regression</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 20, 2020&nbsp;&nbsp;9:47:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Notes/">Notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>课程：</p>
+<ul>
+<li><a href="https://www.bilibili.com/video/av12463015" target="_blank" rel="noopener">https://www.bilibili.com/video/av12463015</a></li>
+</ul>
+<p>参考笔记：</p>
+<ul>
+<li><a href="http://redstonewill.com/" target="_blank" rel="noopener">http://redstonewill.com/</a></li>
+</ul>
+</blockquote>
+<h1 id="Lecture-6-Support-Vector-Regression"><a href="#Lecture-6-Support-Vector-Regression" class="headerlink" title="Lecture 6: Support Vector Regression"></a>Lecture 6: Support Vector Regression</h1><p>本节课讨论如何将SVM的kernel技巧应用到regression问题上。</p>
+<h2 id="1-Kernel-Ridge-Regression"><a href="#1-Kernel-Ridge-Regression" class="headerlink" title="1. Kernel Ridge Regression"></a>1. Kernel Ridge Regression</h2><p>首先回顾一下上节课介绍的Representer Theorem，对于任何包含正则项的L2-regularized linear model，它的最佳化解$w$都可以写成是$z$的线性组合形式，因此，也就能引入kernel技巧，将模型kernelized化。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/1-12.png" alt="img"></p>
+<p>那么如何将regression模型变成kernel的形式呢？我们之前介绍的linear/ridge regression最常用的错误估计是squared error，即$err(y,w^Tz)=(y-w^Tz)^2$。这种形式对应的解是analytic solution，即可以使用线性最小二乘法，通过向量运算，直接得到最优化解。</p>
+<p>那么接下来我们就要研究如何将kernel引入到ridge regression中去，得到与之对应的analytic solution。</p>
+<p>我们先把Kernel Ridge Regression问题写下来：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/2-11.png" alt="img"></p>
+<p>其中，最佳解$w_<em>$必然是z的线性组合。那么我们就把$w_</em>=\sum_{n=1}^N\beta_nz_n$代入到ridge regression中，将$z$的内积用kernel替换，把求$w_*$的问题转化成求$\beta_n$的问题，得到：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/3-9.png" alt="img"></p>
+<p>ridge regression可以写成矩阵的形式，其中第一项可以看成是$\beta_n$的正则项，而第二项可以看成是$\beta_n$的error function。这样，我们的目的就是求解该式最小化对应的$\beta_n$值，这样就解决了kernel ridge regression问题。</p>
+<p>求解$\beta_n$的问题可以写成如下形式：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/4-9.png" alt="img"></p>
+<p>$E_{aug}(\beta)$是关于$\beta$的二次多项式，要对$E_{aug}(\beta)$求最小化解，这种凸二次最优化问题，只需要先计算其梯度，再令梯度为零即可。得到一种可能的$\beta$的解析解为：</p>
+<script type="math/tex; mode=display">
+\beta=(\lambda I+K)^{-1}y</script><p>$(\lambda I+K)$的逆矩阵是否存在？答案是肯定的。因为我们之前介绍过，核函数$K$满足Mercer’s condition，它是半正定的，而且$\lambda&gt;0$，所以$(\lambda I+K)$一定是可逆的。</p>
+<p>从计算的时间复杂上来说，由于$(\lambda I+K)$是$N$x$N$大小的，所以时间复杂度是$O(N^3)$。</p>
+<p>$\nabla E_{aug}(\beta)$是由两项乘积构成的，另一项是$K$，会不会出现$K=0$的情况呢？其实，由于核函数$K$表征的是$z$空间的内积，一般而言，除非两个向量互相垂直，内积才为零，否则，一般情况下$K$不等于零。这个原因也决定了$(\lambda I+K)$是dense matrix，即$\beta$的解大部分都是非零值。</p>
+<p>所以说，我们可以通过kernel来解决non-linear regression的问题。下面比较一下linear ridge regression和kernel ridge regression的关系。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/5-9.png" alt="img"></p>
+<p>如上图所示，左边是linear ridge regression，是一条直线；右边是kernel ridge regression，是一条曲线。大致比较一下，右边的曲线拟合的效果更好一些。</p>
+<p>这两种regression有什么样的优点和缺点呢？</p>
+<ol>
+<li>linear ridge regression：<ul>
+<li>线性模型，只能拟合直线；</li>
+<li>训练复杂度是$O(d^3+d^2N)$（矩阵（$\lambda I+X^TX$）是$d$x$d$的），预测的复杂度是$O(d)$，如果$N$比$d$大很多时，这种模型就更有效率。</li>
+</ul>
+</li>
+<li>kernel ridge regression：<ul>
+<li>它转换到$z$空间，使用kernel技巧，得到的是非线性模型，所以更加灵活；</li>
+<li>训练复杂度是$O(N^3)$（矩阵（$\lambda I+K$）是$N$x$N$的），预测的复杂度是$O(N)$，均只与$N$有关。当$N$很大的时候，计算量就很大，所以，kernel ridge regression适合$N$不是很大的场合。</li>
+</ul>
+</li>
+</ol>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/6-9.png" alt="img"></p>
+<p>比较下来，可以说linear和kernel实际上是效率（efficiency）和灵活（flexibility）之间的权衡。</p>
+<h2 id="2-Support-Vector-Regression-Primal"><a href="#2-Support-Vector-Regression-Primal" class="headerlink" title="2. Support Vector Regression Primal"></a>2. Support Vector Regression Primal</h2><p>我们在机器学习基石课程中介绍过linear regression可以用来做classification，那么上一部分介绍的kernel ridge regression同样可以来做classification。我们把kernel ridge regression应用在classification上取个新的名字，叫做least-squares SVM（LSSVM）。</p>
+<p>先来看一下对于某个问题，soft-margin Gaussian SVM和Gaussian LSSVM结果有哪些不一样的地方。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/7-10.png" alt="img"></p>
+<p>如上图所示，如果只看分类边界的话，soft-margin Gaussian SVM和Gaussian LSSVM差别不是很大，即分类线是几乎相同的。但是如果看Support Vector的话（图中方框标注的点），左边soft-margin Gaussian SVM的SV不多，而<strong>右边Gaussian LSSVM中基本上每个点都是SV</strong>。这是因为soft-margin Gaussian SVM中的$\alpha_n$大部分是等于零，$\alpha_n&gt;0$的点只占少数，所以SV少。而对于LSSVM，我们上一部分介绍了$\beta$的解大部分都是非零值，所以对应的每个点基本上都是SV。</p>
+<p>SV太多会带来一个问题，就是做预测的矩$g(x)=\sum_{n=1}^N\beta_nK(x_n,x)$，如果$\beta_n$非零值较多，那么$g$的计算量也比较大，降低计算速度。基于这个原因，soft-margin Gaussian SVM更有优势。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/8-10.png" alt="img"></p>
+<p>那么，针对LSSVM中dense $\beta$的缺点，我们能不能使用一些方法来的得到sparse $\beta$，使得SV不会太多，从而得到和soft-margin SVM同样的分类效果呢？下面我们将尝试解决这个问题。</p>
+<p>方法是引入一个叫做<strong>Tube Regression</strong>的做法，即在分类线上下分别划定一个区域（中立区），如果数据点分布在这个区域内，则不算分类错误，<strong>只有误分在中立区域之外的地方才算error</strong>。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/9-10.png" alt="img"></p>
+<p>假定中立区的宽度为$2\epsilon$，$\epsilon&gt;0$,那么error measure就可以写成：$err(y,s)=\max(0,|s-y|-\epsilon)$，对应上图中红色标注的距离。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/10-10.png" alt="img"></p>
+<p>通常<strong>把这个error叫做$\epsilon$-insensitive error</strong>，这种max的形式跟我们上节课中介绍的hinge error measure形式其实是类似的。所以，我们接下来要做的事情就是将L2-regularized tube regression做类似于soft-margin SVM的推导，从而得到sparse $\beta$。</p>
+<p>首先，我们把tube regression中的error与squared error做个比较：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/11-9.png" alt="img"></p>
+<p>然后，将$err(y,s)$与$s$的关系曲线分别画出来：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/12-9.png" alt="img"></p>
+<p>上图中，红色的线表示squared error，蓝色的线表示tube error。我们发现：</p>
+<ol>
+<li>当$|s-y|$比较小即$s$比较接近$y$的时候，squared error与tube error是差不多大小的。</li>
+<li>在$|s-y|$比较大的区域，squared error的增长幅度要比tube error大很多。error的增长幅度越大，表示越容易受到noise的影响，不利于最优化问题的求解。所以，从这个方面来看，tube regression的这种error function要更好一些。</li>
+</ol>
+<p>现在，我们把L2-Regularized Tube Regression写下来：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/13-9.png" alt="img"></p>
+<p>这个最优化问题，由于其中包含max项，并不是处处可微分的，所以不适合用GD/SGD来求解。而且，虽然满足representer theorem，有可能通过引入kernel来求解，但是也并不能保证得到sparsity $\beta$。从另一方面考虑，我们可以把这个问题转换为带条件的QP问题，仿照dual SVM的推导方法，引入kernel，得到KKT条件，从而保证解$\beta$是sparse的。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/14-9.png" alt="img"></p>
+<p>所以，我们就可以把L2-Regularized Tube Regression写成跟SVM类似的形式：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/15-8.png" alt="img"></p>
+<p>值得一提的是，系数$\lambda$和$C$是反比例相关的，$\lambda$越大对应C越小。而且该式也把$w_0$即$b$单独拿了出来，这跟我们之前推导SVM的解的方法是一致的。</p>
+<p>现在我们已经有了Standard Support Vector Regression的初始形式，这还是不是一个标准的QP问题。我们继续对该表达式做一些转化和推导：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/16-8.png" alt="img"></p>
+<p>如上图右边所示，即为标准的QP问题，其中$\xi_n^{\vee}$和$\xi_n^{\wedge}$分别表示lower tube violations和uppertube violations。这种形式叫做Support Vector Regression（SVR） primal。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/17-9.png" alt="img"></p>
+<p>SVR的标准QP形式包含几个重要的参数：$C$和$\epsilon$。$C$表示的是regularization和tube violation之间的权衡。large $C$倾向于tube violation，small $C$则倾向于regularization。$\epsilon$表征了tube的区域宽度，即对错误点的容忍程度。$\epsilon$越大，则表示对错误的容忍度越大。$\epsilon$是可设置的常数，是SVR问题中独有的，SVM中没有这个参数。另外，SVR的QP形式共有$\hat{d}+1+2N$个参数，$2N+2N$个条件。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/18-7.png" alt="img"></p>
+<h2 id="3-Support-Vector-Regression-Dual"><a href="#3-Support-Vector-Regression-Dual" class="headerlink" title="3. Support Vector Regression Dual"></a>3. Support Vector Regression Dual</h2><p>现在我们已经得到了SVR的primal形式，接下来将推导SVR的Dual形式。首先，与SVM对偶形式一样，先令拉格朗日因子$\alpha^{\vee}$和$\alpha^{\wedge}$，分别是与$\xi_n^{\vee}$和$\xi_n^{\wedge}$不等式相对应。这里忽略了与$\xi_n^{\vee}\geq0$和$\xi_n^{\wedge}\geq0$对应的拉格朗日因子。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/19-4.png" alt="img"></p>
+<p>然后，与SVM一样做同样的推导和化简，拉格朗日函数对相关参数偏微分为零，得到相应的KKT条件：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/20-3.png" alt="img"></p>
+<p>接下来，通过观察SVM primal与SVM dual的参数对应关系，直接从SVR primal推导出SVR dual的形式。（具体数学推导此处忽略）</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/21-3.png" alt="img"></p>
+<p>最后，我们就要来讨论一下SVR的解是否真的是sparse的。前面已经推导了SVR dual形式下推导的解$w$为：</p>
+<script type="math/tex; mode=display">
+w=\sum_{n=1}^N(\alpha_n^{\wedge}-\alpha_n^{\vee})z_n</script><p>相应的complementary slackness为：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/22-2.png" alt="img"></p>
+<p>对于分布在tube中心区域内的点，满足$|w^Tz_n+b-y_n|\lt \epsilon$，此时忽略错误，$\xi_n^{\vee}$和$\xi_n^{\wedge}$都等于零。则complementary slackness两个等式的第二项均不为零，必然得到$\alpha_n^{\wedge}=0$和$\alpha_n^{\vee}=0$，即$\beta_n=\alpha_n^{\wedge}-\alpha_n^{\vee}=0$。</p>
+<p>所以，对于分布在tube内的点，得到的解$\beta_n=0$，是sparse的。而分布在tube之外的点，$\beta_n\neq0$。至此，我们就得到了SVR的sparse解。</p>
+<h2 id="4-Summary-of-Kernel-Models"><a href="#4-Summary-of-Kernel-Models" class="headerlink" title="4. Summary of Kernel Models"></a>4. Summary of Kernel Models</h2><p>这部分将对我们介绍过的所有的kernel模型做个概括和总结。我们总共介绍过三种线性模型，分别是PLA/pocket，regularized logistic regression和linear ridge regression。这三种模型都可以使用国立台湾大学的Chih-Jen Lin博士开发的Liblinear库函数来解决。</p>
+<p>另外，我们介绍了linear soft-margin SVM，其中的error function是$\hat{err}_{svm}$，可以通过标准的QP问题来求解。linear soft-margin SVM和PLA/pocket一样都是解决同样的问题。然后，还介绍了linear SVR问题，它与linear ridge regression一样都是解决同样的问题，从SVM的角度，使用$err_{tube}$，转换为QP问题进行求解，这也是我们本节课的主要内容。</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/23.png" alt="img"></p>
+<p>上图中相应的模型也可以转化为dual形式，引入kernel，整体的框图如下：</p>
+<p><img src="http://47.94.229.135/wp-content/uploads/2018/07/24-1.png" alt="img"></p>
+<p>其中SVM，SVR和probabilistic SVM都可以使用国立台湾大学的Chih-Jen Lin博士开发的LLibsvm库函数来解决。通常来说，这些模型中<strong>SVR和probabilistic SVM最为常用</strong>。</p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a><strong>5. 总结</strong></h2><p>本节课主要介绍了SVR，我们先通过representer theorem理论，将ridge regression转化为kernel的形式，即kernel ridge regression，并推导了SVR的解。但是得到的解是dense的，大部分为非零值。</p>
+<p>所以，我们定义新的tube regression，使用SVM的推导方法，来最小化regularized tube errors，转化为对偶形式，得到了sparse的解。</p>
+<p>最后，我们对介绍过的所有kernel模型做个总结，简单概述了各自的特点。在实际应用中，我们要根据不同的问题进行合适的模型选择。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2020/04/20/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-6.support-vector-regression/">http://xjw924.github.io/2020/04/20/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-6.support-vector-regression/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        <a href="/tags/MachineLearning/"># MachineLearning</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/04/20/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-5.kernel-logistic-regression/">林轩田《机器学习技法》Note——5.Kernel Logistic Regression</a>
+            
+            
+            <a class="next" rel="next" href="/2020/04/19/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-4.soft-margin-svm/">林轩田《机器学习技法》Note——4.Soft-margin SVM</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
