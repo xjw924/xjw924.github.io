@@ -343,18 +343,181 @@
 <li><p>data : array-like, Series, or DataFrame，输入的数据。</p>
 </li>
 <li><p>prefix : string, list of strings, or dict of strings, default None.<br>get_dummies转换后，列名的前缀。默认使用原变量名作为前缀。</p>
-<p> <strong>注意：Series里的整数会按照one-hot进行编码，但是在DataFrame里面不会</strong>（如下例中的C列）</p>
-   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df)</span><br></pre></td></tr></table></figure>
-<p> |      | C    | A_a  | A_b  | B_a  | B_b  | B_c  |<br> | —— | —— | —— | —— | —— | —— | —— |<br> | 0    | 1    | 1    | 0    | 1    | 1    | 0    |<br> | 1    | 2    | 0    | 1    | 0    | 0    | 0    |<br> | 2    | 3    | 1    | 0    | 1    | 0    | 1    |</p>
-   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, prefix=[<span class="string">'col1'</span>, <span class="string">'col2'</span>])</span><br></pre></td></tr></table></figure>
-<p> |      | C    | col1_a | col1_b | col2_a | col2_b | col2_c |<br> | —— | —— | ——— | ——— | ——— | ——— | ——— |<br> | 0    | 1    | 1      | 0      | 1      | 1      | 0      |<br> | 1    | 2    | 0      | 1      | 0      | 0      | 0      |<br> | 2    | 3    | 1      | 0      | 1      | 0      | 1      |</p>
-   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s = pd.Series([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]) <span class="comment"># 对比Series中的整数列</span></span><br><span class="line">pd.get_dummies(s)</span><br></pre></td></tr></table></figure>
-<p> |      | 1    | 2    | 3    |<br> | —— | —— | —— | —— |<br> | 0    | 1    | 0    | 0    |<br> | 1    | 0    | 1    | 0    |<br> | 2    | 0    | 0    | 1    |</p>
 </li>
-<li><p>prefix_sep：str, default ‘_’，前缀与取值之间的分割符号。也可以使用字典形式对每个变量进行指定。</p>
- <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, prefix_sep=&#123;<span class="string">'A'</span>:<span class="string">'_'</span>,<span class="string">'B'</span>:<span class="string">'/'</span>&#125;)</span><br></pre></td></tr></table></figure>
-<p> |      |    C |  A_a |  A_b |  B/a |  B/b | B/c  |<br> | —-: | —-: | —-: | —-: | —-: | —-: | —— |<br> |    0 |    1 |    1 |    0 |    0 |    1 | 0    |<br> |    1 |    2 |    0 |    1 |    1 |    0 | 0    |<br> |    2 |    3 |    1 |    0 |    0 |    0 | 1    |</p>
-</li>
+</ul>
+<p><strong>注意：Series里的整数会按照one-hot进行编码，但是在DataFrame里面不会</strong>（如下例中的C列）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df)</span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>C</th>
+<th>A_a</th>
+<th>A_b</th>
+<th>B_a</th>
+<th>B_b</th>
+<th>B_c</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, prefix=[<span class="string">'col1'</span>, <span class="string">'col2'</span>])</span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>C</th>
+<th>col1_a</th>
+<th>col1_b</th>
+<th>col2_a</th>
+<th>col2_b</th>
+<th>col2_c</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s = pd.Series([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]) <span class="comment"># 对比Series中的整数列</span></span><br><span class="line">pd.get_dummies(s)</span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>prefix_sep：str, default ‘_’，前缀与取值之间的分割符号。也可以使用字典形式对每个变量进行指定。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, prefix_sep=&#123;<span class="string">'A'</span>:<span class="string">'_'</span>,<span class="string">'B'</span>:<span class="string">'/'</span>&#125;)</span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:right"></th>
+<th style="text-align:right">C</th>
+<th style="text-align:right">A_a</th>
+<th style="text-align:right">A_b</th>
+<th style="text-align:right">B/a</th>
+<th style="text-align:right">B/b</th>
+<th>B/c</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+<td>0</td>
+</tr>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td>0</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
 <li><p>columns : list-like, default None<br>用列表指定需要实现类别转换的列名，限定对哪些列进行转换，不写默认全部。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, columns=[<span class="string">'A'</span>]) <span class="comment"># 仅对A列进行one-hot转换</span></span><br></pre></td></tr></table></figure>
 </li>
