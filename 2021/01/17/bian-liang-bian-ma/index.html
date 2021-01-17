@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="xjw924">
+
+
+    <meta name="subtitle" content="Hi, there~">
+
+
+    <meta name="description" content="统计|数据分析|机器学习|大数据">
+
+
+
+<title>类别型变量编码 | 小徐小徐不断学习</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">HOME</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">HOME</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/MachineLearning">▶Machine Learning</a>
+                
+                    <a class="menu-item" href="/DataAnalysis">▶Data Analysis</a>
+                
+                    <a class="menu-item" href="/Hadoop">▶Hadoop</a>
+                
+                    <a class="menu-item" href="/Spark">▶Spark</a>
+                
+                    <a class="menu-item" href="/archives">▶Posts</a>
+                
+                    <a class="menu-item" href="/category">▶Category</a>
+                
+                    <a class="menu-item" href="/tag">▶Tag</a>
+                
+                    <a class="menu-item" href="/about">▶About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">类别型变量编码</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">xjw924</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 17, 2021&nbsp;&nbsp;10:10:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Notes/">Notes</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>参考笔记：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/248763414" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/248763414</a></li>
+</ul>
+</blockquote>
+<h1 id="独热编码（One-hot-Encoding）"><a href="#独热编码（One-hot-Encoding）" class="headerlink" title="独热编码（One-hot Encoding）"></a>独热编码（One-hot Encoding）</h1><h2 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h2><p>通常用于处理类别间<strong>不具有大小关系</strong>的特征。</p>
+<p>one-hot编码将分类变量转换为几个二进制列，其中1代表某个输入属于该类别。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-c7c17cf095c8ae10232d7b22de5bdd9b_1440w.jpg" alt="img"></p>
+<p>对于类别取值较多的情况下使用独热编码需要注意以下问题：</p>
+<ol>
+<li>使用稀疏向量来节省空间。在one-hot下特征向量只有某一维取值为1，其他位置均为0。因此可以利用向量的稀疏表示有效地节省空间，目前大部分算法均接受稀疏向量形式的输入。</li>
+<li>配合特征选择来降低维度。高维特征会带来几方面的问题。一是在K近邻算法中，高维空间下两点之间的距离很难得到有效的衡量；二是在LR中，参数的数量会随着维度的增高而增加，容易引起过拟合问题；三是通常只有部分维度是对分类、预测有帮助。</li>
+</ol>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<li>one-hot 编码为数据集增加大量维度。例如，如果用一个序列来表示美国的各个州，那么 one-hot 编码会带来 50 多个维度。</li>
+<li>one-hot 编码增加的大量维度实际上并没有太多信息，很多时候 1 散落在众多零之中，即有用的信息零散地分布在大量数据中。这会<strong>导致结果异常稀疏，使其难以进行优化</strong>。</li>
+<li>每个信息稀疏列之间都具有<strong>线性关系</strong>。这意味着一个变量可以很容易地使用其他变量进行预测，导致高维度中出现并行性和多重共线性的问题。如果只有三、四个类，那么 one-hot 编码可能不是一个糟糕的选择。但是随着类别的增加，可能还有其他更合适的方案值得探索。</li>
+</ol>
+<p><img src="https://pic4.zhimg.com/80/v2-948cfefbe19db39027ec3ac60b26cc17_1440w.jpg" alt="img"></p>
+<blockquote>
+<p>小结：如果变量的类别数目不太多，可优先考虑。</p>
+</blockquote>
+<h2 id="python实现"><a href="#python实现" class="headerlink" title="python实现"></a>python实现</h2><h3 id="使用pandas中的get-dummies包"><a href="#使用pandas中的get-dummies包" class="headerlink" title="使用pandas中的get_dummies包"></a>使用pandas中的get_dummies包</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化DataFrame</span></span><br><span class="line">df = pd.DataFrame(&#123;<span class="string">'Pet'</span>: [<span class="string">'Cat'</span>, <span class="string">'Dog'</span>, <span class="string">'Turtle'</span>, <span class="string">'Fish'</span>, <span class="string">'Cat'</span>]&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过pandas中的get_dummies生成</span></span><br><span class="line">dummies = pd.get_dummies(df[<span class="string">'Pet'</span>])</span><br><span class="line">df_new = pd.concat([df,dummies],axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看结果</span></span><br><span class="line">df_new</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:right"></th>
+<th style="text-align:right">Pet</th>
+<th style="text-align:right">Cat</th>
+<th style="text-align:right">Dog</th>
+<th style="text-align:right">Fish</th>
+<th style="text-align:right">Turtle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0</td>
+<td style="text-align:right">Cat</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">Dog</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">Turtle</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td style="text-align:right">3</td>
+<td style="text-align:right">Fish</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">4</td>
+<td style="text-align:right">Cat</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="pandas-get-dummies参数"><a href="#pandas-get-dummies参数" class="headerlink" title="pandas.get_dummies参数"></a>pandas.get_dummies参数</h3><p><code>pandas.get_dummies</code>(<strong>data</strong>, <em>prefix=None**</em>,<strong> <em>prefix_sep=’_’</em></strong>,<strong> <em>dummy_na=False</em></strong>,<strong> <em>columns=None</em></strong>,<strong> <em>sparse=False</em></strong>,<strong> <em>drop_first=False</em></strong>,<strong> <em>dtype=None</em></strong>)**<a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.get_dummies.html#pandas.get_dummies" target="_blank" rel="noopener">[source]</a></p>
+<ul>
+<li><p>data : array-like, Series, or DataFrame，输入的数据。</p>
+</li>
+<li><p>prefix : string, list of strings, or dict of strings, default None.<br>get_dummies转换后，列名的前缀。默认使用原变量名作为前缀。</p>
+<p> <strong>注意：Series里的整数会按照one-hot进行编码，但是在DataFrame里面不会</strong>（如下例中的C列）</p>
+   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df)</span><br></pre></td></tr></table></figure>
+<p> |      | C    | A_a  | A_b  | B_a  | B_b  | B_c  |<br> | —— | —— | —— | —— | —— | —— | —— |<br> | 0    | 1    | 1    | 0    | 1    | 1    | 0    |<br> | 1    | 2    | 0    | 1    | 0    | 0    | 0    |<br> | 2    | 3    | 1    | 0    | 1    | 0    | 1    |</p>
+   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, prefix=[<span class="string">'col1'</span>, <span class="string">'col2'</span>])</span><br></pre></td></tr></table></figure>
+<p> |      | C    | col1_a | col1_b | col2_a | col2_b | col2_c |<br> | —— | —— | ——— | ——— | ——— | ——— | ——— |<br> | 0    | 1    | 1      | 0      | 1      | 1      | 0      |<br> | 1    | 2    | 0      | 1      | 0      | 0      | 0      |<br> | 2    | 3    | 1      | 0      | 1      | 0      | 1      |</p>
+   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s = pd.Series([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]) <span class="comment"># 对比Series中的整数列</span></span><br><span class="line">pd.get_dummies(s)</span><br></pre></td></tr></table></figure>
+<p> |      | 1    | 2    | 3    |<br> | —— | —— | —— | —— |<br> | 0    | 1    | 0    | 0    |<br> | 1    | 0    | 1    | 0    |<br> | 2    | 0    | 0    | 1    |</p>
+</li>
+<li><p>prefix_sep：str, default ‘_’，前缀与取值之间的分割符号。也可以使用字典形式对每个变量进行指定。</p>
+ <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, prefix_sep=&#123;<span class="string">'A'</span>:<span class="string">'_'</span>,<span class="string">'B'</span>:<span class="string">'/'</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p> |      |    C |  A_a |  A_b |  B/a |  B/b | B/c  |<br> | —-: | —-: | —-: | —-: | —-: | —-: | —— |<br> |    0 |    1 |    1 |    0 |    0 |    1 | 0    |<br> |    1 |    2 |    0 |    1 |    1 |    0 | 0    |<br> |    2 |    3 |    1 |    0 |    0 |    0 | 1    |</p>
+</li>
+<li><p>columns : list-like, default None<br>用列表指定需要实现类别转换的列名，限定对哪些列进行转换，不写默认全部。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, columns=[<span class="string">'A'</span>]) <span class="comment"># 仅对A列进行one-hot转换</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:right"></th>
+<th style="text-align:right">B</th>
+<th style="text-align:right">C</th>
+<th style="text-align:right">A_a</th>
+<th style="text-align:right">A_b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0</td>
+<td style="text-align:right">b</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">a</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">c</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><p>dummy_na : bool, default False<br>增加一列表示缺失值，如果False就忽略缺失值。</p>
+   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">s1 = [<span class="string">'a'</span>, <span class="string">'b'</span>, np.nan]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>pd.get_dummies(s1)</span><br><span class="line">     a  b</span><br><span class="line">  <span class="number">0</span>  <span class="number">1</span>  <span class="number">0</span></span><br><span class="line">  <span class="number">1</span>  <span class="number">0</span>  <span class="number">1</span></span><br><span class="line">  <span class="number">2</span>  <span class="number">0</span>  <span class="number">0</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>pd.get_dummies(s1, dummy_na=<span class="literal">True</span>)</span><br><span class="line">     a  b  NaN</span><br><span class="line">  <span class="number">0</span>  <span class="number">1</span>  <span class="number">0</span>    <span class="number">0</span></span><br><span class="line">  <span class="number">1</span>  <span class="number">0</span>  <span class="number">1</span>    <span class="number">0</span></span><br><span class="line">  <span class="number">2</span>  <span class="number">0</span>  <span class="number">0</span>    <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>sparse：bool, default False.</p>
+<p> 表示虚拟列是否是稀疏的，默认为False。</p>
+<blockquote>
+<p>相关问题：<a href="https://zhuanlan.zhihu.com/p/55160639" target="_blank" rel="noopener">使用sklearn处理高维稀疏逻辑回归问题</a></p>
+</blockquote>
+</li>
+<li><p>drop_first : bool, default False<br>获得k中的k-1个类别值，去除第一个。相当于虚拟编码！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>], <span class="string">'B'</span>: [<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'c'</span>], <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]&#125;)</span><br><span class="line">pd.get_dummies(df, drop_first=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:right"></th>
+<th style="text-align:right">C</th>
+<th style="text-align:right">A_b</th>
+<th style="text-align:right">B_b</th>
+<th style="text-align:right">B_c</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><p>dtype: Data type for new columns. Only a single dtype is allowed.</p>
+<p> 指定生成虚拟列的数据类型，只能指定一种类型。</p>
+</li>
+</ul>
+<h3 id="使用OneHotEncoder"><a href="#使用OneHotEncoder" class="headerlink" title="使用OneHotEncoder"></a>使用OneHotEncoder</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># one-hot 先序列化，然后再做独热编码</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder, LabelEncoder</span><br><span class="line"></span><br><span class="line">store = pd.DataFrame(&#123;<span class="string">'gender'</span>: [<span class="number">0</span>, <span class="number">1</span>, <span class="string">'unknown'</span>]&#125;)</span><br><span class="line">arr=np.array(store[[<span class="string">'gender'</span>]].astype(str)).ravel() <span class="comment"># 获取所有取值</span></span><br><span class="line">lenc_code=LabelEncoder().fit_transform(arr) <span class="comment"># 对所有取值进行编码</span></span><br><span class="line">oenc_code = OneHotEncoder(sparse=<span class="literal">False</span>).fit_transform(lenc_code.reshape(<span class="number">-1</span>, <span class="number">1</span>))  <span class="comment"># 独热编码</span></span><br><span class="line">add_col=list(map(<span class="keyword">lambda</span> x:<span class="string">'gender_&#123;&#125;'</span>.format(x),np.unique(arr))) <span class="comment"># 对新列进行命名</span></span><br><span class="line">df_onehot=pd.concat([store,pd.DataFrame(oenc_code,columns=add_col)],axis=<span class="number">1</span>) <span class="comment"># 拼接到原始DataFrame</span></span><br><span class="line">df_onehot</span><br></pre></td></tr></table></figure>
+<h1 id="虚拟编码（Dummy-Coding）"><a href="#虚拟编码（Dummy-Coding）" class="headerlink" title="虚拟编码（Dummy Coding）"></a>虚拟编码（Dummy Coding）</h1><p>和独热编码类似，但是k个类别只需要k-1个虚拟变量。比如一个特征的取值是高，中和低，那么只需要两位编码，比如只编码中和低，如果是（1,0）则是中，（0,1）则是低。（0,0）则是高。目前虚拟编码使用的没有独热编码广，通常还是使用独热编码。</p>
+<p>实现方式： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.get_dummies(df, drop_first=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="序号编码（Ordinal-Encoding-Label-Encoding）"><a href="#序号编码（Ordinal-Encoding-Label-Encoding）" class="headerlink" title="序号编码（Ordinal Encoding/Label Encoding）"></a>序号编码（Ordinal Encoding/Label Encoding）</h1><p>序号编码通常用于处理类别间<strong>具有大小关系</strong>的数据。</p>
+<p>例如成绩可以分为低、中、高三档，并且存在“高＞ 中＞ 低”的排序关系。序号编码会按照大小关系对类别型特征赋值，例如高表示为3、中表示为2、低表示为1，<strong>转换后依然保留了大小关系</strong>。</p>
+<p>例如学历变量：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">edu_dict = &#123;<span class="string">"小学"</span>: <span class="number">1</span>, <span class="string">"初中"</span>: <span class="number">2</span>, <span class="string">"高中"</span>: <span class="number">3</span>, <span class="string">"大学"</span>: <span class="number">4</span>&#125;</span><br><span class="line"></span><br><span class="line">df[<span class="string">'Edu'</span>].replace(edu_dict, inplace=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://xjw924.github.io/2021/01/17/bian-liang-bian-ma/">http://xjw924.github.io/2021/01/17/bian-liang-bian-ma/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>如有错误，还望指正，谢谢！</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Notes/"># Notes</a>
+                    
+                        <a href="/tags/MachineLearning/"># MachineLearning</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/05/01/lin-xuan-tian-ji-qi-xue-xi-ji-fa-note-9.decision-tree/">林轩田《机器学习技法》Note——9.Decision Tree</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© xjw924 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

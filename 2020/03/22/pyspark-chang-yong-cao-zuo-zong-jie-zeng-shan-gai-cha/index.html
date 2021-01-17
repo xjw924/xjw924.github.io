@@ -243,16 +243,23 @@
 <p>以树的形式打印概要</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.printSchema()</span><br></pre></td></tr></table></figure>
 <p>获取头几行到本地：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">list = df.head(<span class="number">3</span>)   <span class="comment"># Example: [Row(a=1, b=1), Row(a=2, b=2), ... ...]</span></span><br><span class="line">list = df.take(<span class="number">5</span>)   <span class="comment"># Example: [Row(a=1, b=1), Row(a=2, b=2), ... ...]</span></span><br></pre></td></tr></table></figure></p>
-<p>查询总行数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.count()python</span><br></pre></td></tr></table></figure>
-<p>取别名<br>df.select(df.age.alias(‘age_value’),’name’)<br>1<br>查询某列为null的行：<br>from pyspark.sql.functions import isnull<br>df = df.filter(isnull(“col_a”))<br>1<br>2<br>输出list类型，list中每个元素是Row类：<br>list = df.collect()<br>1<br>注：此方法将所有数据全部导入到本地，返回一个Array对象</p>
-<p>查询概况<br>df.describe().show()<br>1<br>以及查询类型，之前是type，现在是df.printSchema()</p>
-<p>root<br> |— user_pin: string (nullable = true)<br> |— a: string (nullable = true)<br> |— b: string (nullable = true)<br> |— c: string (nullable = true)<br> |— d: string (nullable = true)<br> |— e: string (nullable = true)<br>…<br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>如上图所示，只是打印出来。</p>
-<p>去重set操作<br>data.select(‘columns’).distinct().show()<br>1<br>跟py中的set一样，可以distinct()一下去重，同时也可以.count()计算剩余个数</p>
+<p>查询总行数：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.count()</span><br></pre></td></tr></table></figure></p>
+<p>取别名<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.select(df.age.alias(<span class="string">'age_value'</span>),<span class="string">'name'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>查询某列为null的行：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> isnull</span><br><span class="line">df = df.filter(isnull(<span class="string">"col_a"</span>))</span><br></pre></td></tr></table></figure></p>
+<p>输出list类型，list中每个元素是Row类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list = df.collect()</span><br></pre></td></tr></table></figure>
+<p>注：此方法将所有数据全部导入到本地，返回一个Array对象</p>
+<p>查询某列为null的行：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> isnull</span><br><span class="line">df = df.filter(isnull(<span class="string">"col_a"</span>))</span><br></pre></td></tr></table></figure></p>
+<p>输出list类型，list中每个元素是Row类：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list = df.collect()</span><br></pre></td></tr></table></figure></p>
+<p>注：此方法将所有数据全部导入到本地，返回一个Array对象</p>
+<p>去重set操作<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.select(<span class="string">'columns'</span>).distinct().show()</span><br></pre></td></tr></table></figure></p>
+<p>跟py中的set一样，可以distinct()一下去重，同时也可以.count()计算剩余个数</p>
 <p>随机抽样<br>随机抽样有两种方式，一种是在HIVE里面查数随机；另一种是在pyspark之中。</p>
-<p>HIVE里面查数随机</p>
-<p>sql = “select * from data order by rand()  limit 2000”<br>1<br>pyspark之中</p>
-<p>sample = result.sample(False,0.5,0) # randomly select 50% of lines<br>1<br>— 1.2 列元素操作 —<br>获取Row元素的所有列名：<br>r = Row(age=11, name=’Alice’)<br>print r.columns    #  [‘age’, ‘name’]<br>1<br>2<br>选择一列或多列：select<br>df[“age”]<br>df.age<br>df.select(“name”)<br>df.select(df[‘name’], df[‘age’]+1)<br>df.select(df.a, df.b, df.c)    # 选择a、b、c三列<br>df.select(df[“a”], df[“b”], df[“c”])    # 选择a、b、c三列<br>1<br>2<br>3<br>4<br>5<br>6<br>重载的select方法：<br>jdbcDF.select(jdbcDF( “id” ), jdbcDF( “id”) + 1 ).show( false)<br>1<br>会同时显示id列 + id + 1列</p>
+<p>HIVE里面查数随机<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sql = <span class="string">"select * from data order by rand()  limit 2000"</span></span><br></pre></td></tr></table></figure></p>
+<p>pyspark之中<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sample = result.sample(<span class="literal">False</span>,<span class="number">0.5</span>,<span class="number">0</span>) <span class="comment"># randomly select 50% of lines</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="列元素操作"><a href="#列元素操作" class="headerlink" title="列元素操作"></a>列元素操作</h3><p>获取Row元素的所有列名：</p>
+<p>r = Row(age=11, name=’Alice’)<br>print r.columns    #  [‘age’, ‘name’]<br>1<br>2<br>选择一列或多列：select<br>df[“age”]<br>df.age<br>df.select(“name”)<br>df.select(df[‘name’], df[‘age’]+1)<br>df.select(df.a, df.b, df.c)    # 选择a、b、c三列<br>df.select(df[“a”], df[“b”], df[“c”])    # 选择a、b、c三列</p>
+<p>重载的select方法：<br>jdbcDF.select(jdbcDF( “id” ), jdbcDF( “id”) + 1 ).show( false)<br>1<br>会同时显示id列 + id + 1列</p>
 <p>还可以用where按条件选择<br>jdbcDF .where(“id = 1 or c1 = ‘b’” ).show()<br>1<br>— 1.3 排序 —<br>orderBy和sort：按指定字段排序，默认为升序</p>
 <p>train.orderBy(train.Purchase.desc()).show(5)<br>Output:<br>+———-+—————+———+——-+—————+——————-+—————————————+———————+—————————+—————————+—————————+————+<br>|User_ID|Product_ID|Gender|  Age|Occupation|City_Category|Stay_In_Current_City_Years|Marital_Status|Product_Category_1|Product_Category_2|Product_Category_3|Purchase|<br>+———-+—————+———+——-+—————+——————-+—————————————+———————+—————————+—————————+—————————+————+<br>|1003160| P00052842|     M|26-35|        17|            C|                         3|             0|                10|                15|              null|   23961|<br>|1002272| P00052842|     M|26-35|         0|            C|                         1|             0|                10|                15|              null|   23961|<br>|1001474| P00052842|     M|26-35|         4|            A|                         2|             1|                10|                15|              null|   23961|<br>|1005848| P00119342|     M|51-55|        20|            A|                         0|             1|                10|                13|              null|   23960|<br>|1005596| P00117642|     M|36-45|        12|            B|                         1|             0|                10|                16|              null|   23960|<br>+———-+—————+———+——-+—————+——————-+—————————————+———————+—————————+—————————+—————————+————+<br>only showing top 5 rows<br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>按指定字段排序。加个-表示降序排序</p>
 <p>— 1.4 抽样 —<br>sample是抽样函数</p>
@@ -418,10 +425,10 @@ return test_left
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/03/22/pyspark-chang-yong-cao-zuo-zong-jie-yu-chu-li/">PySpark常用操作总结——预处理</a>
+                <a class="prev" rel="prev" href="/2020/03/30/pyspark-chang-yong-cao-zuo-zong-jie-mo-xing-ping-gu/">PySpark常用操作总结——模型评估</a>
             
             
-            <a class="next" rel="next" href="/2020/03/20/dian-shang-shu-ju-fen-xi-yu-shu-ju-hua-yun-ying-note-part4/">电商数据分析与数据化运营Note——Part4：数据分析实战</a>
+            <a class="next" rel="next" href="/2020/03/22/pyspark-chang-yong-cao-zuo-zong-jie-yu-chu-li/">PySpark常用操作总结——预处理</a>
             
         </section>
 
